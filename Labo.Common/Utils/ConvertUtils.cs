@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Security;
+using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Globalization;
@@ -291,8 +292,9 @@ namespace Labo.Common.Utils
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TC">The type of the C.</typeparam>
         // CA2135 violation - the LinkDemand should be removed, and the method marked [SecurityCritical] instead
-        // [EnvironmentPermissionAttribute(SecurityAction.LinkDemand, Unrestricted = true)]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter"), SecurityCritical]
+        [EnvironmentPermission(SecurityAction.Demand, Unrestricted = true)]
+        [SecurityCritical]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static void RegisterTypeConverter<T, TC>() where TC : TypeConverter
         {
             TypeDescriptor.AddAttributes(typeof(T), new Attribute[] { new TypeConverterAttribute(typeof(TC)) });
