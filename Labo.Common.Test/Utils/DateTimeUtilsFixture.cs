@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Globalization;
-
+using Labo.Common.Patterns;
 using Labo.Common.Utils;
-
 using NUnit.Framework;
 
 namespace Labo.Common.Tests.Utils
@@ -55,10 +54,24 @@ namespace Labo.Common.Tests.Utils
             [Values("3/25/2010 5:20:45.345", "4/12/2010 5:23:15.001","4/1/2010 5:23:15.001","3/25/2010 5:20:45.345","4/12/2010 5:23:15.001","4/1/2010 5:23:15.001")]string value, 
             [Values(DayOfWeek.Sunday, DayOfWeek.Sunday,DayOfWeek.Sunday,DayOfWeek.Monday,DayOfWeek.Monday,DayOfWeek.Monday)]DayOfWeek firstDay)
         {
-            var current = DateTime.Parse(value, CultureInfo.InvariantCulture);
-            var expectedDate = DateTime.Parse(expected, CultureInfo.InvariantCulture);
+            DateTime current = DateTime.Parse(value, CultureInfo.InvariantCulture);
+            DateTime expectedDate = DateTime.Parse(expected, CultureInfo.InvariantCulture);
 
-            var result = DateTimeUtils.GetFirstDayOfWeek(current, firstDay);
+            DateTime result = DateTimeUtils.GetFirstDayOfWeek(current, firstDay);
+
+            Assert.AreEqual(expectedDate, result);
+        }
+
+        [Test, Sequential]
+        public void FirstDayOfWeekWithCulture(
+            [Values("3/21/2010", "4/11/2010", "3/28/2010", "3/22/2010", "4/12/2010", "3/29/2010")]string expected,
+            [Values("3/25/2010 5:20:45.345", "4/12/2010 5:23:15.001", "4/1/2010 5:23:15.001", "3/25/2010 5:20:45.345", "4/12/2010 5:23:15.001", "4/1/2010 5:23:15.001")]string value,
+            [Values("en-US", "en-US", "en-US", "tr-TR", "tr-TR", "tr-TR")]string cultureName)
+        {
+            DateTime current = DateTime.Parse(value, CultureInfo.InvariantCulture);
+            DateTime expectedDate = DateTime.Parse(expected, CultureInfo.InvariantCulture);
+
+            DateTime result = DateTimeUtils.GetFirstDayOfWeek(current, CultureInfo.CreateSpecificCulture(cultureName));
 
             Assert.AreEqual(expectedDate, result);
         }
@@ -69,10 +82,24 @@ namespace Labo.Common.Tests.Utils
             [Values("3/25/2010 5:20:45.345", "4/12/2010 5:23:15.001", "4/1/2010 5:23:15.001", "3/25/2010 5:20:45.345", "4/12/2010 5:23:15.001", "4/1/2010 5:23:15.001")]string value, 
             [Values(DayOfWeek.Sunday, DayOfWeek.Sunday, DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Monday, DayOfWeek.Monday)]DayOfWeek firstDay)
         {
-            var current = DateTime.Parse(value, CultureInfo.InvariantCulture);
-            var expectedDate = DateTime.Parse(expected, CultureInfo.InvariantCulture);
+            DateTime current = DateTime.Parse(value, CultureInfo.InvariantCulture);
+            DateTime expectedDate = DateTime.Parse(expected, CultureInfo.InvariantCulture);
 
-            var result = DateTimeUtils.GetLastDayOfWeek(current, firstDay);
+            DateTime result = DateTimeUtils.GetLastDayOfWeek(current, firstDay);
+
+            Assert.AreEqual(expectedDate, result);
+        }
+
+        [Test, Sequential]
+        public void LastDayOfWeekWithCulture(
+            [Values("3/27/2010", "4/17/2010", "4/3/2010", "3/28/2010", "4/18/2010", "4/4/2010")]string expected,
+            [Values("3/25/2010 5:20:45.345", "4/12/2010 5:23:15.001", "4/1/2010 5:23:15.001", "3/25/2010 5:20:45.345", "4/12/2010 5:23:15.001", "4/1/2010 5:23:15.001")]string value,
+            [Values("en-US", "en-US", "en-US", "tr-TR", "tr-TR", "tr-TR")]string cultureName)
+        {
+            DateTime current = DateTime.Parse(value, CultureInfo.InvariantCulture);
+            DateTime expectedDate = DateTime.Parse(expected, CultureInfo.InvariantCulture);
+
+            DateTime result = DateTimeUtils.GetLastDayOfWeek(current, CultureInfo.CreateSpecificCulture(cultureName));
 
             Assert.AreEqual(expectedDate, result);
         }
@@ -81,7 +108,7 @@ namespace Labo.Common.Tests.Utils
         public void Midnight(
             [Values("3/25/2010 5:20:45.345", "4/12/2010 5:23:15.001", "4/1/2010 5:23:15.001", "3/25/2010 5:20:45.345", "4/12/2010 5:23:15.001", "4/1/2010 5:23:15.001")]DateTime current)
         {
-            var result = DateTimeUtils.GetMidnight(current);
+            DateTime result = DateTimeUtils.GetMidnight(current);
 
             Assert.AreEqual(current.Date, result);
         }
@@ -90,7 +117,7 @@ namespace Labo.Common.Tests.Utils
         public void Noon(
              [Values("3/25/2010 5:20:45.345", "4/12/2010 5:23:15.001", "4/1/2010 5:23:15.001", "3/25/2010 5:20:45.345", "4/12/2010 5:23:15.001", "4/1/2010 5:23:15.001")]DateTime current)
         {
-            var result = DateTimeUtils.GetNoon(current);
+            DateTime result = DateTimeUtils.GetNoon(current);
 
             Assert.AreEqual(0, result.Millisecond);
             Assert.AreEqual(0, result.Second);
@@ -109,9 +136,21 @@ namespace Labo.Common.Tests.Utils
         {
             DateTime dateOfBirth = DateTime.Parse(dateOfBirthStr, CultureInfo.InvariantCulture);
             DateTime today = DateTime.Parse(todayStr, CultureInfo.InvariantCulture);
-            var result = DateTimeUtils.CalculateAge(dateOfBirth, today);
+            int result = DateTimeUtils.CalculateAge(dateOfBirth, today);
 
             Assert.AreEqual(expectedAge, result);
+        }
+
+        [Test, Sequential]
+        public void Age(
+            [Values("3/27/2010", "3/27/2008", "3/27/2008", "3/3/1984")]string dateOfBirthStr)
+        {
+            DateTime dateOfBirth = DateTime.Parse(dateOfBirthStr, CultureInfo.InvariantCulture);
+            DateTime now = DateTime.Now;
+            using (new DateTimeProviderContext(new FuncDateTimeProvider(() => now)))
+            {
+                Assert.AreEqual(DateTimeUtils.CalculateAge(dateOfBirth, now), DateTimeUtils.CalculateAge(dateOfBirth));
+            }
         }
     }
 }

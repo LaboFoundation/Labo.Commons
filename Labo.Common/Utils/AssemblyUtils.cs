@@ -22,7 +22,7 @@ namespace Labo.Common.Utils
         /// <param name="assembly"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        [FileIOPermission(SecurityAction.Demand, Unrestricted = true)]
         public static DateTime GetAssemblyTime(Assembly assembly)
         {
             if (assembly == null) throw new ArgumentNullException("assembly");

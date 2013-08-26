@@ -32,6 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Labo.Common.XML</DocumentationFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -46,17 +47,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Comparer\ComparerReverser.cs" />
+    <Compile Include="Patterns\DateTimeProvider.cs" />
+    <Compile Include="Patterns\DateTimeProviderContext.cs" />
     <Compile Include="Patterns\Disposable.cs" />
     <Compile Include="Patterns\Exception\FactoryCreateInstanceException.cs" />
     <Compile Include="Patterns\Factory.cs" />
     <Compile Include="Patterns\IFactoryInstanceCreator.cs" />
     <Compile Include="Patterns\LazyFactoryInstanceCreator.cs" />
+    <Compile Include="Patterns\Singleton.cs" />
     <Compile Include="Patterns\TransientFactoryInstanceCreator.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Include="Patterns\DefaultDateTimeProvider.cs" />
     <Compile Include="Utils\Exceptions\ConversionException.cs" />
     <Compile Include="Utils\ConvertUtils.cs" />
     <Compile Include="Utils\Converters\FileInfoConverter.cs" />
@@ -84,6 +89,8 @@
     <Compile Include="Utils\Exceptions\StringUtilsException.cs" />
     <Compile Include="Utils\Exceptions\XmlUtilsException.cs" />
     <Compile Include="Utils\ExceptionUtils.cs" />
+    <Compile Include="Patterns\FuncDateTimeProvider.cs" />
+    <Compile Include="Patterns\IDateTimeProvider.cs" />
     <Compile Include="Utils\IOUtils.cs" />
     <Compile Include="Utils\LinqUtils.cs" />
     <Compile Include="Utils\MiscUtils.cs" />

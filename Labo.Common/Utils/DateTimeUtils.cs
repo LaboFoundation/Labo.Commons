@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Labo.Common.Patterns;
 
 namespace Labo.Common.Utils
 {
@@ -149,10 +150,23 @@ namespace Labo.Common.Utils
         /// Calculates the age.
         /// </summary>
         /// <param name="dateOfBirth">The date of birth.</param>
+        /// <param name="dateTimeProvider">The date time provider.</param>
+        /// <returns></returns>
+        public static int CalculateAge(DateTime dateOfBirth, IDateTimeProvider dateTimeProvider)
+        {
+            if (dateTimeProvider == null) throw new ArgumentNullException("dateTimeProvider");
+
+            return CalculateAge(dateOfBirth, dateTimeProvider.Today);
+        }
+
+        /// <summary>
+        /// Calculates the age.
+        /// </summary>
+        /// <param name="dateOfBirth">The date of birth.</param>
         /// <returns></returns>
         public static int CalculateAge(DateTime dateOfBirth)
         {
-            return CalculateAge(dateOfBirth, DateTime.Today);
+            return CalculateAge(dateOfBirth, DateTimeProvider.Current);
         }
 
         /// <summary>
