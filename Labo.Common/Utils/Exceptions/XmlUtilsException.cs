@@ -5,6 +5,9 @@ using Labo.Common.Exceptions;
 
 namespace Labo.Common.Utils.Exceptions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Serializable]
     public class XmlUtilsException : CoreLevelException
     {

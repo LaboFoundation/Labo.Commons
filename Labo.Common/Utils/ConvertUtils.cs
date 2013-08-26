@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Globalization;
 using System.ComponentModel;
-
+using Labo.Common.Resources;
 using Labo.Common.Utils.Converters;
 using Labo.Common.Utils.Exceptions;
 
@@ -278,7 +278,7 @@ namespace Labo.Common.Utils
 
         private static ConversionException GetConversionException(object value, Type type, CultureInfo culture, Exception exception = null)
         {
-            const string errorMessage = "An Error Occurred While Changing Value";
+            string errorMessage = Strings.ConvertUtils_GetConversionException_An_Error_Occurred_While_Changing_Value;
             ConversionException conversionEx = exception == null ? new ConversionException(errorMessage) : new ConversionException(errorMessage, exception);
             conversionEx.Data.Add("VALUE", Convert.ToString(value, CultureInfo.CurrentCulture));
             conversionEx.Data.Add("TYPE", type.ToString());

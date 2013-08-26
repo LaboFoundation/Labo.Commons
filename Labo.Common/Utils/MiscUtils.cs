@@ -4,8 +4,18 @@ using System.Text;
 
 namespace Labo.Common.Utils
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class MiscUtils
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="maxSize"></param>
+        /// <param name="characterSet"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string GenerateRandomString(int maxSize, string characterSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
         {
             if (string.IsNullOrEmpty(characterSet))
@@ -17,6 +27,14 @@ namespace Labo.Common.Utils
             return GenerateRandomString(maxSize, chars);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="maxSize"></param>
+        /// <param name="characterSet"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string GenerateRandomString(int maxSize, char[] characterSet)
         {
             if (maxSize < 1)
@@ -44,6 +62,11 @@ namespace Labo.Common.Utils
             return result.ToString();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string LongToBase20String(long value)
         {
             return LongToBaseString(value,
@@ -54,6 +77,13 @@ namespace Labo.Common.Utils
                                        });
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="baseChars"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static long BaseStringToLong(string value, char[] baseChars)
         {
             if (value == null) throw new ArgumentNullException("value");
@@ -71,6 +101,13 @@ namespace Labo.Common.Utils
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="baseChars"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string LongToBaseString(long value, char[] baseChars)
         {
             if (baseChars == null) throw new ArgumentNullException("baseChars");

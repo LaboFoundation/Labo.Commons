@@ -7,8 +7,18 @@ using Labo.Common.Exceptions;
 
 namespace Labo.Common.Utils
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class WebRequestUtils
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="method"></param>
+        /// <param name="headers"></param>
+        /// <returns></returns>
         public static string GetData(Uri uri, string method = "GET", NameValueCollection headers = null)
         {
             WebRequest request = WebRequest.Create(uri);
@@ -40,6 +50,12 @@ namespace Labo.Common.Utils
             return GetData(new Uri(url), method, headers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static string PostData(Uri uri, NameValueCollection data)
         {
             using (WebClient client = new WebClient())
@@ -51,11 +67,23 @@ namespace Labo.Common.Utils
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static string PostData(string url, NameValueCollection data)
         {
             return PostData(new Uri(url), data);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static string PostString(Uri uri, string data)
         {
             using (WebClient client = new WebClient())
@@ -65,11 +93,23 @@ namespace Labo.Common.Utils
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static string PostString(string url, string data)
         {
             return PostString(new Uri(url), data);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
+        /// <exception cref="CoreLevelException"></exception>
         public static byte[] DownloadData(Uri uri)
         {
             try

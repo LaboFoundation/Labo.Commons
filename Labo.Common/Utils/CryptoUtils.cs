@@ -4,8 +4,16 @@ using System.Security.Cryptography;
 
 namespace Labo.Common.Utils
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class CryptoUtils
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string EncryptMd5(string value)
         {
            using(MD5 md5 = new MD5CryptoServiceProvider())
@@ -16,6 +24,11 @@ namespace Labo.Common.Utils
            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static string EncryptMd5AsHexString(string input)
         {
             // step 1, calculate MD5 hash from input

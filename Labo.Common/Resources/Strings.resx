@@ -138,4 +138,16 @@
   <data name="ReflectionHelper_CreateInstance_An_Error_Occurred_While_Creating_Instance" xml:space="preserve">
     <value>An Error Occurred While Creating Instance</value>
   </data>
+  <data name="ConvertUtils_GetConversionException_An_Error_Occurred_While_Changing_Value">
+    <value xml:space="preserve">An Error Occurred While Changing Value</value>
+  </data>
+  <data name="EnumUtils_GetNamesAndValues_Underlying_Type_Must_Be_Enum">
+    <value xml:space="preserve">Underlying Type Must Be Enum</value>
+  </data>
+  <data name="EnumUtils_GetNamesAndValues_An_Error_Occurred_While_Getting_Names_and_Values_of_Enum_Type">
+    <value xml:space="preserve">An Error Occurred While Getting Names and Values of Enum Type</value>
+  </data>
+  <data name="EnumUtils_Parse_An_Error_Occurred_While_Parsing_Enum_Value">
+    <value xml:space="preserve">An Error Occurred While Parsing Enum Value</value>
+  </data>
 </root>

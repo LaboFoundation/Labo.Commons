@@ -6,12 +6,16 @@ using System.Xml;
 
 namespace Labo.Common.Utils
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class SerializationUtils
     {
         /// <summary>
         /// Method to convert a custom Object to XML string
         /// </summary>
         /// <param name="value">Object that is to be serialized to XML</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns>XML string</returns>
         public static String SerializeObject(object value)
         {
@@ -19,12 +23,10 @@ namespace Labo.Common.Utils
 
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                string xmlizedString = null;
                 XmlSerializer xs = new XmlSerializer(value.GetType());
                 XmlTextWriter xmlTextWriter = new XmlTextWriter(memoryStream, Encoding.UTF8);
                 xs.Serialize(xmlTextWriter, value);
-                xmlizedString = UTF8ByteArrayToString(memoryStream.ToArray());
-                return xmlizedString;
+                return UTF8ByteArrayToString(memoryStream.ToArray());
             }
         }
 
@@ -44,6 +46,7 @@ namespace Labo.Common.Utils
         /// Method to reconstruct an Object from XML string
         /// </summary>
         /// <param name="value"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static T DeserializeObject<T>(string value)
         {

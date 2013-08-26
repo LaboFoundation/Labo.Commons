@@ -2,8 +2,14 @@
 
 namespace Labo.Common.Culture
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class EncodingHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static Encoding CurrentCultureEncoding
         {
             get

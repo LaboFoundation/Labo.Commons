@@ -14,6 +14,9 @@ namespace Labo.Common.Utils
     /// </summary>
     public static class StringUtils
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public const string BR_STRING = "<br />";
         private static readonly string[] s_NewLineStrings = new[] { "\r\n", "\n\r", "\n", "\r" };
 
@@ -307,23 +310,6 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// Chops one character from each end of string.
-        /// </summary>
-        public static string Chop(string value)
-        {
-            return Chop(value, 1);
-        }
-        /// <summary>
-        /// Chops the specified number of characters from each end of string. 
-        /// </summary>
-        public static string Chop(string value, int characters)
-        {
-            if (value == null) throw new ArgumentNullException("value");
-
-            return value.Substring(characters, value.Length - characters - 1);
-        }
-
-        /// <summary>
         /// MD5Hash's a string. 
         /// </summary>
         public static string ToMd5Hash(string value)
@@ -370,6 +356,12 @@ namespace Labo.Common.Utils
             return String.Join(" ", words);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
         public static string ToLowerCamelCase(string value)
         {
@@ -378,11 +370,22 @@ namespace Labo.Common.Utils
             return value.Substring(0, 1).ToLower(CultureInfo.CurrentCulture) + value.Substring(1);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public static string ToLowerCamelCase(string[] values)
         {
             return ToLowerCamelCase(ToCamelCase(values));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string ToCamelCase(string value)
         {
             if (value == null) throw new ArgumentNullException("value");
@@ -390,6 +393,13 @@ namespace Labo.Common.Utils
             return value.Substring(0, 1).ToUpper(CultureInfo.CurrentCulture) + value.Substring(1);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string ToCamelCase(string[] values, string separator)
         {
             if (values == null) throw new ArgumentNullException("values");
@@ -402,14 +412,25 @@ namespace Labo.Common.Utils
             }
             return temp;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public static string ToCamelCase(string[] values)
         {
             return ToCamelCase(values, String.Empty);
         }
 
         /// <summary>
-        /// Pad the left side of a string with characters to make the total length.
+        ///  Pad the left side of a string with characters to make the total length.
         /// </summary>
+        /// <param name="src"></param>
+        /// <param name="c"></param>
+        /// <param name="totalLength"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string PadLeft(string src, char c, int totalLength)
         {
             if (src == null) throw new ArgumentNullException("src");
@@ -421,9 +442,12 @@ namespace Labo.Common.Utils
             return new string(c, totalLength - src.Length) + src;
         }
 
+        
         /// <summary>
         /// Pad the right side of a string with a '0' if a single character.
         /// </summary>
+        /// <param name="src"></param>
+        /// <returns></returns>
         public static string PadRight(string src)
         {
             return PadRight(src, '0', 2);
@@ -432,6 +456,11 @@ namespace Labo.Common.Utils
         /// <summary>
         /// Pad the right side of a string with characters to make the total length.
         /// </summary>
+        /// <param name="src"></param>
+        /// <param name="c"></param>
+        /// <param name="totalLength"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string PadRight(string src, char c, int totalLength)
         {
             if (src == null) throw new ArgumentNullException("src");
@@ -446,6 +475,10 @@ namespace Labo.Common.Utils
         /// <summary>
         /// Accepts a string like "ArrowRotateClockwise" and returns "arrow_rotate_clockwise.png".
         /// </summary>
+        /// <param name="name"></param>
+        /// <param name="separator"></param>
+        /// <param name="extension"></param>
+        /// <returns></returns>
         public static string ToCharacterSeparatedFileName(string name, char separator, string extension)
         {
             MatchCollection match = Regex.Matches(name, @"([A-Z]+)[a-z]*|\d{1,}[a-z]{0,}");
@@ -465,6 +498,12 @@ namespace Labo.Common.Utils
 
             return String.Format(CultureInfo.CurrentCulture, format, temp, extension);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public static string Enquote(string s)
         {
             if (String.IsNullOrEmpty(s))
@@ -576,12 +615,19 @@ namespace Labo.Common.Utils
 
             return sb.ToString();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static string EnsureSemiColon(string text)
         {
             return (String.IsNullOrEmpty(text) || text.EndsWith(";", StringComparison.OrdinalIgnoreCase)) ? text : String.Concat(text, ";");
         }
 
         private static readonly Regex s_StripHtmlRegex = new Regex("<(.|\n)*?>", RegexOptions.Compiled);
+        
         /// <summary>
         /// Remove HTML tags from string using char array.
         /// </summary>
@@ -614,6 +660,11 @@ namespace Labo.Common.Utils
                     {"Ö", "O"},
                 };
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static string ReplaceTurkishCharacters(string text)
         {
             foreach (KeyValuePair<string, string> keyValuePair in s_TurkishCharacteMap)

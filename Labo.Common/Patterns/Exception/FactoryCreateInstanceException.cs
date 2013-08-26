@@ -6,6 +6,9 @@ using Labo.Common.Exceptions;
 
 namespace Labo.Common.Patterns.Exception
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Serializable]
     public class FactoryCreateInstanceException : CoreLevelException
     {

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace Labo.Common.Patterns
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TInstance"></typeparam>
     public sealed class Disposable<TInstance> : IDisposable
         where TInstance : class, IDisposable
     {
@@ -11,8 +15,16 @@ namespace Labo.Common.Patterns
         private Stack<object> m_DisposableObjectCreationStack = new Stack<object>();
         private bool m_Disposed;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TInstance Instance { get { return GetOrCreateInstance(); }}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposableCreator"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public Disposable(Func<TInstance> disposableCreator)
         {
             if (disposableCreator == null)
@@ -33,6 +45,10 @@ namespace Labo.Common.Patterns
             return m_DisposableInstance ?? (m_DisposableInstance = m_DisposableCreator());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Disposable<TInstance> Using()
         {
             m_DisposableObjectCreationStack.Push(new object());

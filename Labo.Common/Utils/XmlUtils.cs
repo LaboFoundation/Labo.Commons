@@ -1,19 +1,37 @@
 ﻿using System;
 using System.Xml;
 
-using Labo.Common.Exceptions;
 using Labo.Common.Resources;
 using Labo.Common.Utils.Exceptions;
 
 namespace Labo.Common.Utils
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class XmlUtils
     {     
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="defaultValue"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static T GetNodeProperty<T>(XmlNode node, string propertyName, T defaultValue)
         {
             return ConvertUtils.ChangeType<T>(GetNodePropertyValue(node, propertyName, defaultValue));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static object GetNodePropertyValue(XmlNode node, string propertyName, object defaultValue)
         {
             if (node == null)
@@ -32,26 +50,35 @@ namespace Labo.Common.Utils
             return defaultValue;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="propertyName"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="XmlUtilsException"></exception>
         public static T GetNodeProperty<T>(XmlNode node, string propertyName)
         {
             if (node == null)
             {
-                CoreLevelException nodeException = new CoreLevelException("21");
-                throw new XmlUtilsException(Strings.XmlUtils_GetNodeProperty_Error, nodeException);
+                throw new XmlUtilsException(Strings.XmlUtils_GetNodeProperty_Error);
             }
             
-            object value = GetNodePropertyValue(node, propertyName, null);
-            if (value != null)
-            {
-                return ConvertUtils.ChangeType<T>(value);
-            }
-
-            CoreLevelException attException = new CoreLevelException("19");
-            attException.Data.Add("20", propertyName);
-            XmlUtilsException ex = new XmlUtilsException("19", attException);
-            throw ex;
+            return ConvertUtils.ChangeType<T>(GetNodePropertyValue(node, propertyName, null));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="defaultValue"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="XmlUtilsException"></exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static XmlAttribute AppendAttribute<T>(XmlNode element, string name, object value, object defaultValue)
         {

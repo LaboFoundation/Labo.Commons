@@ -4,6 +4,9 @@ using System.Security.Permissions;
 
 namespace Labo.Common.Exceptions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Serializable]
     public class BaseUserLevelException : ApplicationBaseException
     {

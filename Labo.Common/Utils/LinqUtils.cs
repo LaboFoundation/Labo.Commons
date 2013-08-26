@@ -3,8 +3,20 @@ using System.Linq.Expressions;
 
 namespace Labo.Common.Utils
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class LinqUtils
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TProp"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static string GetProperyName<T, TProp>(Expression<Func<T, TProp>> expression)
         {

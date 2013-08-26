@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Labo.Common;
+
 using Labo.Common.Comparer;
 
 namespace System
@@ -26,6 +26,13 @@ namespace System
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="comparer"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static IComparer<T> Reverse<T>(this IComparer<T> comparer)
         {
             if (comparer == null)

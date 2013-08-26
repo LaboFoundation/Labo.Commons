@@ -19,6 +19,7 @@ namespace Labo.Common.Utils
         /// <typeparam name="TDestination">The type of the destination.</typeparam>
         /// <param name="list">The list.</param>
         /// <param name="converter">The converter.</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static IList<TDestination> ConvertTo<TTarget, TDestination>(IList<TTarget> list, Func<TTarget, TDestination> converter)
         {
@@ -45,6 +46,7 @@ namespace Labo.Common.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="list">The list.</param>
         /// <param name="values">The values.</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public static void AddRange<T>(IList<T> list, IList<T> values)
         {
             if (list == null) throw new ArgumentNullException("list");
@@ -64,6 +66,7 @@ namespace Labo.Common.Utils
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <param name="list">The list.</param>
         /// <param name="func">The func.</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         public static TKey[] Project<T, TKey>(IList<T> list, Func<T, TKey> func)
         {
@@ -112,6 +115,7 @@ namespace Labo.Common.Utils
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="list">The list.</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static DataTable ToDataTable<TItem, TKey, TValue>(IList<TItem> list)
@@ -130,8 +134,9 @@ namespace Labo.Common.Utils
             IEnumerable<string> columnNames = list.SelectMany(dict => dict.Keys.Select(x => ConvertUtils.ChangeType<string>(x))).Distinct();
             result.Columns.AddRange(columnNames.Select(c => new DataColumn(c)).ToArray());
 
-            foreach (TItem item in list)
+            for (int i = 0; i < list.Count; i++)
             {
+                TItem item = list[i];
                 AddRow(result, item);
             }
 
@@ -144,6 +149,7 @@ namespace Labo.Common.Utils
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="list">The list.</param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static DataTable ToDataTable<TKey, TValue>(ICollection<DynamicDictionary> list)

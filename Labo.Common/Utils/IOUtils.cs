@@ -10,6 +10,9 @@ using Microsoft.VisualBasic.FileIO;
 
 namespace Labo.Common.Utils
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class IOUtils
     {
         /// <summary>
@@ -30,6 +33,11 @@ namespace Labo.Common.Utils
             return text;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
         public static string MimeType(string fileName)
         {
@@ -487,19 +495,46 @@ namespace Labo.Common.Utils
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldName"></param>
+        /// <param name="newName"></param>
         public static void RenameDirectory(string oldName, string newName)
         {
             FileSystem.RenameDirectory(oldName, newName);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldName"></param>
+        /// <param name="newName"></param>
         public static void RenameFile(string oldName, string newName)
         {
             FileSystem.RenameFile(oldName, newName);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="physicalPath"></param>
+        /// <param name="recursive"></param>
         public static void DeleteDirectory(string physicalPath, bool recursive)
         {
-            var count = 0;
-        DELETE:
+            DeleteDirectory(physicalPath, recursive, 3);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="physicalPath"></param>
+        /// <param name="recursive"></param>
+        /// <param name="tryCount"></param>
+        public static void DeleteDirectory(string physicalPath, bool recursive, int tryCount)
+        {
+            int count = 0;
+            DELETE:
             try
             {
                 if (Directory.Exists(physicalPath))
@@ -510,14 +545,14 @@ namespace Labo.Common.Utils
             catch
             {
                 count++;
-                if (count < 3)
+                if (count < tryCount)
                 {
                     goto DELETE;
                 }
                 throw;
             }
-
         }
+
         private sealed class Folders
         {
             public string Source { get; private set; }
@@ -525,25 +560,37 @@ namespace Labo.Common.Utils
 
             public Folders(string source, string target)
             {
+                if (source == null) throw new ArgumentNullException("source");
+                if (target == null) throw new ArgumentNullException("target");
+
                 Source = source;
                 Target = target;
 
                 SourceSubFolders = EnumerateDirectoriesExcludeHidden(source).ToArray();
             }
 
-            public IEnumerable<DirectoryInfo> SourceSubFolders { get; private set; }
+            public DirectoryInfo[] SourceSubFolders { get; private set; }
         }
-        public static void CopyDirectory(string source, string dest, bool @override = true)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        /// <param name="override"></param>
+        public static void CopyDirectory(string source, string destination, bool @override = true)
         {
-            var stack = new Stack<Folders>();
-            stack.Push(new Folders(source, dest));
+            Stack<Folders> stack = new Stack<Folders>();
+            stack.Push(new Folders(source, destination));
 
             while (stack.Count > 0)
             {
-                var folders = stack.Pop();
+                Folders folders = stack.Pop();
                 Directory.CreateDirectory(folders.Target);
-                foreach (var file in EnumerateFilesExcludeHidden(folders.Source).ToArray())
+                FileInfo[] fileInfos = EnumerateFilesExcludeHidden(folders.Source).ToArray();
+                for (int i = 0; i < fileInfos.Length; i++)
                 {
+                    var file = fileInfos[i];
                     string targetFile = Path.Combine(folders.Target, file.Name);
 
                     if (File.Exists(targetFile))
@@ -557,28 +604,53 @@ namespace Labo.Common.Utils
                     File.Copy(file.FullName, targetFile);
                 }
 
-                foreach (var folder in folders.SourceSubFolders)
+                for (int i = 0; i < folders.SourceSubFolders.Length; i++)
                 {
+                    DirectoryInfo folder = folders.SourceSubFolders[i];
                     stack.Push(new Folders(folder.FullName, Path.Combine(folders.Target, folder.Name)));
                 }
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static IEnumerable<DirectoryInfo> EnumerateDirectoriesExcludeHidden(string path)
         {
             DirectoryInfo dir = new DirectoryInfo(path);
             return dir.EnumerateDirectories().Where(it => (it.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static IEnumerable<FileInfo> EnumerateFilesExcludeHidden(string path)
         {
             DirectoryInfo dir = new DirectoryInfo(path);
             return dir.EnumerateFiles().Where(it => (it.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="searchPattern"></param>
+        /// <returns></returns>
         public static IEnumerable<FileInfo> EnumerateFilesExcludeHidden(string path, string searchPattern)
         {
             DirectoryInfo dir = new DirectoryInfo(path);
             return dir.EnumerateFiles(searchPattern).Where(it => (it.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="extension"></param>
+        /// <returns></returns>
         public static bool IsImageExtension(string extension)
         {
             if (extension == null)
@@ -598,6 +670,12 @@ namespace Labo.Common.Utils
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="extension"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static ImageFormat ConvertToImageFormat(string extension)
         {
             if (extension == null) throw new ArgumentNullException("extension");
@@ -616,6 +694,11 @@ namespace Labo.Common.Utils
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static bool ValidateImage(string filePath)
         {

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace Labo.Common.Comparer
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public sealed class ComparerReverser<T> : IComparer<T>
     {
         private readonly IComparer<T> m_WrappedComparer;

@@ -5,6 +5,11 @@ using Labo.Common.Patterns.Exception;
 
 namespace Labo.Common.Patterns
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TInstance"></typeparam>
     public abstract class Factory<TKey, TInstance>
     {
         private static readonly IDictionary<TKey, IFactoryInstanceCreator<TInstance>> s_Dictionary = new Dictionary<TKey, IFactoryInstanceCreator<TInstance>>();
@@ -26,6 +31,11 @@ namespace Labo.Common.Patterns
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public TInstance Create(TKey key)
         {
             IFactoryInstanceCreator<TInstance> provider;

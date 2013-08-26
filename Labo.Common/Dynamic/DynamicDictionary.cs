@@ -30,8 +30,6 @@ namespace Labo.Common.Dynamic
             m_Dictionary = new Dictionary<string, object>(dictionary, StringComparer.OrdinalIgnoreCase);
         }
 
-        #region IDictionary<string,object> Members
-
         /// <summary>
         /// Gets the count.
         /// </summary>
@@ -190,8 +188,6 @@ namespace Labo.Common.Dynamic
             return GetEnumerator();
         }
 
-        #endregion
-
         /// <summary>
         /// Returns the enumeration of all dynamic member names.
         /// </summary>
@@ -217,10 +213,8 @@ namespace Labo.Common.Dynamic
 
             string name = binder.Name;
 
-            if (!m_Dictionary.TryGetValue(name, out result))
-            {
-                result = null;
-            }
+            m_Dictionary.TryGetValue(name, out result);
+            
             return true;
         }
 

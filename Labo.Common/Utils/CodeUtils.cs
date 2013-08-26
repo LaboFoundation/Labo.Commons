@@ -2,8 +2,18 @@
 
 namespace Labo.Common.Utils
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class CodeUtils
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="exceptionHandler"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static bool TryCatch(Action action, Action<Exception> exceptionHandler = null)
         {

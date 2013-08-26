@@ -2,10 +2,19 @@ using System;
 
 namespace Labo.Common.Utils
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public struct MonthName : IEquatable<MonthName>
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public int Number { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get; set; }
 
         /// <summary>
@@ -35,11 +44,23 @@ namespace Labo.Common.Utils
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static bool operator ==(MonthName left, MonthName right)
         {
             return left.Equals(right);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static bool operator !=(MonthName left, MonthName right)
         {
             return !left.Equals(right);
