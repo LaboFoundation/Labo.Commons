@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using Labo.Common.Patterns;
 using Labo.Common.Utils;
 using NUnit.Framework;
@@ -151,6 +153,86 @@ namespace Labo.Common.Tests.Utils
             {
                 Assert.AreEqual(DateTimeUtils.CalculateAge(dateOfBirth, now), DateTimeUtils.CalculateAge(dateOfBirth));
             }
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AgeWhenDateTimeProviderIsNullThrowsArgumentNullException()
+        {
+            DateTimeUtils.CalculateAge(new DateTime(2000, 9, 9), null);
+        }
+
+        private const string MONTH_NAMES_TR = "Ocak|1;Şubat|2;Mart|3;Nisan|4;Mayıs|5;Haziran|6;Temmuz|7;Ağustos|8;Eylül|9;Ekim|10;Kasım|11;Aralık|12";
+        private const string MONTH_NAMES_EN = "January|1;February|2;March|3;April|4;May|5;June|6;July|7;August|8;September|9;October|10;November|11;December|12";
+
+        [Test, Sequential]
+        public void GetMonthNames(
+            [Values(MONTH_NAMES_TR, MONTH_NAMES_EN)]string monthNames,
+            [Values("tr-TR", "en-US")]string cultureName)
+        {
+            IList<MonthName> expected = ParseDateNames(monthNames, x => new MonthName
+                {
+                    Name = x[0],
+                    Number = int.Parse(x[1])
+                });
+            Assert.AreEqual(expected, DateTimeUtils.GetMonthNames(new CultureInfo(cultureName)));
+        }
+
+        [Test, Sequential]
+        public void GetMonthNamesThreadCulture(
+            [Values(MONTH_NAMES_TR, MONTH_NAMES_EN)]string monthNames,
+            [Values("tr-TR", "en-US")]string cultureName)
+        {
+            IList<MonthName> expected = ParseDateNames(monthNames, x => new MonthName
+            {
+                Name = x[0],
+                Number = int.Parse(x[1])
+            });
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureName);
+            Assert.AreEqual(expected, DateTimeUtils.GetMonthNames());
+        }
+
+        private const string DAY_NAMES_TR = "Pazar|7;Pazartesi|1;Salı|2;Çarşamba|3;Perşembe|4;Cuma|5;Cumartesi|6";
+        private const string DAY_NAMES_EN = "Sunday|1;Monday|2;Tuesday|3;Wednesday|4;Thursday|5;Friday|6;Saturday|7";
+
+        [Test, Sequential]
+        public void GetDayNames(
+            [Values(DAY_NAMES_TR, DAY_NAMES_EN)]string monthNames,
+            [Values("tr-TR", "en-US")]string cultureName)
+        {
+            IList<DayName> expected = ParseDateNames(monthNames, x => new DayName
+            {
+                Name = x[0],
+                Number = int.Parse(x[1])
+            });
+            Assert.AreEqual(expected, DateTimeUtils.GetDayNames(new CultureInfo(cultureName)));
+        }
+
+        [Test, Sequential]
+        public void GetDayNamesThreadCulture(
+            [Values(DAY_NAMES_TR, DAY_NAMES_EN)]string monthNames,
+            [Values("tr-TR", "en-US")]string cultureName)
+        {
+            IList<DayName> expected = ParseDateNames(monthNames, x => new DayName
+            {
+                Name = x[0],
+                Number = int.Parse(x[1])
+            });
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureName);
+            Assert.AreEqual(expected, DateTimeUtils.GetDayNames());
+        }
+
+        private static IList<T> ParseDateNames<T>(string value, Func<string[], T> parser)
+        {
+            string[] monthNameStrings = value.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+            List<T> result = new List<T>(monthNameStrings.Length);
+            for (int i = 0; i < monthNameStrings.Length; i++)
+            {
+                string monthNameString = monthNameStrings[i];
+                string[] monthNameParts = monthNameString.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+                result.Add(parser(monthNameParts));
+            }
+            return result;
         }
     }
 }

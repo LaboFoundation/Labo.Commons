@@ -12,13 +12,32 @@ namespace Labo.Common.Utils
     public static class DateTimeUtils
     {
         /// <summary>
-        /// Gets the month names.
+        /// 
+        /// </summary>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IList<DayName> GetDayNames(CultureInfo culture = null)
+        {
+            culture = (culture ?? CultureInfo.CurrentCulture);
+
+            return culture.DateTimeFormat.DayNames
+                .TakeWhile(m => !m.IsNullOrEmpty())
+                .Select((m, i) => new DayName
+                {
+                    Number = ((i + (7 - (int)culture.DateTimeFormat.FirstDayOfWeek)) % 7) + 1,
+                    Name = m
+                }).ToList();
+        }
+
+        /// <summary>
+        /// Gets the month names of the specified culture.
         /// </summary>
         /// <param name="culture">The culture.</param>
         /// <returns></returns>
-        public static IList<MonthName> GetMonthNames(CultureInfo culture)
+        public static IList<MonthName> GetMonthNames(CultureInfo culture = null)
         {
-            if (culture == null) throw new ArgumentNullException("culture");
+            culture = (culture ?? CultureInfo.CurrentCulture);
 
             return culture.DateTimeFormat.MonthNames
                 .TakeWhile(m => !m.IsNullOrEmpty())
@@ -26,8 +45,7 @@ namespace Labo.Common.Utils
                     {
                         Number = i + 1,
                         Name = m
-                    })
-                .ToList();
+                    }).ToList();
         }
 
         /// <summary>

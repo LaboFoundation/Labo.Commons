@@ -62,6 +62,7 @@
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="Patterns\DefaultDateTimeProvider.cs" />
+    <Compile Include="Utils\DayName.cs" />
     <Compile Include="Utils\Exceptions\ConversionException.cs" />
     <Compile Include="Utils\ConvertUtils.cs" />
     <Compile Include="Utils\Converters\FileInfoConverter.cs" />
