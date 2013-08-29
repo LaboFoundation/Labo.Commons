@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Globalization;
 
 namespace Labo.Common.Utils
 {
@@ -49,18 +51,21 @@ namespace Labo.Common.Utils
         /// <summary>
         /// To the name value collection.
         /// </summary>
-        /// <typeparam name="TKey">The type of the key.</typeparam>
-        /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="dictionary">The dictionary.</param>
+        /// <param name="culture">The culture for string conversion.</param>
         /// <returns></returns>
-        public static NameValueCollection ToNameValueCollection<TKey, TValue>(IDictionary<TKey, TValue> dictionary)
+        /// <exception cref="System.ArgumentNullException">dictionary</exception>
+        public static NameValueCollection ToNameValueCollection(IDictionary dictionary, CultureInfo culture = null)
         {
             if (dictionary == null) throw new ArgumentNullException("dictionary");
 
+            culture = (culture ?? CultureInfo.CurrentCulture);
+
             NameValueCollection result = new NameValueCollection(dictionary.Count);
-            foreach (KeyValuePair<TKey, TValue> keyValuePair in dictionary)
+            foreach (DictionaryEntry dictionaryEntry in dictionary)
             {
-                result.Add(ConvertUtils.ChangeType<string>(keyValuePair.Key), ConvertUtils.ChangeType<string>(keyValuePair.Value));
+                result.Add(ConvertUtils.ChangeType<string>(dictionaryEntry.Key, culture), ConvertUtils.ChangeType<string>(dictionaryEntry.Value, culture));
+                
             }
 
             return result;
