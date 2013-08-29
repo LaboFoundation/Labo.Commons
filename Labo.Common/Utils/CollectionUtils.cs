@@ -23,14 +23,9 @@ namespace Labo.Common.Utils
         /// <returns></returns>
         public static IList<TDestination> ConvertTo<TTarget, TDestination>(IList<TTarget> list, Func<TTarget, TDestination> converter)
         {
-            if (list == null)
-            {
-                throw new ArgumentNullException("list");
-            }
-            if (converter == null)
-            {
-                throw new ArgumentNullException("converter");
-            }
+            if (list == null) throw new ArgumentNullException("list");
+            if (converter == null) throw new ArgumentNullException("converter");
+
             IList<TDestination> returnValue = new List<TDestination>(list.Count);
             for (int i = 0; i < list.Count; i++)
             {
@@ -115,29 +110,51 @@ namespace Labo.Common.Utils
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="list">The list.</param>
+        /// <param name="culture">The culture.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public static DataTable ToDataTable<TItem, TKey, TValue>(IList<TItem> list)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter"), 
+         System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public static DataTable ToDataTable<TItem, TKey, TValue>(IList<TItem> list, CultureInfo culture = null)
             where TItem : IDictionary<TKey, TValue>
         {
             if (list == null) throw new ArgumentNullException("list");
 
-            DataTable result = new DataTable();
-            result.Locale = CultureInfo.CurrentCulture;
+            culture = (culture ?? CultureInfo.CurrentCulture);
 
-            if (list.Count == 0)
+            DataTable result = null;
+            bool succeded = false;
+            try
             {
-                return result;
+                result = new DataTable
+                {
+                    Locale = culture
+                };
+
+                if (list.Count == 0)
+                {
+                    succeded = true;
+                    return result;
+                }
+
+                IEnumerable<string> columnNames = list.SelectMany(dict => dict.Keys.Select(x => ConvertUtils.ChangeType<string>(x))).Distinct();
+                result.Columns.AddRange(columnNames.Select(c => new DataColumn(c)).ToArray());
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    TItem item = list[i];
+                    AddRow(result, item, culture);
+                }
+
+                succeded = true;
             }
-
-            IEnumerable<string> columnNames = list.SelectMany(dict => dict.Keys.Select(x => ConvertUtils.ChangeType<string>(x))).Distinct();
-            result.Columns.AddRange(columnNames.Select(c => new DataColumn(c)).ToArray());
-
-            for (int i = 0; i < list.Count; i++)
+            finally 
             {
-                TItem item = list[i];
-                AddRow(result, item);
+                if (!succeded && result != null)
+                {
+                    result.Dispose();
+                    result = null;
+                }
             }
 
             return result;
@@ -149,38 +166,56 @@ namespace Labo.Common.Utils
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="list">The list.</param>
+        /// <param name="culture">The cultrue.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public static DataTable ToDataTable<TKey, TValue>(ICollection<DynamicDictionary> list)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter"),
+         System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public static DataTable ToDataTable<TKey, TValue>(ICollection<DynamicDictionary> list, CultureInfo culture = null)
         {
             if (list == null) throw new ArgumentNullException("list");
 
-            DataTable result = new DataTable();
-            result.Locale = CultureInfo.CurrentCulture;
+            culture = (culture ?? CultureInfo.CurrentCulture);
 
-            if (list.Count == 0)
+            DataTable result = null;
+            bool succeded = false;
+            try
             {
-                return result;
+                result = new DataTable { Locale = culture };
+
+                if (list.Count == 0)
+                {
+                    succeded = true;
+                    return result;
+                }
+
+                IEnumerable<string> columnNames = list.SelectMany(dict => dict.Keys).Distinct();
+                result.Columns.AddRange(columnNames.Select(c => new DataColumn(c)).ToArray());
+
+                foreach (IDictionary<TKey, TValue> item in list)
+                {
+                    AddRow(result, item, culture);
+                }
+                succeded = true;
             }
-
-            IEnumerable<string> columnNames = list.SelectMany(dict => dict.Keys).Distinct();
-            result.Columns.AddRange(columnNames.Select(c => new DataColumn(c)).ToArray());
-
-            foreach (IDictionary<TKey, TValue> item in list)
+            finally
             {
-                AddRow(result, item);
+                if (!succeded && result != null)
+                {
+                    result.Dispose();
+                    result = null;
+                }
             }
 
             return result;
         }
 
-        private static void AddRow<TKey, TValue>(DataTable table, IDictionary<TKey, TValue> item)
+        private static void AddRow<TKey, TValue>(DataTable table, IDictionary<TKey, TValue> item, CultureInfo culture = null)
         {
             DataRow row = table.NewRow();
             foreach (TKey key in item.Keys)
             {
-                row[ConvertUtils.ChangeType<string>(key)] = item[key];
+                row[ConvertUtils.ChangeType<string>(key, culture ?? CultureInfo.CurrentCulture)] = item[key];
             }
 
             table.Rows.Add(row);
