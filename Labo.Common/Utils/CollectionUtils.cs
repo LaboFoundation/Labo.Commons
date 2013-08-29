@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -107,16 +108,13 @@ namespace Labo.Common.Utils
         /// To the data table.
         /// </summary>
         /// <typeparam name="TItem">The type of the item.</typeparam>
-        /// <typeparam name="TKey">The type of the key.</typeparam>
-        /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="list">The list.</param>
         /// <param name="culture">The culture.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter"), 
-         System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public static DataTable ToDataTable<TItem, TKey, TValue>(IList<TItem> list, CultureInfo culture = null)
-            where TItem : IDictionary<TKey, TValue>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public static DataTable ToDataTable<TItem>(IList<TItem> list, CultureInfo culture = null)
+            where TItem : IDictionary
         {
             if (list == null) throw new ArgumentNullException("list");
 
@@ -137,8 +135,18 @@ namespace Labo.Common.Utils
                     return result;
                 }
 
-                IEnumerable<string> columnNames = list.SelectMany(dict => dict.Keys.Select(x => ConvertUtils.ChangeType<string>(x))).Distinct();
-                result.Columns.AddRange(columnNames.Select(c => new DataColumn(c)).ToArray());
+                //Select column names
+                HashSet<string> columns = new HashSet<string>();
+                for (int i = 0; i < list.Count; i++)
+                {
+                    TItem item = list[i];
+                    foreach (DictionaryEntry dictionaryEntry in item)
+                    {
+                        columns.Add(ConvertUtils.ChangeType<string>(dictionaryEntry.Key, culture));
+                    }
+                }
+
+                result.Columns.AddRange(columns.Select(c => new DataColumn(c, typeof(object))).ToArray());
 
                 for (int i = 0; i < list.Count; i++)
                 {
@@ -163,15 +171,12 @@ namespace Labo.Common.Utils
         /// <summary>
         /// To the data table.
         /// </summary>
-        /// <typeparam name="TKey">The type of the key.</typeparam>
-        /// <typeparam name="TValue">The type of the value.</typeparam>
         /// <param name="list">The list.</param>
         /// <param name="culture">The cultrue.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter"),
-         System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public static DataTable ToDataTable<TKey, TValue>(ICollection<DynamicDictionary> list, CultureInfo culture = null)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public static DataTable ToDataTable(ICollection<DynamicDictionary> list, CultureInfo culture = null)
         {
             if (list == null) throw new ArgumentNullException("list");
 
@@ -190,9 +195,9 @@ namespace Labo.Common.Utils
                 }
 
                 IEnumerable<string> columnNames = list.SelectMany(dict => dict.Keys).Distinct();
-                result.Columns.AddRange(columnNames.Select(c => new DataColumn(c)).ToArray());
+                result.Columns.AddRange(columnNames.Select(c => new DataColumn(c, typeof(object))).ToArray());
 
-                foreach (IDictionary<TKey, TValue> item in list)
+                foreach (DynamicDictionary item in list)
                 {
                     AddRow(result, item, culture);
                 }
@@ -210,12 +215,13 @@ namespace Labo.Common.Utils
             return result;
         }
 
-        private static void AddRow<TKey, TValue>(DataTable table, IDictionary<TKey, TValue> item, CultureInfo culture = null)
+        private static void AddRow(DataTable table, IDictionary item, CultureInfo culture = null)
         {
             DataRow row = table.NewRow();
-            foreach (TKey key in item.Keys)
+            foreach (var key in item.Keys)
             {
-                row[ConvertUtils.ChangeType<string>(key, culture ?? CultureInfo.CurrentCulture)] = item[key];
+                string columnName = ConvertUtils.ChangeType<string>(key, culture ?? CultureInfo.CurrentCulture);
+                row[columnName] = item[key];
             }
 
             table.Rows.Add(row);

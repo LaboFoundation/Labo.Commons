@@ -9,7 +9,7 @@ namespace Labo.Common.Dynamic
     /// 
     /// </summary>
     [Serializable]
-    public class DynamicDictionary : DynamicObject, IDictionary<string, object>
+    public class DynamicDictionary : DynamicObject, IDictionary<string, object>, IDictionary
     {
         private readonly IDictionary<string, object> m_Dictionary;
 
@@ -233,6 +233,63 @@ namespace Labo.Common.Dynamic
             m_Dictionary[binder.Name] = value;
 
             return true;
+        }
+
+        public void Add(object key, object value)
+        {
+            ((IDictionary)m_Dictionary).Add(key, value);
+        }
+
+        public bool Contains(object key)
+        {
+            return ((IDictionary) m_Dictionary).Contains(key);
+        }
+
+        IDictionaryEnumerator IDictionary.GetEnumerator()
+        {
+            return ((IDictionary)m_Dictionary).GetEnumerator();
+        }
+
+        public bool IsFixedSize
+        {
+            get { return ((IDictionary)m_Dictionary).IsFixedSize; }
+        }
+
+        ICollection IDictionary.Keys
+        {
+            get { return ((IDictionary)m_Dictionary).Keys; }
+        }
+
+        public void Remove(object key)
+        {
+            ((IDictionary)m_Dictionary).Remove(key);
+        }
+
+        ICollection IDictionary.Values
+        {
+            get { return ((IDictionary)m_Dictionary).Values; }
+        }
+
+
+        public object this[object key]
+        {
+            get { return ((IDictionary) m_Dictionary)[key]; }
+            set { ((IDictionary) m_Dictionary)[key] = value; }
+        }
+
+        public void CopyTo(Array array, int index)
+        {
+            ((IDictionary) m_Dictionary).CopyTo(array, index);
+        }
+
+        public bool IsSynchronized
+        {
+            get { return ((IDictionary)m_Dictionary).IsSynchronized; }
+        }
+
+        public object SyncRoot
+        {
+            get { return ((IDictionary)m_Dictionary).SyncRoot; }
         }
     }
 }
