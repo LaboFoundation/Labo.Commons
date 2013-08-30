@@ -52,6 +52,7 @@
     <Compile Include="Utils\DictionaryUtilsFixture.cs" />
     <Compile Include="Utils\EnumUtilsFixture.cs" />
     <Compile Include="Utils\ExceptionUtilsFixture.cs" />
+    <Compile Include="Utils\ObjectUtilsTestFixture.cs" />
     <Compile Include="Utils\StringUtilsFixture.cs" />
     <Compile Include="Utils\TypeUtilsFixture.cs" />
   </ItemGroup>
