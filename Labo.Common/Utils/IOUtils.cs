@@ -491,6 +491,10 @@ namespace Labo.Common.Utils
                 case ".zip": return "application/zip";
                 case ".zoo": return "application/octet-stream";
                 case ".zsh": return "text/x-script.zsh";
+                case ".7z": return "application/x-7z-compressed";
+                case ".flv": return "video/x-flv";
+                case ".mp4": return "application/mp4";
+                case ".mp4a": return "audio/mp4";
                 default: return "application/octet-stream";
             }
         }

@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\AssemblyUtilsFixture.cs" />
+    <Compile Include="Utils\CodeUtilsFixture.cs" />
     <Compile Include="Utils\CollectionUtilsFixture.cs" />
     <Compile Include="Utils\ConvertUtilsFixture.cs" />
     <Compile Include="Utils\DateTimeUtilsFixture.cs" />
