@@ -118,7 +118,7 @@ namespace Labo.Common.Utils
         {
             if (list == null) throw new ArgumentNullException("list");
 
-            culture = (culture ?? CultureInfo.CurrentCulture);
+            culture = CultureUtils.GetCurrentCultureIfNull(culture);
 
             DataTable result = null;
             bool succeded = false;
@@ -180,7 +180,7 @@ namespace Labo.Common.Utils
         {
             if (list == null) throw new ArgumentNullException("list");
 
-            culture = (culture ?? CultureInfo.CurrentCulture);
+            culture = CultureUtils.GetCurrentCultureIfNull(culture);
 
             DataTable result = null;
             bool succeded = false;
@@ -220,7 +220,7 @@ namespace Labo.Common.Utils
             DataRow row = table.NewRow();
             foreach (var key in item.Keys)
             {
-                string columnName = ConvertUtils.ChangeType<string>(key, culture ?? CultureInfo.CurrentCulture);
+                string columnName = ConvertUtils.ChangeType<string>(key, CultureUtils.GetCurrentCultureIfNull(culture));
                 row[columnName] = item[key];
             }
 

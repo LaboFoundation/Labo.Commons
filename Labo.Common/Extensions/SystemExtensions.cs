@@ -1,4 +1,5 @@
-﻿using Labo.Common.Utils;
+﻿using System.Globalization;
+using Labo.Common.Utils;
 
 namespace System
 {
@@ -56,7 +57,7 @@ namespace System
         /// <returns></returns>
         public static string FormatWith(this string @string, params object[] args)
         {
-            return StringUtils.Format(@string, args);
+            return FormatWith(@string, CultureInfo.CurrentCulture, args);
         }
 
         /// <summary>

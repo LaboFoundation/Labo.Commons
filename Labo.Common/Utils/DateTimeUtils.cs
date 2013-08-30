@@ -19,7 +19,7 @@ namespace Labo.Common.Utils
         /// <exception cref="ArgumentNullException"></exception>
         public static IList<DayName> GetDayNames(CultureInfo culture = null)
         {
-            culture = (culture ?? CultureInfo.CurrentCulture);
+            culture = CultureUtils.GetCurrentCultureIfNull(culture);
 
             return culture.DateTimeFormat.DayNames
                 .TakeWhile(m => !m.IsNullOrEmpty())
@@ -37,7 +37,7 @@ namespace Labo.Common.Utils
         /// <returns></returns>
         public static IList<MonthName> GetMonthNames(CultureInfo culture = null)
         {
-            culture = (culture ?? CultureInfo.CurrentCulture);
+            culture = CultureUtils.GetCurrentCultureIfNull(culture);
 
             return culture.DateTimeFormat.MonthNames
                 .TakeWhile(m => !m.IsNullOrEmpty())

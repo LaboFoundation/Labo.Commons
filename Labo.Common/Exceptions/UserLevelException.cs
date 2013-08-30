@@ -4,6 +4,9 @@ using System.Runtime.Serialization;
 
 namespace Labo.Common.Exceptions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Serializable]
     public class UserLevelException : BaseUserLevelException
     {

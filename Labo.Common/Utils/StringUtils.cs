@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -29,17 +26,6 @@ namespace Labo.Common.Utils
         public static bool EqualsOrdinalIgnoreCase(string a, string b)
         {
             return String.Equals(a, b, StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>
-        /// Formats the specified string.
-        /// </summary>
-        /// <param name="string">The string.</param>
-        /// <param name="args">The args.</param>
-        /// <returns></returns>
-        public static string Format(string @string, params object[] args)
-        {
-            return String.Format(CultureInfo.CurrentCulture, @string, args);
         }
 
         /// <summary>
@@ -73,12 +59,23 @@ namespace Labo.Common.Utils
         /// <returns></returns>
         public static string ConvertNewLineToBr(string target)
         {
-            if(String.IsNullOrEmpty(target))
+            return ReplaceNewLine(target, BR_STRING);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="newValue"></param>
+        /// <returns></returns>
+        public static string ReplaceNewLine(string target, string newValue)
+        {
+            if (String.IsNullOrEmpty(target))
             {
                 return String.Empty;
             }
 
-            return String.Join(BR_STRING, target.Split(s_NewLineStrings, StringSplitOptions.None));
+            return String.Join(newValue, target.Split(s_NewLineStrings, StringSplitOptions.None));
         }
 
         /// <summary>
@@ -124,10 +121,11 @@ namespace Labo.Common.Utils
         /// <param name="string">The @string.</param>
         /// <param name="length">The length.</param>
         /// <param name="postText">The post text.</param>
+        /// <param name="preText">The pre text</param>
         /// <returns></returns>
-        public static string Truncate(string @string, int length, string postText)
+        public static string Truncate(string @string, int length, string postText = null, string preText = null)
         {
-            return Truncate(@string, 0, length, postText);
+            return Truncate(@string, 0, length, postText, preText);
         }
 
         /// <summary>
@@ -137,48 +135,55 @@ namespace Labo.Common.Utils
         /// <param name="startIndex">The start index.</param>
         /// <param name="length">The length.</param>
         /// <param name="postText">The post text.</param>
+        /// <param name="preText">The pre text</param>
         /// <returns></returns>
-        public static string Truncate(string target, int startIndex, int length, string postText)
+        public static string Truncate(string target, int startIndex, int length, string postText = null, string preText = null)
         {
-            if (length < 0)
-            {
-                throw new ArgumentOutOfRangeException("length");
-            }
+            if (length < 0) throw new ArgumentOutOfRangeException("length");
+            if (target == null) return string.Empty;
+            if (startIndex < 0) throw new ArgumentOutOfRangeException("startIndex");
 
-            if (target == null)
-            {
-                return string.Empty;
-            }
-
-            if (startIndex < 0 || startIndex > target.Length)
-            {
-                throw new ArgumentOutOfRangeException("startIndex");
-            }
-
-            if (length == 0)
+            if (length == 0 || startIndex > target.Length)
             {
                 return String.Empty;
             }
 
-            int truncateLength = length + startIndex > target.Length ? target.Length - startIndex : length;
-            if (startIndex == 0 && target.Length == truncateLength)
+            bool truncateToTargetsLastChar = length + startIndex >= target.Length;
+            int truncateLength = truncateToTargetsLastChar ? target.Length - startIndex : length;
+
+            if (truncateToTargetsLastChar)
             {
                 postText = String.Empty;
+            }
+            if (startIndex > 0 && preText != null)
+            {
+                return String.Concat(preText, target.Substring(startIndex, truncateLength), postText);                
             }
 
             return String.Concat(target.Substring(startIndex, truncateLength), postText);
         }
 
         /// <summary>
-        /// Joins the specified strings.
+        /// 
         /// </summary>
-        /// <param name="strings">The strings.</param>
-        /// <param name="separator">The separator.</param>
-        /// <param name="func">The func.</param>
+        /// <param name="items"></param>
+        /// <param name="func"></param>
+        /// <param name="separator"></param>
+        /// <typeparam name="TItem"></typeparam>
         /// <returns></returns>
-        public static string Join(IList<string> strings, string separator, Func<string, string> func = null)
+        /// <exception cref="ArgumentNullException"></exception>
+        public static string JoinToString<TItem>(IEnumerable<TItem> items, Func<TItem, string> func, string separator = null)
         {
-            return Join(strings.ToArray(), separator, func);
+            if (items == null) throw new ArgumentNullException("items");
+            if (func == null) throw new ArgumentNullException("func");
+
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (TItem item in items)
+            {
+                stringBuilder.Append(func(item));
+                stringBuilder.Append(separator);
+            }
+            return GetJoinedStringResult(stringBuilder, separator);
         }
 
         /// <summary>
@@ -188,34 +193,24 @@ namespace Labo.Common.Utils
         /// <param name="separator">The separator.</param>
         /// <param name="func">The func.</param>
         /// <returns></returns>
-        public static string Join(string[] strings, string separator, Func<string, string> func = null)
+        public static string Join(IEnumerable<string> strings, string separator = null, Func<string, string> func = null)
         {
             if (strings == null) throw new ArgumentNullException("strings");
-            if (separator == null) throw new ArgumentNullException("separator");
 
-            int length = strings.Length;
-            if (length == 0)
-            {
-                return null;
-            }
             StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < length; i++)
+            foreach (string s in strings)
             {
-                string s = strings[i];
                 stringBuilder.Append(func != null ? func(s) : s);
                 stringBuilder.Append(separator);
             }
-            return stringBuilder.ToString(0, stringBuilder.Length - separator.Length);
+            return GetJoinedStringResult(stringBuilder, separator);
         }
 
-        /// <summary>
-        /// Capitalizes the specified string.
-        /// </summary>
-        /// <param name="string">The string.</param>
-        /// <returns></returns>
-        public static string Capitalize(string @string)
+        private static string GetJoinedStringResult(StringBuilder stringBuilder, string separator)
         {
-            return Capitalize(@string, CultureInfo.InvariantCulture);
+            return separator == null
+                       ? stringBuilder.ToString()
+                       : stringBuilder.ToString(0, Math.Max(0, stringBuilder.Length - separator.Length));
         }
 
         /// <summary>
@@ -224,12 +219,14 @@ namespace Labo.Common.Utils
         /// <param name="string">The string.</param>
         /// <param name="culture">The culture.</param>
         /// <returns></returns>
-        public static string Capitalize(string @string, CultureInfo culture)
+        public static string Capitalize(string @string, CultureInfo culture = null)
         {
             if (String.IsNullOrEmpty(@string))
             {
                 return String.Empty;
             }
+
+            culture = CultureUtils.GetCurrentCultureIfNull(culture);
 
             if (@string.Length == 1)
             {
@@ -251,6 +248,48 @@ namespace Labo.Common.Utils
         public static bool Contains(string target, string value, StringComparison comparisonType)
         {
             return target != null && value != null && target.IndexOf(value, comparisonType) >= 0;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="comparisonType"></param>
+        /// <returns></returns>
+        public static bool Contains(string target, string value, int startIndex, StringComparison comparisonType)
+        {
+            return target != null && value != null && target.IndexOf(value, startIndex, comparisonType) >= 0;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        public static bool Contains(string target, string value, CultureInfo culture = null)
+        {
+            culture = CultureUtils.GetCurrentCultureIfNull(culture);
+
+            return target != null && value != null && culture.CompareInfo.IndexOf(target, value) >= 0;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        public static bool Contains(string target, string value, int startIndex, CultureInfo culture = null)
+        {
+            culture = CultureUtils.GetCurrentCultureIfNull(culture);
+
+            return target != null && value != null && culture.CompareInfo.IndexOf(target, value, startIndex) >= 0;
         }
 
         /// <summary>
@@ -310,117 +349,41 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// MD5Hash's a string. 
-        /// </summary>
-        public static string ToMd5Hash(string value)
-        {
-            if (value == null) throw new ArgumentNullException("value");
-
-            using (MD5 md5 = MD5.Create())
-            {
-                byte[] inputBytes = Encoding.ASCII.GetBytes(value.Trim());
-                byte[] hash = md5.ComputeHash(inputBytes);
-
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < hash.Length; i++)
-                {
-                    sb.Append(hash[i].ToString("x2", CultureInfo.InvariantCulture));
-                }
-                return sb.ToString();
-            }
-        }
-
-        /// <summary>
         /// Converts the first character of each word to Uppercase. Example: "the lazy dog" returns "The Lazy Dog"
         /// </summary>
         /// <param name="text">The text to convert to sentence case</param>
-        public static string ToTitleCase(string text)
+        /// <param name="culture"> </param>
+        public static string ToTitleCase(string text, CultureInfo culture = null)
         {
             if (text == null) throw new ArgumentNullException("text");
 
-            return ToTitleCase(text.Split(' '));
+            return ToTitleCase(text.Split(' '), culture);
         }
 
         /// <summary>
         /// Converts the first character of each word to Uppercase. Example: "the lazy dog" returns "The Lazy Dog"
         /// </summary>
-        public static string ToTitleCase(string[] words)
+        public static string ToTitleCase(string[] words, CultureInfo culture = null)
         {
             if (words == null) throw new ArgumentNullException("words");
 
+            culture = CultureUtils.GetCurrentCultureIfNull(culture);
+
+            string[] titleCasedWords = new string[words.Length];
             for (int i = 0; i < words.Length; i++)
             {
-                words[i] = Char.ToUpper(words[i][0], CultureInfo.CurrentCulture) + words[i].Substring(1);
+                string word = words[i];
+                if (string.IsNullOrEmpty(word))
+                {
+                    titleCasedWords[i] = word;
+                }
+                else
+                {
+                    titleCasedWords[i] = Char.ToUpper(word[0], culture) + word.Substring(1);                    
+                }
             }
 
-            return String.Join(" ", words);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
-        public static string ToLowerCamelCase(string value)
-        {
-            if (value == null) throw new ArgumentNullException("value");
-
-            return value.Substring(0, 1).ToLower(CultureInfo.CurrentCulture) + value.Substring(1);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        /// <returns></returns>
-        public static string ToLowerCamelCase(string[] values)
-        {
-            return ToLowerCamelCase(ToCamelCase(values));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static string ToCamelCase(string value)
-        {
-            if (value == null) throw new ArgumentNullException("value");
-
-            return value.Substring(0, 1).ToUpper(CultureInfo.CurrentCulture) + value.Substring(1);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        /// <param name="separator"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static string ToCamelCase(string[] values, string separator)
-        {
-            if (values == null) throw new ArgumentNullException("values");
-
-            string temp = String.Empty;
-            foreach (string s in values)
-            {
-                temp += separator;
-                temp += ToCamelCase(s);
-            }
-            return temp;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        /// <returns></returns>
-        public static string ToCamelCase(string[] values)
-        {
-            return ToCamelCase(values, String.Empty);
+            return String.Join(" ", titleCasedWords);
         }
 
         /// <summary>
@@ -440,17 +403,6 @@ namespace Labo.Common.Utils
                 return src;
             }
             return new string(c, totalLength - src.Length) + src;
-        }
-
-        
-        /// <summary>
-        /// Pad the right side of a string with a '0' if a single character.
-        /// </summary>
-        /// <param name="src"></param>
-        /// <returns></returns>
-        public static string PadRight(string src)
-        {
-            return PadRight(src, '0', 2);
         }
 
         /// <summary>
@@ -473,33 +425,6 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// Accepts a string like "ArrowRotateClockwise" and returns "arrow_rotate_clockwise.png".
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="separator"></param>
-        /// <param name="extension"></param>
-        /// <returns></returns>
-        public static string ToCharacterSeparatedFileName(string name, char separator, string extension)
-        {
-            MatchCollection match = Regex.Matches(name, @"([A-Z]+)[a-z]*|\d{1,}[a-z]{0,}");
-
-            string temp = String.Empty;
-
-            for (int i = 0; i < match.Count; i++)
-            {
-                if (i != 0)
-                {
-                    temp += separator;
-                }
-                temp += match[i].ToString().ToLower(CultureInfo.CurrentCulture);
-            }
-
-            string format = (String.IsNullOrEmpty(extension)) ? "{0}{1}" : "{0}.{1}";
-
-            return String.Format(CultureInfo.CurrentCulture, format, temp, extension);
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="s"></param>
@@ -514,8 +439,7 @@ namespace Labo.Common.Utils
             int len = s.Length;
             StringBuilder sb = new StringBuilder(len + 4);
 
-            //sb.Append('"');
-            for (i = 0; i < len; i += 1)
+            for (i = 0; i < len; i ++)
             {
                 char c = s[i];
                 if ((c == '\\') || (c == '"') || (c == '>'))
@@ -537,7 +461,6 @@ namespace Labo.Common.Utils
                 {
                     if (c < ' ')
                     {
-                        //t = "000" + Integer.toHexString(c); 
                         string tmp = new string(c, 1);
                         string t = "000" + Int32.Parse(tmp, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                         sb.Append("\\u" + t.Substring(t.Length - 4));
@@ -548,9 +471,9 @@ namespace Labo.Common.Utils
                     }
                 }
             }
-            //sb.Append('"');
             return sb.ToString();
         }
+
         /// <summary>
         /// Encodes a string to be represented as a string literal. The format
         /// is essentially a JSON string.
@@ -570,8 +493,9 @@ namespace Labo.Common.Utils
             }
 
             StringBuilder sb = new StringBuilder();
-            foreach (char c in s)
+            for (int j = 0; j < s.Length; j++)
             {
+                char c = s[j];
                 switch (c)
                 {
                     case '\"':
@@ -598,9 +522,9 @@ namespace Labo.Common.Utils
                     case '\t':
                         sb.Append("\\t");
                         break;
-                   
+
                     default:
-                        int i = (int)c;
+                        int i = (int) c;
                         if (i < 32 || i > 127)
                         {
                             sb.AppendFormat("\\u{0:X04}", i);
@@ -614,16 +538,6 @@ namespace Labo.Common.Utils
             }
 
             return sb.ToString();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public static string EnsureSemiColon(string text)
-        {
-            return (String.IsNullOrEmpty(text) || text.EndsWith(";", StringComparison.OrdinalIgnoreCase)) ? text : String.Concat(text, ";");
         }
 
         private static readonly Regex s_StripHtmlRegex = new Regex("<(.|\n)*?>", RegexOptions.Compiled);
@@ -643,8 +557,8 @@ namespace Labo.Common.Utils
             return s_StripHtmlRegex.Replace(source, String.Empty);
         }
 
-        private static readonly Dictionary<string, string> s_TurkishCharacteMap =
-            new Dictionary<string, string>
+        private static readonly SortedList<string, string> s_TurkishCharacteMap =
+            new SortedList<string, string>
                 {
                     {"ğ", "g"},
                     {"ü", "u"},
@@ -667,6 +581,11 @@ namespace Labo.Common.Utils
         /// <returns></returns>
         public static string ReplaceTurkishCharacters(string text)
         {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return text;
+            }
+
             foreach (KeyValuePair<string, string> keyValuePair in s_TurkishCharacteMap)
             {
                 text = text.Replace(keyValuePair.Key, keyValuePair.Value);

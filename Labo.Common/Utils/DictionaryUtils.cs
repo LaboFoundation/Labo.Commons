@@ -59,7 +59,7 @@ namespace Labo.Common.Utils
         {
             if (dictionary == null) throw new ArgumentNullException("dictionary");
 
-            culture = (culture ?? CultureInfo.CurrentCulture);
+            culture = CultureUtils.GetCurrentCultureIfNull(culture);
 
             NameValueCollection result = new NameValueCollection(dictionary.Count);
             foreach (DictionaryEntry dictionaryEntry in dictionary)

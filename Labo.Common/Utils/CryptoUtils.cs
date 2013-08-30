@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Text;
 using System.Security.Cryptography;
 
@@ -31,6 +32,8 @@ namespace Labo.Common.Utils
         /// <returns></returns>
         public static string EncryptMd5AsHexString(string input)
         {
+            if (input == null) throw new ArgumentNullException("input");
+
             // step 1, calculate MD5 hash from input
             using (MD5 md5 = MD5.Create())
             {
