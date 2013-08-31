@@ -36,6 +36,7 @@
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
@@ -50,11 +51,14 @@
     <Compile Include="Utils\CodeUtilsFixture.cs" />
     <Compile Include="Utils\CollectionUtilsFixture.cs" />
     <Compile Include="Utils\ConvertUtilsFixture.cs" />
+    <Compile Include="Utils\CryptoUtilsFixture.cs" />
     <Compile Include="Utils\DateTimeUtilsFixture.cs" />
     <Compile Include="Utils\DictionaryUtilsFixture.cs" />
     <Compile Include="Utils\EnumUtilsFixture.cs" />
     <Compile Include="Utils\ExceptionUtilsFixture.cs" />
+    <Compile Include="Utils\LinqUtilsFixture.cs" />
     <Compile Include="Utils\ObjectUtilsTestFixture.cs" />
+    <Compile Include="Utils\ReflectionUtilsFixture.cs" />
     <Compile Include="Utils\StringUtilsFixture.cs" />
     <Compile Include="Utils\TypeUtilsFixture.cs" />
   </ItemGroup>
@@ -66,6 +70,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="_TestAssembly\EmbeddedResource.txt" />
+    <Content Include="_TestAssembly\Labo.Common.Tests.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

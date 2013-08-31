@@ -39,6 +39,7 @@ namespace Labo.Common.Utils
         /// <param name="fileName"></param>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public static string MimeType(string fileName)
         {
             string extension = Path.GetExtension(fileName) ?? string.Empty;

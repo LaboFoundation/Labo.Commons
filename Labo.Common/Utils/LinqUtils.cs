@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Labo.Common.Utils
 {
@@ -12,13 +13,32 @@ namespace Labo.Common.Utils
         /// 
         /// </summary>
         /// <param name="expression"></param>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TType"></typeparam>
         /// <typeparam name="TProp"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
-        public static string GetProperyName<T, TProp>(Expression<Func<T, TProp>> expression)
+        public static string GetMemberName<TType, TProp>(Expression<Func<TType, TProp>> expression)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+            MemberInfo memberInfo = GetMemberInfo(expression);
+
+            return memberInfo.Name;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <typeparam name="TType"></typeparam>
+        /// <typeparam name="TMember"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
+        public static MemberInfo GetMemberInfo<TType, TMember>(Expression<Func<TType, TMember>> expression)
         {
             if (expression == null) throw new ArgumentNullException("expression");
 
@@ -35,10 +55,19 @@ namespace Labo.Common.Utils
 
             if (body == null)
             {
-                throw new InvalidOperationException("Expression body must be MemberExpression or UnaryExpression");
+                MethodCallExpression methodCallExpression = expression.Body as MethodCallExpression;
+                if (methodCallExpression != null)
+                {
+                    return methodCallExpression.Method;
+                }
             }
 
-            return body.Member.Name;
+            if (body == null)
+            {
+                throw new InvalidOperationException("Expression body must be MemberExpression, MethodCallExpression or UnaryExpression");
+            }
+
+            return body.Member;
         }
     }
 }

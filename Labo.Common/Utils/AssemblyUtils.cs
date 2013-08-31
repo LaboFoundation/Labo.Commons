@@ -22,6 +22,7 @@ namespace Labo.Common.Utils
         /// <param name="assembly"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [FileIOPermission(SecurityAction.Demand, Unrestricted = true)]
         public static DateTime GetAssemblyTime(Assembly assembly)
         {
@@ -72,6 +73,8 @@ namespace Labo.Common.Utils
         public static string GetEmbededResourceString(Assembly assembly, string resourceName, Encoding encoding)
         {
             if (assembly == null) throw new ArgumentNullException("assembly");
+            if (resourceName == null) throw new ArgumentNullException("resourceName");
+            if (encoding == null) throw new ArgumentNullException("encoding");
 
             string text = null;
             StreamReader streamReader = null;
@@ -82,6 +85,10 @@ namespace Labo.Common.Utils
                 {
                     streamReader = new StreamReader(manifestResourceStream, encoding);
                     text = streamReader.ReadToEnd();
+                }
+                else
+                {
+                    throw new FileNotFoundException(resourceName);
                 }
             }
             catch(FileNotFoundException ex)
@@ -110,6 +117,7 @@ namespace Labo.Common.Utils
         {
             return GetEmbededResourceBinary(Assembly.GetExecutingAssembly(), resourceName);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -120,6 +128,7 @@ namespace Labo.Common.Utils
         public static byte[] GetEmbededResourceBinary(Assembly assembly, string resourceName)
         {
             if (assembly == null) throw new ArgumentNullException("assembly");
+            if (resourceName == null) throw new ArgumentNullException("resourceName");
 
             byte[] resource = null;
 

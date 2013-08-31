@@ -17,12 +17,14 @@ namespace Labo.Common.Utils
         /// <returns></returns>
         public static string EncryptMd5(string value)
         {
-           using(MD5 md5 = new MD5CryptoServiceProvider())
-           {
-               UTF8Encoding encoder = new UTF8Encoding();
-               byte[] returnValue = md5.ComputeHash(encoder.GetBytes(value));
-               return Encoding.UTF8.GetString(returnValue);
-           }
+            if (value == null) throw new ArgumentNullException("value");
+
+            using(MD5 md5 = new MD5CryptoServiceProvider())
+            {
+                UTF8Encoding encoder = new UTF8Encoding();
+                byte[] returnValue = md5.ComputeHash(encoder.GetBytes(value));
+                return Encoding.UTF8.GetString(returnValue);
+            }
         }
 
         /// <summary>
