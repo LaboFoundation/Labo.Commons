@@ -150,4 +150,7 @@
   <data name="EnumUtils_Parse_An_Error_Occurred_While_Parsing_Enum_Value">
     <value xml:space="preserve">An Error Occurred While Parsing Enum Value</value>
   </data>
+  <data name="XmlUtils_AppendAttribute_element_Attributes_is_null">
+    <value xml:space="preserve">element.Attributes is null</value>
+  </data>
 </root>

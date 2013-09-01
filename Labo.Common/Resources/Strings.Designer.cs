@@ -134,6 +134,15 @@ namespace Labo.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to element.Attributes is null.
+        /// </summary>
+        internal static string XmlUtils_AppendAttribute_element_Attributes_is_null {
+            get {
+                return ResourceManager.GetString("XmlUtils_AppendAttribute_element_Attributes_is_null", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to element.OwnerDocument is null.
         /// </summary>
         internal static string XmlUtils_AppendAttribute_element_OwnerDocument_is_null {

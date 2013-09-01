@@ -59,8 +59,10 @@
     <Compile Include="Utils\LinqUtilsFixture.cs" />
     <Compile Include="Utils\ObjectUtilsTestFixture.cs" />
     <Compile Include="Utils\ReflectionUtilsFixture.cs" />
+    <Compile Include="Utils\SerializationUtilsFixture.cs" />
     <Compile Include="Utils\StringUtilsFixture.cs" />
     <Compile Include="Utils\TypeUtilsFixture.cs" />
+    <Compile Include="Utils\XmlUtilsFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Labo.Common\Labo.Common.csproj">
