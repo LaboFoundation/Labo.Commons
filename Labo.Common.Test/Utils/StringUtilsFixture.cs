@@ -455,16 +455,8 @@ namespace Labo.Common.Tests.Utils
 
         [Test, Sequential]
         public void StripHtmlTags(
-            [Values(
-                "<text>xxx</text>",
-                null,
-                ""
-                )]string text,
-            [Values(
-                "xxx",
-                null,
-                ""
-                )]string expectedResult)
+            [Values("<text>xxx</text>", null, "", "<br/>", "<b>name</b>", "name", "a>b", "<a><b>")]string text,
+            [Values( "xxx", null, "", "", "name", "name", "a>b", "")]string expectedResult)
         {
             Assert.AreEqual(expectedResult, StringUtils.StripHtmlTags(text));
         }

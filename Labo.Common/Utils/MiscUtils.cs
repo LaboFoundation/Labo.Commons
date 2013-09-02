@@ -18,7 +18,7 @@ namespace Labo.Common.Utils
         /// <exception cref="ArgumentNullException"></exception>
         public static string GenerateRandomString(int maxSize, string characterSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
         {
-            if (string.IsNullOrEmpty(characterSet))
+            if (string.IsNullOrWhiteSpace(characterSet))
             {
                 throw new ArgumentNullException("characterSet");
             }
