@@ -63,7 +63,6 @@ namespace Labo.Common.Utils
             catch (Exception exception)
             {
                 CoreLevelException coreEx = new CoreLevelException(Strings.EnumUtils_GetNamesAndValues_An_Error_Occurred_While_Getting_Names_and_Values_of_Enum_Type, exception);
-                coreEx.MLCode = "CommonOperationsLibrary.ENUMPARSEERR";
                 coreEx.Data.Add("TYPE", enumType.ToString());
                 coreEx.Data.Add("UNDERLYINGTYPE", conversionType.ToString());
                 throw coreEx;
@@ -115,7 +114,6 @@ namespace Labo.Common.Utils
             catch (Exception exception)
             {
                 CoreLevelException coreEx = new CoreLevelException(Strings.EnumUtils_Parse_An_Error_Occurred_While_Parsing_Enum_Value, exception);
-                coreEx.MLCode = "CommonOperationsLibrary.ENUMPARSEERR";
                 coreEx.Data.Add("VALUE", enumMemberName);
                 coreEx.Data.Add("TYPE", type.ToString());
                 coreEx.Data.Add("IGNORECASE", ignoreCase.ToString(CultureInfo.InvariantCulture));
@@ -187,7 +185,6 @@ namespace Labo.Common.Utils
             catch (Exception exception)
             {
                 CoreLevelException coreEx = new CoreLevelException(Strings.EnumUtils_Parse_An_Error_Occurred_While_Parsing_Enum_Value, exception);
-                coreEx.MLCode = "CommonOperationsLibrary.ENUMPARSEERR";
                 coreEx.Data.Add("VALUE", enumMemberName);
                 coreEx.Data.Add("TYPE", enumType.ToString());
                 coreEx.Data.Add("IGNORECASE", ignoreCase.ToString(CultureInfo.InvariantCulture));

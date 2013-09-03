@@ -10,8 +10,6 @@ namespace Labo.Common.Exceptions
     [Serializable]
     public class CoreLevelException : ApplicationBaseException
     {
-        public string MLCode { get; set; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CoreLevelException"/> class.
         /// </summary>

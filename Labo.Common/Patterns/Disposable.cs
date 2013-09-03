@@ -35,6 +35,9 @@ namespace Labo.Common.Patterns
             m_DisposableObjectCreationStack.Push(new object());
         }
 
+        /// <summary>
+        /// Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.
+        /// </summary>
         ~Disposable()
         {
             Dispose(false);
@@ -55,6 +58,10 @@ namespace Labo.Common.Patterns
             return this;
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
             m_DisposableObjectCreationStack.Pop();

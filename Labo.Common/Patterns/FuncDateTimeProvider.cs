@@ -7,10 +7,30 @@ namespace Labo.Common.Patterns
     /// </summary>
     public sealed class FuncDateTimeProvider : IDateTimeProvider
     {
-        private readonly Func<DateTime> m_FuncDateTime; 
+        private readonly Func<DateTime> m_FuncDateTime;
 
+        /// <summary>
+        /// Gets the UTC now.
+        /// </summary>
+        /// <value>
+        /// The UTC now.
+        /// </value>
         public DateTime UtcNow { get { return DateTime.SpecifyKind(m_FuncDateTime(), DateTimeKind.Utc); } }
+        
+        /// <summary>
+        /// Gets the now.
+        /// </summary>
+        /// <value>
+        /// The now.
+        /// </value>
         public DateTime Now { get { return m_FuncDateTime(); } }
+
+        /// <summary>
+        /// Gets the today.
+        /// </summary>
+        /// <value>
+        /// The today.
+        /// </value>
         public DateTime Today { get { return m_FuncDateTime().Date; } }
 
         /// <summary>
