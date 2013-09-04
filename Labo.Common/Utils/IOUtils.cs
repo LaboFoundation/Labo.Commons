@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using Labo.Common.Culture;
+
 using Microsoft.VisualBasic.FileIO;
 
 namespace Labo.Common.Utils
@@ -19,14 +21,17 @@ namespace Labo.Common.Utils
         /// Reads all text of the stream.
         /// </summary>
         /// <param name="stream">The stream.</param>
+        /// <param name="encoding">The text encoding.</param>
         /// <returns></returns>
-        public static string ReadAllText(Stream stream)
+        public static string ReadAllText(Stream stream, Encoding encoding = null)
         {
             if (stream == null) throw new ArgumentNullException("stream");
 
+            encoding = ObjectUtils.IsNull(encoding, () => EncodingHelper.CurrentCultureEncoding);
+
             string text;
             stream.Seek(0, SeekOrigin.Begin);
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            using (StreamReader reader = new StreamReader(stream, encoding))
             {
                 text = reader.ReadToEnd();
             }
@@ -735,6 +740,33 @@ namespace Labo.Common.Utils
             {
                 Directory.CreateDirectory(folder);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void CreateHiddenFile(string filePath)
+        {
+            if (filePath == null) throw new ArgumentNullException("filePath");
+
+            using (File.Create(filePath))
+            {
+                File.SetAttributes(filePath, FileAttributes.Hidden);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void MakeReadonly(string filePath)
+        {
+            if (filePath == null) throw new ArgumentNullException("filePath");
+
+            File.SetAttributes(filePath, FileAttributes.ReadOnly);
         }
     }
 }

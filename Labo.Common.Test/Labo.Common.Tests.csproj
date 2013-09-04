@@ -56,6 +56,7 @@
     <Compile Include="Utils\DictionaryUtilsFixture.cs" />
     <Compile Include="Utils\EnumUtilsFixture.cs" />
     <Compile Include="Utils\ExceptionUtilsFixture.cs" />
+    <Compile Include="Utils\IOUtilsFixture.cs" />
     <Compile Include="Utils\LinqUtilsFixture.cs" />
     <Compile Include="Utils\MiscUtilsFixture.cs" />
     <Compile Include="Utils\ObjectUtilsTestFixture.cs" />
@@ -75,6 +76,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="_TestFiles\TestFile1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="_TestAssembly\EmbeddedResource.txt" />
     <Content Include="_TestAssembly\Labo.Common.Tests.dll" />
   </ItemGroup>
