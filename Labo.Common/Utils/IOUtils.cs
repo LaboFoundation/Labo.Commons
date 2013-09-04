@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,6 +13,8 @@ using Labo.Common.Culture;
 
 using Microsoft.VisualBasic.FileIO;
 =======
+=======
+>>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
 =======
 >>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
 ﻿// --------------------------------------------------------------------------------------------------------------------
@@ -42,6 +45,9 @@ using Microsoft.VisualBasic.FileIO;
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
+=======
 >>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
 =======
 >>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
@@ -69,10 +75,13 @@ namespace Labo.Common.Utils
         /// <param name="stream">The stream.</param>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         /// <param name="encoding">The text encoding.</param>
         /// <returns></returns>
         public static string ReadAllText(Stream stream, Encoding encoding = null)
 =======
+=======
+>>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
 =======
 >>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
         /// <returns>text.</returns>
@@ -636,6 +645,9 @@ namespace Labo.Common.Utils
                 private set;
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
 
             /// <summary>
             /// Gets the target.
@@ -650,6 +662,7 @@ namespace Labo.Common.Utils
             }
 
             /// <summary>
+<<<<<<< HEAD
 =======
 
             /// <summary>
@@ -665,6 +678,8 @@ namespace Labo.Common.Utils
             }
 
             /// <summary>
+>>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
+=======
 >>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
             /// Initializes a new instance of the <see cref="Folders"/> class.
             /// </summary>
