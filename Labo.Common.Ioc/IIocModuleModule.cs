@@ -5,6 +5,10 @@ namespace Labo.Common.Ioc
     /// </summary>
     public interface IIocModuleModule : IIocContainer
     {
-        void RegisterModule(IIocModule module);
+        /// <summary>
+        /// Registers the module.
+        /// </summary>
+        /// <param name="iocModule">The module.</param>
+        void RegisterModule(IIocModule iocModule);
     }
 }

@@ -1,14 +1,44 @@
-using System;
-
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Singleton.cs" company="Labo">
+//   The MIT License (MIT)
+//   
+//   Copyright (c) 2013 Bora Akgun
+//   
+//   Permission is hereby granted, free of charge, to any person obtaining a copy of
+//   this software and associated documentation files (the "Software"), to deal in
+//   the Software without restriction, including without limitation the rights to
+//   use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//   the Software, and to permit persons to whom the Software is furnished to do so,
+//   subject to the following conditions:
+//   
+//   The above copyright notice and this permission notice shall be included in all
+//   copies or substantial portions of the Software.
+//   
+//   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+//   FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+//   COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+//   IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+//   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// </copyright>
+// <summary>
+//   Generic Singleton Pattern Implementation
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 namespace Labo.Common.Patterns
 {
+    using System;
+
     /// <summary>
     /// Generic Singleton Pattern Implementation
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public static class Singleton<T> where T : class, new()
+    /// <typeparam name="TInstance">Singleton instance class.</typeparam>
+    public static class Singleton<TInstance> where TInstance : class, new()
     {
-        private static readonly Lazy<T> s_Instance = new Lazy<T>(() => new T(), true);
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        private static readonly Lazy<TInstance> s_Instance = new Lazy<TInstance>(() => new TInstance(), true);
 
         /// <summary>
         /// Gets the Singleton instance.
@@ -17,6 +47,12 @@ namespace Labo.Common.Patterns
         /// The instance.
         /// </value>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
-        public static T Instance { get { return s_Instance.Value; } }
+        public static TInstance Instance
+        {
+            get
+            {
+                return s_Instance.Value;
+            }
+        }
     }
 }

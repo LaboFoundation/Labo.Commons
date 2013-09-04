@@ -1,13 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using Labo.Common.Exceptions;
-using Labo.Common.Resources;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="EnumUtils.cs" company="Labo">
+//   The MIT License (MIT)
+//   
+//   Copyright (c) 2013 Bora Akgun
+//   
+//   Permission is hereby granted, free of charge, to any person obtaining a copy of
+//   this software and associated documentation files (the "Software"), to deal in
+//   the Software without restriction, including without limitation the rights to
+//   use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//   the Software, and to permit persons to whom the Software is furnished to do so,
+//   subject to the following conditions:
+//   
+//   The above copyright notice and this permission notice shall be included in all
+//   copies or substantial portions of the Software.
+//   
+//   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+//   FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+//   COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+//   IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+//   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// </copyright>
+// <summary>
+//   Defines the EnumUtils type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Labo.Common.Utils
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
+
+    using Labo.Common.Exceptions;
+    using Labo.Common.Resources;
+
     /// <summary>
-    /// 
+    /// Enumeration utility class.
     /// </summary>
     public static class EnumUtils
     {
@@ -16,8 +46,9 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <typeparam name="TEnum">The type of the enum.</typeparam>
         /// <typeparam name="TUnderlyingType">The type of the underlying type.</typeparam>
-        /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        /// <returns>Names and values dictionary.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static IDictionary<string, TUnderlyingType> GetNamesAndValues<TEnum, TUnderlyingType>()
             where TEnum : struct
         {
@@ -27,12 +58,13 @@ namespace Labo.Common.Utils
         /// <summary>
         /// Gets the names and values.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public static IDictionary<string, ulong> GetNamesAndValues<T>() where T : struct
+        /// <typeparam name="TEnumType">Enum type.</typeparam>
+        /// <returns>Names and values dictionary.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public static IDictionary<string, ulong> GetNamesAndValues<TEnumType>() where TEnumType : struct
         {
-            return GetNamesAndValues<ulong>(typeof(T));
+            return GetNamesAndValues<ulong>(typeof(TEnumType));
         }
 
         /// <summary>
@@ -42,7 +74,8 @@ namespace Labo.Common.Utils
         /// <param name="enumType">Type of the enum.</param>
         /// <exception cref="ArgumentException">Underlying Type Must Be Enum</exception>
         /// <exception cref="ArgumentNullException">enumType cannot be null</exception>
-        /// <returns></returns>
+        /// <returns>Names and values dictionary.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static IDictionary<string, TUnderlyingType> GetNamesAndValues<TUnderlyingType>(Type enumType)
         {
             if (enumType == null) throw new ArgumentNullException("enumType");
@@ -58,6 +91,7 @@ namespace Labo.Common.Utils
                 {
                     dictionary.Add(names[i], (TUnderlyingType)Convert.ChangeType(values.GetValue(i), conversionType, CultureInfo.InvariantCulture));
                 }
+
                 return dictionary;
             }
             catch (Exception exception)
@@ -72,24 +106,26 @@ namespace Labo.Common.Utils
         /// <summary>
         /// Parses the specified enum member name.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TValue">Enum type.</typeparam>
         /// <param name="enumMemberName">Name of the enum member.</param>
-        /// <returns></returns>
-        public static T Parse<T>(string enumMemberName) where T : struct
+        /// <returns>Enum value.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static TValue Parse<TValue>(string enumMemberName) where TValue : struct
         {
-            return Parse<T>(enumMemberName, false);
+            return Parse<TValue>(enumMemberName, false);
         }
 
         /// <summary>
         /// Parses the specified enum member name.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TValue">Enum type.</typeparam>
         /// <param name="enumMemberName">Name of the enum member.</param>
         /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
-        /// <returns></returns>
-        public static T Parse<T>(string enumMemberName, bool ignoreCase) where T : struct
+        /// <returns>Enum value.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static TValue Parse<TValue>(string enumMemberName, bool ignoreCase) where TValue : struct
         {
-            return (T)Parse(typeof(T), enumMemberName, ignoreCase);
+            return (TValue)Parse(typeof(TValue), enumMemberName, ignoreCase);
         }
 
         /// <summary>
@@ -100,7 +136,8 @@ namespace Labo.Common.Utils
         /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
         /// <exception cref="ArgumentNullException">type and enumMemberName cannot be null</exception>
         /// <exception cref="ArgumentException">type argument must be enum type</exception>
-        /// <returns></returns>
+        /// <returns>Enum object.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static object Parse(Type type, string enumMemberName, bool ignoreCase)
         {
             if (type == null) throw new ArgumentNullException("type");
@@ -124,11 +161,12 @@ namespace Labo.Common.Utils
         /// <summary>
         /// Tries to parse the specified type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TValue">Enum value.</typeparam>
         /// <param name="enumMemberName">Name of the enum member.</param>
         /// <param name="value">The value.</param>
-        /// <returns></returns>
-        public static bool TryParse<T>(string enumMemberName, out T value) where T : struct
+        /// <returns><c>true</c> if parses to enum value, otherwise <c>false</c></returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static bool TryParse<TValue>(string enumMemberName, out TValue value) where TValue : struct
         {
             return TryParse(enumMemberName, false, out value);
         }
@@ -136,30 +174,36 @@ namespace Labo.Common.Utils
         /// <summary>
         /// Tries to parse the specified type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TValue">Enum type.</typeparam>
         /// <param name="enumMemberName">Name of the enum member.</param>
         /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
         /// <param name="value">The value.</param>
-        /// <returns></returns>
-        public static bool TryParse<T>(string enumMemberName, bool ignoreCase, out T value) where T : struct
+        /// <returns><c>true</c> if parses to enum value, otherwise <c>false</c></returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static bool TryParse<TValue>(string enumMemberName, bool ignoreCase, out TValue value) where TValue : struct
         {
             object objectValue;
-            bool parsed = TryParse(typeof(T), enumMemberName, ignoreCase, out objectValue);
-            value = objectValue == null ? default(T) : (T)objectValue;
+            bool parsed = TryParse(typeof(TValue), enumMemberName, ignoreCase, out objectValue);
+            value = objectValue == null ? default(TValue) : (TValue)objectValue;
             return parsed;
         }
 
         /// <summary>
-        /// 
+        ///  Tries to parse the specified type.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="enumMemberName"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="value"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
+        /// <param name="enumType">Type of the enum.</param>
+        /// <param name="enumMemberName">Name of the enum member.</param>
+        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
+        /// <param name="value">The value.</param>
+        /// <returns><c>true</c> if parses to enum value, otherwise <c>false</c></returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// enumType
+        /// or
+        /// enumMemberName
+        /// </exception>
+        /// <exception cref="System.ArgumentException">enumType</exception>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
         public static bool TryParse(Type enumType, string enumMemberName, bool ignoreCase, out object value)
         {
             if (enumType == null) throw new ArgumentNullException("enumType");
@@ -179,6 +223,7 @@ namespace Labo.Common.Utils
                         return true;
                     }
                 }
+
                 value = default(object);
                 return false;
             }
