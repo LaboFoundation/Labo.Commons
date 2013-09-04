@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,6 +12,8 @@ using Labo.Common.Culture;
 
 using Microsoft.VisualBasic.FileIO;
 =======
+=======
+>>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IOUtils.cs" company="Labo">
 //   The MIT License (MIT)
@@ -38,6 +41,9 @@ using Microsoft.VisualBasic.FileIO;
 //   Defines the IOUtils type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+<<<<<<< HEAD
+>>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
+=======
 >>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
 
 namespace Labo.Common.Utils
@@ -62,10 +68,13 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="stream">The stream.</param>
 <<<<<<< HEAD
+<<<<<<< HEAD
         /// <param name="encoding">The text encoding.</param>
         /// <returns></returns>
         public static string ReadAllText(Stream stream, Encoding encoding = null)
 =======
+=======
+>>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
         /// <returns>text.</returns>
         public static string ReadAllText(Stream stream)
 >>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
@@ -626,6 +635,7 @@ namespace Labo.Common.Utils
                 get; 
                 private set;
             }
+<<<<<<< HEAD
 
             /// <summary>
             /// Gets the target.
@@ -640,6 +650,22 @@ namespace Labo.Common.Utils
             }
 
             /// <summary>
+=======
+
+            /// <summary>
+            /// Gets the target.
+            /// </summary>
+            /// <value>
+            /// The target.
+            /// </value>
+            public string Target
+            {
+                get; 
+                private set;
+            }
+
+            /// <summary>
+>>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
             /// Initializes a new instance of the <see cref="Folders"/> class.
             /// </summary>
             /// <param name="source">The source.</param>
