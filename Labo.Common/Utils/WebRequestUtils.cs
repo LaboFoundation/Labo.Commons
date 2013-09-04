@@ -47,7 +47,7 @@ namespace Labo.Common.Utils
         /// <param name="uri">The URI.</param>
         /// <param name="method">The method.</param>
         /// <param name="headers">The headers.</param>
-        /// <returns></returns>
+        /// <returns>response data.</returns>
         public static string GetData(Uri uri, string method = "GET", NameValueCollection headers = null)
         {
             WebRequest request = WebRequest.Create(uri);
@@ -75,7 +75,7 @@ namespace Labo.Common.Utils
         /// <param name="url">The URL.</param>
         /// <param name="method">The method.</param>
         /// <param name="headers">The headers.</param>
-        /// <returns></returns>
+        /// <returns>response data.</returns>
         public static string GetData(string url, string method = "GET", NameValueCollection headers = null)
         {
             return GetData(new Uri(url), method, headers);
@@ -86,7 +86,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="uri">The URI.</param>
         /// <param name="data">The data.</param>
-        /// <returns></returns>
+        /// <returns>response data.</returns>
         public static string PostData(Uri uri, NameValueCollection data)
         {
             using (WebClient client = new WebClient())
@@ -103,7 +103,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="url">The URL.</param>
         /// <param name="data">The data.</param>
-        /// <returns></returns>
+        /// <returns>response data.</returns>
         public static string PostData(string url, NameValueCollection data)
         {
             return PostData(new Uri(url), data);
@@ -114,7 +114,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="uri">The URI.</param>
         /// <param name="data">The data.</param>
-        /// <returns></returns>
+        /// <returns>response data.</returns>
         public static string PostString(Uri uri, string data)
         {
             using (WebClient client = new WebClient())
@@ -129,7 +129,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="url">The URL.</param>
         /// <param name="data">The data.</param>
-        /// <returns></returns>
+        /// <returns>response data.</returns>
         public static string PostString(string url, string data)
         {
             return PostString(new Uri(url), data);
@@ -139,7 +139,7 @@ namespace Labo.Common.Utils
         /// Downloads the data.
         /// </summary>
         /// <param name="uri">The URI.</param>
-        /// <returns></returns>
+        /// <returns>data as byte array.</returns>
         public static byte[] DownloadData(Uri uri)
         {
             try
@@ -161,7 +161,7 @@ namespace Labo.Common.Utils
         /// Downloads the data.
         /// </summary>
         /// <param name="url">The URL.</param>
-        /// <returns></returns>
+        /// <returns>data as byte array.</returns>
         public static byte[] DownloadData(string url)
         {
             return DownloadData(new Uri(url));

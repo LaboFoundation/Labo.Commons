@@ -48,7 +48,7 @@ namespace Labo.Common.Utils
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="defaultValue">The default value.</param>
         /// <param name="culture">The culture.</param>
-        /// <returns></returns>
+        /// <returns>The node attribute value.</returns>
         public static TValue GetNodeAttributeValue<TValue>(XmlNode node, string propertyName, TValue defaultValue, CultureInfo culture = null)
         {
             culture = CultureUtils.GetCurrentCultureIfNull(culture);
@@ -69,8 +69,7 @@ namespace Labo.Common.Utils
         /// <param name="node">The node.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="culture">The culture.</param>
-        /// <returns></returns>
-        /// <exception cref="XmlUtilsException"></exception>
+        /// <returns>The node attribute value.</returns>
         public static TValue GetNodeAttributeValue<TValue>(XmlNode node, string propertyName, CultureInfo culture = null)
         {
             if (node == null) throw new XmlUtilsException(Strings.XmlUtils_GetNodeProperty_Error);
@@ -86,7 +85,7 @@ namespace Labo.Common.Utils
         /// <param name="node">The node.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="defaultValue">The default value.</param>
-        /// <returns></returns>
+        /// <returns>The node attribute value.</returns>
         public static string GetNodeAttributeValue(XmlNode node, string propertyName, string defaultValue)
         {
             string value;
@@ -98,21 +97,19 @@ namespace Labo.Common.Utils
             return defaultValue;
         }
 
-
         /// <summary>
         /// Appends the attribute.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
-        /// <returns></returns>
+        /// <returns>appended attribute.</returns>
         /// <exception cref="System.ArgumentNullException">
         /// element
         /// or
         /// value
         /// </exception>
-        /// <exception cref="XmlUtilsException">
-        /// </exception>
+        /// <exception cref="XmlUtilsException">element.OwnerDocument and element.Attributes connot be null.</exception>
         public static XmlAttribute AppendAttribute(XmlNode element, string name, string value)
         {
             if (element == null) throw new ArgumentNullException("element");
@@ -160,7 +157,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="xmlDocument">The XML document.</param>
         /// <param name="childNodeName">Name of the child node.</param>
-        /// <returns></returns>
+        /// <returns>Appended node.</returns>
         /// <exception cref="System.ArgumentNullException">
         /// xmlDocument
         /// or
@@ -182,7 +179,7 @@ namespace Labo.Common.Utils
         /// <param name="node">The node.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="value">The value.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if finds attribute value else <c>false</c>.</returns>
         /// <exception cref="System.ArgumentNullException">
         /// node
         /// or

@@ -113,7 +113,7 @@ namespace Labo.Common.Utils
             if (resourceName == null) throw new ArgumentNullException("resourceName");
             if (encoding == null) throw new ArgumentNullException("encoding");
 
-            string text = null;
+            string text;
             StreamReader streamReader = null;
             try
             {
@@ -139,7 +139,6 @@ namespace Labo.Common.Utils
                 if (streamReader != null)
                 {
                     ((IDisposable)streamReader).Dispose();
-                    streamReader = null;
                 }
             }
 

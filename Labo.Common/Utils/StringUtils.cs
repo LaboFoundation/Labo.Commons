@@ -41,10 +41,14 @@ namespace Labo.Common.Utils
     public static class StringUtils
     {
         /// <summary>
-        /// 
+        /// The BR STRING
         /// </summary>
         public const string BR_STRING = "<br />";
-        private static readonly string[] s_NewLineStrings = new[] { "\r\n", "\n\r", "\n", "\r" };
+
+        /// <summary>
+        /// The new line strings
+        /// </summary>
+        private static readonly string[] s_NewLineStrings = { "\r\n", "\n\r", "\n", "\r" };
 
         /// <summary>
         ///  Determines whether two specified <see cref="T:System.String"/> objects have the same value using ordinal ignore case comparison
@@ -87,7 +91,7 @@ namespace Labo.Common.Utils
         /// Converts the new line to br.
         /// </summary>
         /// <param name="target">The target.</param>
-        /// <returns></returns>
+        /// <returns>converted string.</returns>
         public static string ConvertNewLineToBr(string target)
         {
             return ReplaceNewLine(target, BR_STRING);
@@ -154,7 +158,7 @@ namespace Labo.Common.Utils
         /// <param name="length">The length.</param>
         /// <param name="postText">The post text.</param>
         /// <param name="preText">The pre text</param>
-        /// <returns></returns>
+        /// <returns>truncated string.</returns>
         public static string Truncate(string @string, int length, string postText = null, string preText = null)
         {
             return Truncate(@string, 0, length, postText, preText);
@@ -168,7 +172,7 @@ namespace Labo.Common.Utils
         /// <param name="length">The length.</param>
         /// <param name="postText">The post text.</param>
         /// <param name="preText">The pre text</param>
-        /// <returns></returns>
+        /// <returns>truncated string.</returns>
         public static string Truncate(string target, int startIndex, int length, string postText = null, string preText = null)
         {
             if (length < 0) throw new ArgumentOutOfRangeException("length");
@@ -187,6 +191,7 @@ namespace Labo.Common.Utils
             {
                 postText = string.Empty;
             }
+
             if (startIndex > 0 && preText != null)
             {
                 return string.Concat(preText, target.Substring(startIndex, truncateLength), postText);                
@@ -208,6 +213,7 @@ namespace Labo.Common.Utils
         /// or
         /// func
         /// </exception>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static string JoinToString<TItem>(IEnumerable<TItem> items, Func<TItem, string> func, string separator = null)
         {
             if (items == null) throw new ArgumentNullException("items");
@@ -219,6 +225,7 @@ namespace Labo.Common.Utils
                 stringBuilder.Append(func(item));
                 stringBuilder.Append(separator);
             }
+
             return GetJoinedStringResult(stringBuilder, separator);
         }
 
@@ -228,7 +235,8 @@ namespace Labo.Common.Utils
         /// <param name="strings">The strings.</param>
         /// <param name="separator">The separator.</param>
         /// <param name="func">The func.</param>
-        /// <returns></returns>
+        /// <returns>joined string.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static string Join(IEnumerable<string> strings, string separator = null, Func<string, string> func = null)
         {
             if (strings == null) throw new ArgumentNullException("strings");
@@ -248,7 +256,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="string">The string.</param>
         /// <param name="culture">The culture.</param>
-        /// <returns></returns>
+        /// <returns>capitalized string.</returns>
         public static string Capitalize(string @string, CultureInfo culture = null)
         {
             if (string.IsNullOrEmpty(@string))
@@ -333,7 +341,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="length">The length.</param>
-        /// <returns></returns>
+        /// <returns>string.</returns>
         public static string Left(string target, int length)
         {
             if (length < 0)
@@ -371,7 +379,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="length">The length.</param>
-        /// <returns></returns>
+        /// <returns>string.</returns>
         public static string Right(string target, int length)
         {
             if (length < 0)
@@ -391,7 +399,8 @@ namespace Labo.Common.Utils
         /// Converts the first character of each word to Uppercase. Example: "the lazy dog" returns "The Lazy Dog"
         /// </summary>
         /// <param name="text">The text to convert to sentence case</param>
-        /// <param name="culture"> </param>
+        /// <param name="culture">The culture.</param>
+        /// <returns>title cased string.</returns>
         public static string ToTitleCase(string text, CultureInfo culture = null)
         {
             if (text == null) throw new ArgumentNullException("text");
@@ -400,8 +409,12 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// Converts the first character of each word to Uppercase. Example: "the lazy dog" returns "The Lazy Dog"
+        /// Converts the first character of each word to Uppercase. Example: "the lazy dog" returns "The Lazy Dog"ç
         /// </summary>
+        /// <param name="words">The words.</param>
+        /// <param name="culture">The culture.</param>
+        /// <returns>title cased string.</returns>
+        /// <exception cref="System.ArgumentNullException">words</exception>
         public static string ToTitleCase(string[] words, CultureInfo culture = null)
         {
             if (words == null) throw new ArgumentNullException("words");
@@ -426,13 +439,14 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        ///  Pad the left side of a string with characters to make the total length.
+        /// Pad the left side of a string with characters to make the total length.
         /// </summary>
-        /// <param name="src"></param>
-        /// <param name="c"></param>
-        /// <param name="totalLength"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="src">The source string.</param>
+        /// <param name="c">The character.</param>
+        /// <param name="totalLength">The total length.</param>
+        /// <returns>string.</returns>
+        /// <exception cref="System.ArgumentNullException">src</exception>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static string PadLeft(string src, char c, int totalLength)
         {
             if (src == null) throw new ArgumentNullException("src");
@@ -441,6 +455,7 @@ namespace Labo.Common.Utils
             {
                 return src;
             }
+
             return new string(c, totalLength - src.Length) + src;
         }
 
@@ -452,6 +467,7 @@ namespace Labo.Common.Utils
         /// <param name="totalLength">The total length.</param>
         /// <returns>string.</returns>
         /// <exception cref="System.ArgumentNullException">src</exception>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static string PadRight(string src, char c, int totalLength)
         {
             if (src == null) throw new ArgumentNullException("src");
@@ -523,6 +539,7 @@ namespace Labo.Common.Utils
                     }
                 }
             }
+
             return sb.ToString();
         }
 
@@ -573,9 +590,8 @@ namespace Labo.Common.Utils
                     case '\t':
                         sb.Append("\\t");
                         break;
-
                     default:
-                        int i = (int)c;
+                        int i = c;
                         if (i < 32 || i > 127)
                         {
                             sb.AppendFormat("\\u{0:X04}", i);
@@ -604,7 +620,7 @@ namespace Labo.Common.Utils
         /// <returns>striped html.</returns>
         public static string StripHtmlTags(string source)
         {
-            if(string.IsNullOrEmpty(source))
+            if (string.IsNullOrEmpty(source))
             {
                 return source;
             }
@@ -648,6 +664,7 @@ namespace Labo.Common.Utils
             {
                 text = text.Replace(keyValuePair.Key, keyValuePair.Value);
             }
+
             return text;
         }
 

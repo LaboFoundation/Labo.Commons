@@ -30,17 +30,33 @@ namespace Labo.Common.Patterns
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
-    /// 
+    /// Disposable object class.
     /// </summary>
-    /// <typeparam name="TInstance"></typeparam>
+    /// <typeparam name="TInstance">Disposable instance.</typeparam>
     public sealed class Disposable<TInstance> : IDisposable
         where TInstance : class, IDisposable
     {
+        /// <summary>
+        /// The disposable instance creator.
+        /// </summary>
         private Func<TInstance> m_DisposableCreator;
+
+        /// <summary>
+        /// The disposable object instance.
+        /// </summary>
         private TInstance m_DisposableInstance;
+
+        /// <summary>
+        /// The disposable object creation stack.
+        /// </summary>
         private Stack<object> m_DisposableObjectCreationStack = new Stack<object>();
+
+        /// <summary>
+        /// The disposed flag.
+        /// </summary>
         private bool m_Disposed;
 
         /// <summary>
@@ -76,6 +92,7 @@ namespace Labo.Common.Patterns
         /// <summary>
         /// Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.
         /// </summary>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1643:DestructorSummaryDocumentationMustBeginWithStandardText", Justification = "Reviewed. Suppression is OK here.")]
         ~Disposable()
         {
             Dispose(false);

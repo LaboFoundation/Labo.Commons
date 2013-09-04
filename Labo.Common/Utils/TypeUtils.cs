@@ -139,7 +139,7 @@ namespace Labo.Common.Utils
         /// Gets the type of the object.
         /// </summary>
         /// <param name="object">The @object.</param>
-        /// <returns></returns>
+        /// <returns>type.</returns>
         public static Type GetType(object @object)
         {
             if (@object == null)
@@ -153,9 +153,9 @@ namespace Labo.Common.Utils
         /// <summary>
         /// Gets the type.
         /// </summary>
-        /// <typeparam name="TType"></typeparam>
+        /// <typeparam name="TType">The type.</typeparam>
         /// <param name="object">The object.</param>
-        /// <returns></returns>
+        /// <returns>type.</returns>
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "object")]
         public static Type GetType<TType>(TType @object)
         {
@@ -166,7 +166,7 @@ namespace Labo.Common.Utils
         /// Gets the default value of the object.
         /// </summary>
         /// <param name="object">The @object.</param>
-        /// <returns></returns>
+        /// <returns>default value.</returns>
         public static object GetDefaultValue(object @object)
         {
             Type type = GetType(@object);
@@ -177,7 +177,7 @@ namespace Labo.Common.Utils
         /// Gets the default value of the type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns></returns>
+        /// <returns>default value.</returns>
         public static object GetDefaultValueOfType(Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
