@@ -144,6 +144,7 @@ namespace Labo.Common.Utils
         /// <param name="type">The type.</param>
         /// <param name="culture">The culture.</param>
         /// <returns>Converted value.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         public static object ChangeType(object value, Type type, CultureInfo culture)
         {
             if (type == null)
