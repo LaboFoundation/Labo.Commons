@@ -32,17 +32,18 @@ namespace Labo.Common.Utils
     using System.Globalization;
 
     /// <summary>
-    /// 
+    /// Object utility class.
     /// </summary>
     public static class ObjectUtils
     {
         /// <summary>
-        /// 
+        /// Determines whether the specified object is null.
         /// </summary>
-        /// <param name="object"></param>
-        /// <param name="defaultValueCreator"></param>
-        /// <typeparam name="TObject"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="object">The object.</param>
+        /// <param name="defaultValueCreator">The default value creator.</param>
+        /// <returns>object.</returns>
+        /// <exception cref="System.ArgumentNullException">defaultValueCreator</exception>
         public static TObject IsNull<TObject>(TObject @object, Func<TObject> defaultValueCreator)
             where TObject : class
         {
@@ -56,22 +57,23 @@ namespace Labo.Common.Utils
             return @object;
         }
 
+
         /// <summary>
-        /// 
+        /// Casts the specified object.
         /// </summary>
-        /// <param name="object"></param>
-        /// <typeparam name="TObject"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="object">The object.</param>
+        /// <returns>casted object.</returns>
         public static TObject Cast<TObject>(object @object)
         {
-            return (TObject) @object;
+            return (TObject)@object;
         }
 
         /// <summary>
-        /// 
+        /// To the string invariant.
         /// </summary>
-        /// <param name="object"></param>
-        /// <returns></returns>
+        /// <param name="object">The object.</param>
+        /// <returns>string</returns>
         public static string ToStringInvariant(object @object)
         {
             return Convert.ToString(@object, CultureInfo.InvariantCulture);

@@ -99,23 +99,23 @@ namespace Labo.Common.Utils
         /// <typeparam name="TItem">The type of the item.</typeparam>
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <param name="list">The list.</param>
-        /// <param name="func">The project function.</param>
+        /// <param name="projectionFunction">The project function.</param>
         /// <returns>Projected object.</returns>
         /// <exception cref="System.ArgumentNullException">
         /// list
         /// or
-        /// func
+        /// projectionFunction
         /// </exception>
-        public static TKey[] Project<TItem, TKey>(IList<TItem> list, Func<TItem, TKey> func)
+        public static TKey[] Project<TItem, TKey>(IList<TItem> list, Func<TItem, TKey> projectionFunction)
         {
             if (list == null) throw new ArgumentNullException("list");
-            if (func == null) throw new ArgumentNullException("func");
+            if (projectionFunction == null) throw new ArgumentNullException("projectionFunction");
 
             int count = list.Count;
             TKey[] localArray = new TKey[count];
             for (int i = 0; i < count; i++)
             {
-                localArray[i] = func(list[i]);
+                localArray[i] = projectionFunction(list[i]);
             }
 
             return localArray;

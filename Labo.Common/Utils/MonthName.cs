@@ -31,19 +31,47 @@ namespace Labo.Common.Utils
     using System;
 
     /// <summary>
-    /// 
+    /// Month name struct.
     /// </summary>
     public struct MonthName : IEquatable<MonthName>
     {
         /// <summary>
-        /// 
+        /// Gets or sets the number.
         /// </summary>
+        /// <value>
+        /// The number.
+        /// </value>
         public int Number { get; set; }
 
         /// <summary>
-        /// 
+        /// Gets or sets the name.
         /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
         public string Name { get; set; }
+
+        /// <summary>
+        ///  Determines whether two specified instances of <see cref="T:Labo.Common.Utils.MonthName"/> are equal.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns> true if <paramref name="left"/> and <paramref name="right"/> represent the same MonthName; otherwise, false.</returns>
+        public static bool operator ==(MonthName left, MonthName right)
+        {
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// Determines whether two specified instances of <see cref="T:Labo.Common.Utils.MonthName"/> are not equal.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns> true if <paramref name="left"/> and <paramref name="right"/> do not represent the same MonthName; otherwise, false.</returns>
+        public static bool operator !=(MonthName left, MonthName right)
+        {
+            return !left.Equals(right);
+        }
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -73,28 +101,6 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static bool operator ==(MonthName left, MonthName right)
-        {
-            return left.Equals(right);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static bool operator !=(MonthName left, MonthName right)
-        {
-            return !left.Equals(right);
-        }
-
-        /// <summary>
         /// Indicates whether this instance and a specified object are equal.
         /// </summary>
         /// <returns>
@@ -104,7 +110,7 @@ namespace Labo.Common.Utils
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is MonthName && Equals((MonthName) obj);
+            return obj is MonthName && Equals((MonthName)obj);
         }
     }
 }

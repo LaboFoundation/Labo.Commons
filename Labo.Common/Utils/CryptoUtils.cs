@@ -34,15 +34,16 @@ namespace Labo.Common.Utils
     using System.Text;
 
     /// <summary>
-    /// 
+    /// Cryptography utility class.
     /// </summary>
     public static class CryptoUtils
     {
         /// <summary>
-        /// 
+        /// Encrypts the string to MD5 hash.
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">The value.</param>
+        /// <returns>MD5 hash.</returns>
+        /// <exception cref="System.ArgumentNullException">value</exception>
         public static string EncryptMd5(string value)
         {
             if (value == null) throw new ArgumentNullException("value");
@@ -56,10 +57,11 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Encrypts the MD5 as hex string.
         /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
+        /// <param name="input">The input.</param>
+        /// <returns>MD5 hash as Hex format.</returns>
+        /// <exception cref="System.ArgumentNullException">input</exception>
         public static string EncryptMd5AsHexString(string input)
         {
             if (input == null) throw new ArgumentNullException("input");
@@ -76,6 +78,7 @@ namespace Labo.Common.Utils
                 {
                     sb.Append(hash[i].ToString("x2", CultureInfo.InvariantCulture));
                 }
+
                 return sb.ToString();
             }
         }

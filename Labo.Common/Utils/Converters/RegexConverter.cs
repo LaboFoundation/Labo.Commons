@@ -34,7 +34,7 @@ namespace Labo.Common.Utils.Converters
     using System.Text.RegularExpressions;
 
     /// <summary>
-    /// 
+    /// Regex type converter class.
     /// </summary>
     public class RegexConverter : TypeConverter
     {

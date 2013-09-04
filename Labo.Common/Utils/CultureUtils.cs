@@ -31,15 +31,15 @@ namespace Labo.Common.Utils
     using System.Globalization;
 
     /// <summary>
-    /// 
+    /// Culture utility class.
     /// </summary>
     public static class CultureUtils
     {
         /// <summary>
-        /// 
+        /// Gets the current culture if the specified culture is null.
         /// </summary>
-        /// <param name="culture"></param>
-        /// <returns></returns>
+        /// <param name="culture">The culture.</param>
+        /// <returns>CultureInfo</returns>
         public static CultureInfo GetCurrentCultureIfNull(CultureInfo culture)
         {
             return ObjectUtils.IsNull(culture, () => CultureInfo.CurrentCulture);

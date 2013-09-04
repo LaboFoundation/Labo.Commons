@@ -29,6 +29,7 @@
 namespace Labo.Common.Patterns
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Date time provider function class.
@@ -87,6 +88,7 @@ namespace Labo.Common.Patterns
         /// </summary>
         /// <param name="funcDateTime">The date time function.</param>
         /// <exception cref="System.ArgumentNullException">funcDateTime</exception>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public FuncDateTimeProvider(Func<DateTime> funcDateTime)
         {
             if (funcDateTime == null) throw new ArgumentNullException("funcDateTime");

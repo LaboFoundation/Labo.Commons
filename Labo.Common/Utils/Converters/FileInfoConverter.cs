@@ -34,7 +34,7 @@ namespace Labo.Common.Utils.Converters
     using System.IO;
 
     /// <summary>
-    /// 
+    /// File info type converter class.
     /// </summary>
     public class FileInfoConverter : TypeConverter
     {
@@ -52,6 +52,7 @@ namespace Labo.Common.Utils.Converters
             {
                 return base.CanConvertFrom(context, sourceType);
             }
+
             return true;
         }
 

@@ -37,7 +37,7 @@ namespace Labo.Common.Patterns
     internal class LazyFactoryInstanceCreator<TInstance> : IFactoryInstanceCreator<TInstance>
     {
         /// <summary>
-        /// The lazy instance crator.
+        /// The lazy instance creator.
         /// </summary>
         private readonly Lazy<TInstance> m_Lazy;
 

@@ -29,9 +29,10 @@
 namespace Labo.Common.Utils
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
-    /// 
+    /// Type utility class.
     /// </summary>
     public static class TypeUtils
     {
@@ -42,6 +43,7 @@ namespace Labo.Common.Utils
         /// <returns>
         ///   <c>true</c> if [is number type] [the specified @object]; otherwise, <c>false</c>.
         /// </returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static bool IsNumberType(object @object)
         {
             return IsNumberType(GetType(@object));
@@ -54,6 +56,7 @@ namespace Labo.Common.Utils
         /// <returns>
         ///   <c>true</c> if [is numeric type] [the specified @object]; otherwise, <c>false</c>.
         /// </returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static bool IsNumericType(object @object)
         {
             return IsNumericType(GetType(@object));
@@ -63,10 +66,11 @@ namespace Labo.Common.Utils
         /// Determines whether [is number type] (long, int, short or byte).
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <param name="includeNullables"> </param>
+        /// <param name="includeNullables">Include nullable types.</param>
         /// <returns>
         ///   <c>true</c> if [is number type] [the specified type]; otherwise, <c>false</c>.
         /// </returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static bool IsNumberType(Type type, bool includeNullables = false)
         {
             if (type == null)
@@ -86,10 +90,11 @@ namespace Labo.Common.Utils
         /// Determines whether [is numeric type] (long, int, short, byte, float, double or decimal).
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <param name="includeNullables"> </param>
+        /// <param name="includeNullables">Include nullable types.</param>
         /// <returns>
         ///   <c>true</c> if [is numeric type] [the specified type]; otherwise, <c>false</c>.
         /// </returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static bool IsNumericType(Type type, bool includeNullables = false)
         {
             if (type == null)
@@ -110,10 +115,11 @@ namespace Labo.Common.Utils
         /// Determines whether [is floating point number type] [the specified type].
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <param name="includeNullables"> </param>
+        /// <param name="includeNullables">Include nullable types.</param>
         /// <returns>
         ///   <c>true</c> if [is floating point number type] [the specified type]; otherwise, <c>false</c>.
         /// </returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static bool IsFloatingPointNumberType(Type type, bool includeNullables = false)
         {
             if (type == null)
@@ -147,13 +153,13 @@ namespace Labo.Common.Utils
         /// <summary>
         /// Gets the type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TType"></typeparam>
         /// <param name="object">The object.</param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "object")]
-        public static Type GetType<T>(T @object)
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "object")]
+        public static Type GetType<TType>(TType @object)
         {
-            return typeof(T);
+            return typeof(TType);
         }
 
         /// <summary>
@@ -180,6 +186,7 @@ namespace Labo.Common.Utils
             {
                 return Activator.CreateInstance(type);
             }
+
             return null;
         }
 
@@ -190,11 +197,12 @@ namespace Labo.Common.Utils
         /// <returns>
         ///   <c>true</c> if the specified type is nullable; otherwise, <c>false</c>.
         /// </returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static bool IsNullable(Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
 
-            return (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>));
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
     }
 }

@@ -31,19 +31,47 @@ namespace Labo.Common.Utils
     using System;
 
     /// <summary>
-    /// 
+    /// Day name struct.
     /// </summary>
     public struct DayName : IEquatable<DayName>
     {
         /// <summary>
-        /// 
+        /// Gets or sets the day number.
         /// </summary>
+        /// <value>
+        /// The day number.
+        /// </value>
         public int Number { get; set; }
 
         /// <summary>
-        /// 
+        /// Gets or sets the name.
         /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
         public string Name { get; set; }
+
+        /// <summary>
+        ///  Determines whether two specified instances of <see cref="T:Labo.Common.Utils.DayName"/> are equal.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns> true if <paramref name="left"/> and <paramref name="right"/> represent the same DayName; otherwise, false.</returns>
+        public static bool operator ==(DayName left, DayName right)
+        {
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// Determines whether two specified instances of <see cref="T:Labo.Common.Utils.DayName"/> are not equal.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns> true if <paramref name="left"/> and <paramref name="right"/> do not represent the same DayName; otherwise, false.</returns>
+        public static bool operator !=(DayName left, DayName right)
+        {
+            return !left.Equals(right);
+        }
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -70,28 +98,6 @@ namespace Labo.Common.Utils
             {
                 return (Number * 397) ^ (Name != null ? Name.GetHashCode() : 0);
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static bool operator ==(DayName left, DayName right)
-        {
-            return left.Equals(right);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static bool operator !=(DayName left, DayName right)
-        {
-            return !left.Equals(right);
         }
 
         /// <summary>

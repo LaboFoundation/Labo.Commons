@@ -30,6 +30,7 @@ namespace Labo.Common.Utils
 {
     using System;
     using System.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Security;
@@ -42,7 +43,7 @@ namespace Labo.Common.Utils
     using Labo.Common.Utils.Exceptions;
 
     /// <summary>
-    /// 
+    /// Convert utility class.
     /// </summary>
     public static class ConvertUtils
     {
@@ -58,24 +59,38 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// Changes the type of the value.
+        /// Registers the type converter.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        public static T ChangeType<T>(object value)
+        /// <typeparam name="TValue">The type of the Value.</typeparam>
+        /// <typeparam name="TConverter">The type of the Converter.</typeparam>
+        /// CA2135 violation - the LinkDemand should be removed, and the method marked [SecurityCritical] instead
+        [EnvironmentPermission(SecurityAction.Demand, Unrestricted = true)]
+        [SecurityCritical]
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public static void RegisterTypeConverter<TValue, TConverter>() where TConverter : TypeConverter
         {
-            return (T)ChangeType(value, typeof(T), Thread.CurrentThread.CurrentCulture);
+            TypeDescriptor.AddAttributes(typeof(TValue), new Attribute[] { new TypeConverterAttribute(typeof(TConverter)) });
         }
 
         /// <summary>
         /// Changes the type of the value.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TValue">Type to convert value.</typeparam>
+        /// <param name="value">The value.</param>
+        /// <returns>Converted value.</returns>
+        public static TValue ChangeType<TValue>(object value)
+        {
+            return (TValue)ChangeType(value, typeof(TValue), Thread.CurrentThread.CurrentCulture);
+        }
+
+        /// <summary>
+        /// Changes the type of the value.
+        /// </summary>
+        /// <typeparam name="TValue">Type to convert value.</typeparam>
         /// <param name="value">The value.</param>
         /// <param name="defaultValue">The default value.</param>
-        /// <returns></returns>
-        public static T ChangeType<T>(object value, T defaultValue)
+        /// <returns>Converted value.</returns>
+        public static TValue ChangeType<TValue>(object value, TValue defaultValue)
         {
             return ChangeType(value, defaultValue, Thread.CurrentThread.CurrentCulture);
         }
@@ -83,31 +98,32 @@ namespace Labo.Common.Utils
         /// <summary>
         /// Changes the type of the value.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TValue">Type to convert value.</typeparam>
         /// <param name="value">The value.</param>
         /// <param name="defaultValue">The default value.</param>
         /// <param name="culture">The culture.</param>
-        /// <returns></returns>
-        public static T ChangeType<T>(object value, T defaultValue, CultureInfo culture)
+        /// <returns>Converted value.</returns>
+        public static TValue ChangeType<TValue>(object value, TValue defaultValue, CultureInfo culture)
         {
-            object changed = ChangeType(value, typeof(T), culture);
+            object changed = ChangeType(value, typeof(TValue), culture);
             if (changed == null)
             {
                 return defaultValue;
             }
-            return (T)changed;
+
+            return (TValue)changed;
         }
 
         /// <summary>
         /// Changes the type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TValue">Type to convert value.</typeparam>
         /// <param name="value">The value.</param>
         /// <param name="culture">The culture.</param>
-        /// <returns></returns>
-        public static T ChangeType<T>(object value, CultureInfo culture)
+        /// <returns>Converted value.</returns>
+        public static TValue ChangeType<TValue>(object value, CultureInfo culture)
         {
-            return (T)ChangeType(value, typeof(T), culture);
+            return (TValue)ChangeType(value, typeof(TValue), culture);
         }
 
         /// <summary>
@@ -115,7 +131,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="type">The type.</param>
-        /// <returns></returns>
+        /// <returns>Converted value.</returns>
         public static object ChangeType(object value, Type type)
         {
             return ChangeType(value, type, Thread.CurrentThread.CurrentCulture);
@@ -127,8 +143,7 @@ namespace Labo.Common.Utils
         /// <param name="value">The value.</param>
         /// <param name="type">The type.</param>
         /// <param name="culture">The culture.</param>
-        /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
+        /// <returns>Converted value.</returns>
         public static object ChangeType(object value, Type type, CultureInfo culture)
         {
             if (type == null)
@@ -147,12 +162,14 @@ namespace Labo.Common.Utils
                 {
                     return Convert.ToString(value, culture);
                 }
+
                 bool isValueNull = value == null;
                 Type valueType = isValueNull ? null : value.GetType();
                 if ((type == valueType) || (type == typeof(object)))
                 {
                     return value;
                 }
+
                 bool convertToNullableBoolean = type == typeof(bool?);
                 if (type == typeof(bool) || convertToNullableBoolean)
                 {
@@ -197,6 +214,15 @@ namespace Labo.Common.Utils
             }
         }
 
+        /// <summary>
+        /// Tries the convert to boolean.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="valueType">Type of the value.</param>
+        /// <param name="convertToNullableBoolean">if set to <c>true</c> [convert to nullable boolean].</param>
+        /// <param name="result">The result.</param>
+        /// <returns><c>true</c> if value can be converted to boolean.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         private static bool TryConvertToBoolean(object value, Type valueType, bool convertToNullableBoolean, out bool? result)
         {
             if (value == null)
@@ -204,6 +230,7 @@ namespace Labo.Common.Utils
                 result = new bool?();
                 return true;
             }
+
             if (valueType == typeof(string))
             {
                 if (value.Equals("1") || value.Equals("on") || value.Equals("yes"))
@@ -211,11 +238,13 @@ namespace Labo.Common.Utils
                     result = true;
                     return true;
                 }
+
                 if (value.Equals("0") || value.Equals("no"))
                 {
                     result = false;
                     return true;
                 }
+
                 if (value.Equals(string.Empty))
                 {
                     result = convertToNullableBoolean ? new bool?() : false;
@@ -229,16 +258,25 @@ namespace Labo.Common.Utils
                     result = true;
                     return true;
                 }
+
                 if (0.Equals(value))
                 {
                     result = false;
                     return true;                    
                 }
             }
+
             result = false;
             return false;
         }
 
+        /// <summary>
+        /// Tries the convert by IConvertible interface.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="culture">The culture.</param>
+        /// <returns>Converted value.</returns>
         private static object TryConvertByIConvertible(object value, Type type, CultureInfo culture)
         {
             IConvertible convertible = value as IConvertible;
@@ -318,6 +356,14 @@ namespace Labo.Common.Utils
             throw GetConversionException(value, type, culture);
         }
 
+        /// <summary>
+        /// Gets the conversion exception.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="culture">The culture.</param>
+        /// <param name="exception">The exception.</param>
+        /// <returns>ConversionException</returns>
         private static ConversionException GetConversionException(object value, Type type, CultureInfo culture, Exception exception = null)
         {
             string errorMessage = Strings.ConvertUtils_GetConversionException_An_Error_Occurred_While_Changing_Value;
@@ -326,20 +372,6 @@ namespace Labo.Common.Utils
             conversionEx.Data.Add("TYPE", type.ToString());
             conversionEx.Data.Add("CULTURE", culture.Name);
             return conversionEx;
-        }
-
-        /// <summary>
-        /// Registers the type converter.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TC">The type of the C.</typeparam>
-        // CA2135 violation - the LinkDemand should be removed, and the method marked [SecurityCritical] instead
-        [EnvironmentPermission(SecurityAction.Demand, Unrestricted = true)]
-        [SecurityCritical]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public static void RegisterTypeConverter<T, TC>() where TC : TypeConverter
-        {
-            TypeDescriptor.AddAttributes(typeof(T), new Attribute[] { new TypeConverterAttribute(typeof(TC)) });
         }
     }
 }

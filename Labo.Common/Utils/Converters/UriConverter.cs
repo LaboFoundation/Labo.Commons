@@ -33,7 +33,7 @@ namespace Labo.Common.Utils.Converters
     using System.Globalization;
 
     /// <summary>
-    /// 
+    /// Uri type converter class.
     /// </summary>
     public class UriConverter : TypeConverter
     {
@@ -51,6 +51,7 @@ namespace Labo.Common.Utils.Converters
             {
                 return base.CanConvertFrom(context, sourceType);
             }
+
             return true;
         }
 

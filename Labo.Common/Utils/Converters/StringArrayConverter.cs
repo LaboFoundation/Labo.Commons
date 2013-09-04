@@ -33,10 +33,13 @@ namespace Labo.Common.Utils.Converters
     using System.Globalization;
 
     /// <summary>
-    /// 
+    /// String array converter class.
     /// </summary>
     public class StringArrayConverter : TypeConverter
     {
+        /// <summary>
+        /// The default list separator.
+        /// </summary>
         private const char DEFAULT_LIST_SEPARATOR = ',';
 
         /// <summary>
@@ -72,8 +75,9 @@ namespace Labo.Common.Utils.Converters
             string str = value as string;
             if (str != null)
             {
-                return str.Split(new [] { DEFAULT_LIST_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
+                return str.Split(new[] { DEFAULT_LIST_SEPARATOR }, StringSplitOptions.RemoveEmptyEntries);
             }
+
             return base.ConvertFrom(context, culture, value);
         }
     }

@@ -37,16 +37,16 @@ namespace Labo.Common.Utils
     using Labo.Common.Exceptions;
 
     /// <summary>
-    /// 
+    /// Web request utility class.
     /// </summary>
     public static class WebRequestUtils
     {
         /// <summary>
-        /// 
+        /// Gets the data.
         /// </summary>
-        /// <param name="uri"></param>
-        /// <param name="method"></param>
-        /// <param name="headers"></param>
+        /// <param name="uri">The URI.</param>
+        /// <param name="method">The method.</param>
+        /// <param name="headers">The headers.</param>
         /// <returns></returns>
         public static string GetData(Uri uri, string method = "GET", NameValueCollection headers = null)
         {
@@ -56,6 +56,7 @@ namespace Labo.Common.Utils
             {
                 request.Headers.Add(headers);
             }
+
             using (WebResponse response = request.GetResponse())
             {
                 string body;
@@ -81,10 +82,10 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Posts the data.
         /// </summary>
-        /// <param name="uri"></param>
-        /// <param name="data"></param>
+        /// <param name="uri">The URI.</param>
+        /// <param name="data">The data.</param>
         /// <returns></returns>
         public static string PostData(Uri uri, NameValueCollection data)
         {
@@ -98,10 +99,10 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Posts the data.
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="data"></param>
+        /// <param name="url">The URL.</param>
+        /// <param name="data">The data.</param>
         /// <returns></returns>
         public static string PostData(string url, NameValueCollection data)
         {
@@ -109,10 +110,10 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Posts the string.
         /// </summary>
-        /// <param name="uri"></param>
-        /// <param name="data"></param>
+        /// <param name="uri">The URI.</param>
+        /// <param name="data">The data.</param>
         /// <returns></returns>
         public static string PostString(Uri uri, string data)
         {
@@ -124,10 +125,10 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Posts the string.
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="data"></param>
+        /// <param name="url">The URL.</param>
+        /// <param name="data">The data.</param>
         /// <returns></returns>
         public static string PostString(string url, string data)
         {
@@ -135,11 +136,10 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Downloads the data.
         /// </summary>
-        /// <param name="uri"></param>
+        /// <param name="uri">The URI.</param>
         /// <returns></returns>
-        /// <exception cref="CoreLevelException"></exception>
         public static byte[] DownloadData(Uri uri)
         {
             try

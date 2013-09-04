@@ -31,7 +31,7 @@ namespace Labo.Common.Utils
     using System;
 
     /// <summary>
-    /// 
+    /// Exception utility class.
     /// </summary>
     public static class ExceptionUtils
     {
@@ -40,7 +40,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <typeparam name="TException">The type of the exception.</typeparam>
         /// <param name="exception">The exception.</param>
-        /// <returns></returns>
+        /// <returns>Exception.</returns>
         public static TException Find<TException>(Exception exception)
             where TException : Exception
         {

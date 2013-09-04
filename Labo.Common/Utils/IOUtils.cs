@@ -39,7 +39,7 @@ namespace Labo.Common.Utils
     using Microsoft.VisualBasic.FileIO;
 
     /// <summary>
-    /// 
+    /// IO utility class.
     /// </summary>
     public static class IOUtils
     {
@@ -47,7 +47,7 @@ namespace Labo.Common.Utils
         /// Reads all text of the stream.
         /// </summary>
         /// <param name="stream">The stream.</param>
-        /// <returns></returns>
+        /// <returns>text.</returns>
         public static string ReadAllText(Stream stream)
         {
             if (stream == null) throw new ArgumentNullException("stream");
@@ -58,14 +58,15 @@ namespace Labo.Common.Utils
             {
                 text = reader.ReadToEnd();
             }
+
             return text;
         }
 
         /// <summary>
-        /// 
+        /// MIMEs the type.
         /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns>Mime type.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public static string MimeType(string fileName)
@@ -529,41 +530,41 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Renames the directory.
         /// </summary>
-        /// <param name="oldName"></param>
-        /// <param name="newName"></param>
+        /// <param name="oldName">The old name.</param>
+        /// <param name="newName">The new name.</param>
         public static void RenameDirectory(string oldName, string newName)
         {
             FileSystem.RenameDirectory(oldName, newName);
         }
 
         /// <summary>
-        /// 
+        /// Renames the file.
         /// </summary>
-        /// <param name="oldName"></param>
-        /// <param name="newName"></param>
+        /// <param name="oldName">The old name.</param>
+        /// <param name="newName">The new name.</param>
         public static void RenameFile(string oldName, string newName)
         {
             FileSystem.RenameFile(oldName, newName);
         }
 
         /// <summary>
-        /// 
+        /// Deletes the directory.
         /// </summary>
-        /// <param name="physicalPath"></param>
-        /// <param name="recursive"></param>
+        /// <param name="physicalPath">The physical path.</param>
+        /// <param name="recursive">if set to <c>true</c> [recursive].</param>
         public static void DeleteDirectory(string physicalPath, bool recursive)
         {
             DeleteDirectory(physicalPath, recursive, 3);
         }
 
         /// <summary>
-        /// 
+        /// Deletes the directory.
         /// </summary>
-        /// <param name="physicalPath"></param>
-        /// <param name="recursive"></param>
-        /// <param name="tryCount"></param>
+        /// <param name="physicalPath">The physical path.</param>
+        /// <param name="recursive">if set to <c>true</c> [recursive].</param>
+        /// <param name="tryCount">The try count.</param>
         public static void DeleteDirectory(string physicalPath, bool recursive, int tryCount)
         {
             int count = 0;
@@ -582,15 +583,50 @@ namespace Labo.Common.Utils
                 {
                     goto DELETE;
                 }
+
                 throw;
             }
         }
 
+        /// <summary>
+        /// Folders helper class.
+        /// </summary>
         private sealed class Folders
         {
-            public string Source { get; private set; }
-            public string Target { get; private set; }
+            /// <summary>
+            /// Gets the source.
+            /// </summary>
+            /// <value>
+            /// The source.
+            /// </value>
+            public string Source
+            {
+                get; 
+                private set;
+            }
 
+            /// <summary>
+            /// Gets the target.
+            /// </summary>
+            /// <value>
+            /// The target.
+            /// </value>
+            public string Target
+            {
+                get; 
+                private set;
+            }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Folders"/> class.
+            /// </summary>
+            /// <param name="source">The source.</param>
+            /// <param name="target">The target.</param>
+            /// <exception cref="System.ArgumentNullException">
+            /// source
+            /// or
+            /// target
+            /// </exception>
             public Folders(string source, string target)
             {
                 if (source == null) throw new ArgumentNullException("source");
@@ -602,15 +638,25 @@ namespace Labo.Common.Utils
                 SourceSubFolders = EnumerateDirectoriesExcludeHidden(source).ToArray();
             }
 
-            public DirectoryInfo[] SourceSubFolders { get; private set; }
+            /// <summary>
+            /// Gets the source sub folders.
+            /// </summary>
+            /// <value>
+            /// The source sub folders.
+            /// </value>
+            public DirectoryInfo[] SourceSubFolders
+            {
+                get;
+                private set;
+            }
         }
 
         /// <summary>
-        /// 
+        /// Copies the directory.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
-        /// <param name="override"></param>
+        /// <param name="source">The source.</param>
+        /// <param name="destination">The destination.</param>
+        /// <param name="override">if set to <c>true</c> [override].</param>
         public static void CopyDirectory(string source, string destination, bool @override = true)
         {
             Stack<Folders> stack = new Stack<Folders>();
@@ -632,8 +678,10 @@ namespace Labo.Common.Utils
                         {
                             continue;
                         }
+
                         File.Delete(targetFile);
                     }
+
                     File.Copy(file.FullName, targetFile);
                 }
 
@@ -646,10 +694,10 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Enumerates the directories exclude hidden.
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <param name="path">The path.</param>
+        /// <returns>Directory list.</returns>
         public static IEnumerable<DirectoryInfo> EnumerateDirectoriesExcludeHidden(string path)
         {
             DirectoryInfo dir = new DirectoryInfo(path);
@@ -657,10 +705,10 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Enumerates the files exclude hidden.
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <param name="path">The path.</param>
+        /// <returns>File list.</returns>
         public static IEnumerable<FileInfo> EnumerateFilesExcludeHidden(string path)
         {
             DirectoryInfo dir = new DirectoryInfo(path);
@@ -668,11 +716,11 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Enumerates the files exclude hidden.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="searchPattern"></param>
-        /// <returns></returns>
+        /// <param name="path">The path.</param>
+        /// <param name="searchPattern">The search pattern.</param>
+        /// <returns>File list.</returns>
         public static IEnumerable<FileInfo> EnumerateFilesExcludeHidden(string path, string searchPattern)
         {
             DirectoryInfo dir = new DirectoryInfo(path);
@@ -680,10 +728,12 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Determines whether [is image extension] [the specified extension].
         /// </summary>
-        /// <param name="extension"></param>
-        /// <returns></returns>
+        /// <param name="extension">The extension.</param>
+        /// <returns>
+        ///   <c>true</c> if [is image extension] [the specified extension]; otherwise, <c>false</c>.
+        /// </returns>
         public static bool IsImageExtension(string extension)
         {
             if (extension == null)
@@ -700,15 +750,16 @@ namespace Labo.Common.Utils
                 case ".BMP":
                     return true;
             }
+
             return false;
         }
 
         /// <summary>
-        /// 
+        /// Converts to image format.
         /// </summary>
-        /// <param name="extension"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="extension">The extension.</param>
+        /// <returns>Image format.</returns>
+        /// <exception cref="System.ArgumentNullException">extension</exception>
         public static ImageFormat ConvertToImageFormat(string extension)
         {
             if (extension == null) throw new ArgumentNullException("extension");
@@ -728,10 +779,10 @@ namespace Labo.Common.Utils
         }
 
         /// <summary>
-        /// 
+        /// Validates the image.
         /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
+        /// <param name="filePath">The file path.</param>
+        /// <returns><c>true</c> if image else <c>false</c></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static bool ValidateImage(string filePath)
         {
@@ -759,6 +810,7 @@ namespace Labo.Common.Utils
             {
                 throw new ArgumentNullException("folder");
             }
+
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);

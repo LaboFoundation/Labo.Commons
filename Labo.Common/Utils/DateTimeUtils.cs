@@ -36,16 +36,15 @@ namespace Labo.Common.Utils
     using Labo.Common.Patterns;
 
     /// <summary>
-    /// 
+    /// Date time utility class.
     /// </summary>
     public static class DateTimeUtils
     {
         /// <summary>
-        /// 
+        /// Gets the day names.
         /// </summary>
-        /// <param name="culture"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="culture">The culture.</param>
+        /// <returns>Day names list.</returns>
         public static IList<DayName> GetDayNames(CultureInfo culture = null)
         {
             culture = CultureUtils.GetCurrentCultureIfNull(culture);
@@ -63,7 +62,7 @@ namespace Labo.Common.Utils
         /// Gets the month names of the specified culture.
         /// </summary>
         /// <param name="culture">The culture.</param>
-        /// <returns></returns>
+        /// <returns>Month names list.</returns>
         public static IList<MonthName> GetMonthNames(CultureInfo culture = null)
         {
             culture = CultureUtils.GetCurrentCultureIfNull(culture);
@@ -81,7 +80,7 @@ namespace Labo.Common.Utils
         /// Gets the first day of month.
         /// </summary>
         /// <param name="currentDate">The current date.</param>
-        /// <returns></returns>
+        /// <returns>First day of the month of the specified date.</returns>
         public static DateTime GetFirstDayOfMonth(DateTime currentDate)
         {
             return new DateTime(currentDate.Year, currentDate.Month, 1);
@@ -91,7 +90,7 @@ namespace Labo.Common.Utils
         /// Gets the last day of month.
         /// </summary>
         /// <param name="currentDate">The current date.</param>
-        /// <returns></returns>
+        /// <returns>Last day of the month of the specified date.</returns>
         public static DateTime GetLastDayOfMonth(DateTime currentDate)
         {
             return GetFirstDayOfMonth(currentDate.AddMonths(1)).AddDays(-1).Date;
@@ -101,7 +100,7 @@ namespace Labo.Common.Utils
         /// Gets the days of month.
         /// </summary>
         /// <param name="currentDate">The current date.</param>
-        /// <returns></returns>
+        /// <returns>Total day count of the month.</returns>
         public static int GetDaysOfMonth(DateTime currentDate)
         {
             return GetLastDayOfMonth(currentDate).Day;
@@ -111,7 +110,7 @@ namespace Labo.Common.Utils
         /// Gets the first day of week.
         /// </summary>
         /// <param name="currentDate">The current date.</param>
-        /// <returns></returns>
+        /// <returns>First day of week.</returns>
         public static DateTime GetFirstDayOfWeek(DateTime currentDate)
         {
             return GetFirstDayOfWeek(currentDate, null);
@@ -122,7 +121,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="currentDate">The current date.</param>
         /// <param name="cultureInfo">The culture info.</param>
-        /// <returns></returns>
+        /// <returns>First day of week.</returns>
         public static DateTime GetFirstDayOfWeek(DateTime currentDate, CultureInfo cultureInfo)
         {
             cultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
@@ -134,7 +133,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="currentDate">The current date.</param>
         /// <param name="firstDay">The first day.</param>
-        /// <returns></returns>
+        /// <returns>First day of week.</returns>
         public static DateTime GetFirstDayOfWeek(DateTime currentDate, DayOfWeek firstDay)
         {
             return currentDate.AddDays(firstDay - currentDate.DayOfWeek).Date;
@@ -144,7 +143,7 @@ namespace Labo.Common.Utils
         /// Gets the last day of week.
         /// </summary>
         /// <param name="currentDate">The current date.</param>
-        /// <returns></returns>
+        /// <returns>Last day of week.</returns>
         public static DateTime GetLastDayOfWeek(DateTime currentDate)
         {
             return GetLastDayOfWeek(currentDate, null);
@@ -155,7 +154,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="currentDate">The current date.</param>
         /// <param name="cultureInfo">The culture info.</param>
-        /// <returns></returns>
+        /// <returns>Last day of week.</returns>
         public static DateTime GetLastDayOfWeek(DateTime currentDate, CultureInfo cultureInfo)
         {
             cultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
@@ -167,7 +166,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="current">The current.</param>
         /// <param name="firstDay">The first day.</param>
-        /// <returns></returns>
+        /// <returns>Last day of week.</returns>
         public static DateTime GetLastDayOfWeek(DateTime current, DayOfWeek firstDay)
         {
             return GetFirstDayOfWeek(current, firstDay).AddDays(6);
@@ -177,7 +176,7 @@ namespace Labo.Common.Utils
         /// Gets the midnight.
         /// </summary>
         /// <param name="currentDate">The current date.</param>
-        /// <returns></returns>
+        /// <returns>Midnight date.</returns>
         public static DateTime GetMidnight(DateTime currentDate)
         {
             return currentDate.Date;
@@ -187,7 +186,7 @@ namespace Labo.Common.Utils
         /// Gets the noon.
         /// </summary>
         /// <param name="currentDate">The current date.</param>
-        /// <returns></returns>
+        /// <returns>Noon date.</returns>
         public static DateTime GetNoon(DateTime currentDate)
         {
             return new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 12, 0, 0);
@@ -198,7 +197,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="dateOfBirth">The date of birth.</param>
         /// <param name="dateTimeProvider">The date time provider.</param>
-        /// <returns></returns>
+        /// <returns>Age.</returns>
         public static int CalculateAge(DateTime dateOfBirth, IDateTimeProvider dateTimeProvider)
         {
             if (dateTimeProvider == null) throw new ArgumentNullException("dateTimeProvider");
@@ -210,7 +209,7 @@ namespace Labo.Common.Utils
         /// Calculates the age.
         /// </summary>
         /// <param name="dateOfBirth">The date of birth.</param>
-        /// <returns></returns>
+        /// <returns>Age.</returns>
         public static int CalculateAge(DateTime dateOfBirth)
         {
             return CalculateAge(dateOfBirth, DateTimeProvider.Current);
@@ -221,7 +220,7 @@ namespace Labo.Common.Utils
         /// </summary>
         /// <param name="dateOfBirth">The date of birth.</param>
         /// <param name="currentDate">The current date.</param>
-        /// <returns></returns>
+        /// <returns>Age.</returns>
         public static int CalculateAge(DateTime dateOfBirth, DateTime currentDate)
         {
             int birthMonth = dateOfBirth.Month;

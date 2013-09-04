@@ -31,13 +31,16 @@ namespace Labo.Common.Culture
     using System.Text;
 
     /// <summary>
-    /// 
+    /// Encoding helper class.
     /// </summary>
     public static class EncodingHelper
     {
         /// <summary>
-        /// 
+        /// Gets the current culture encoding.
         /// </summary>
+        /// <value>
+        /// The current culture encoding.
+        /// </value>
         public static Encoding CurrentCultureEncoding
         {
             get
