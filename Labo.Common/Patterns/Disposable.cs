@@ -1,8 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Disposable.cs" company="Labo">
+//   The MIT License (MIT)
+//   
+//   Copyright (c) 2013 Bora Akgun
+//   
+//   Permission is hereby granted, free of charge, to any person obtaining a copy of
+//   this software and associated documentation files (the "Software"), to deal in
+//   the Software without restriction, including without limitation the rights to
+//   use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//   the Software, and to permit persons to whom the Software is furnished to do so,
+//   subject to the following conditions:
+//   
+//   The above copyright notice and this permission notice shall be included in all
+//   copies or substantial portions of the Software.
+//   
+//   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+//   FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+//   COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+//   IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+//   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// </copyright>
+// <summary>
+//   Defines the Disposable type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Labo.Common.Patterns
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// 
     /// </summary>
@@ -16,21 +44,31 @@ namespace Labo.Common.Patterns
         private bool m_Disposed;
 
         /// <summary>
-        /// 
+        /// Gets the instance.
         /// </summary>
-        public TInstance Instance { get { return GetOrCreateInstance(); }}
+        /// <value>
+        /// The instance.
+        /// </value>
+        public TInstance Instance
+        {
+            get
+            {
+                return GetOrCreateInstance();
+            }
+        }
 
         /// <summary>
-        /// 
+        /// Initializes a new instance of the <see cref="Disposable{TInstance}"/> class.
         /// </summary>
-        /// <param name="disposableCreator"></param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="disposableCreator">The disposable creator.</param>
+        /// <exception cref="System.ArgumentNullException">disposableCreator</exception>
         public Disposable(Func<TInstance> disposableCreator)
         {
             if (disposableCreator == null)
             {
                 throw new ArgumentNullException("disposableCreator");
             }
+
             m_DisposableCreator = disposableCreator;
             m_DisposableObjectCreationStack.Push(new object());
         }
@@ -43,15 +81,10 @@ namespace Labo.Common.Patterns
             Dispose(false);
         }
 
-        private TInstance GetOrCreateInstance()
-        {
-            return m_DisposableInstance ?? (m_DisposableInstance = m_DisposableCreator());
-        }
-
         /// <summary>
-        /// 
+        /// Usings this instance.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Disposable object.</returns>
         public Disposable<TInstance> Using()
         {
             m_DisposableObjectCreationStack.Push(new object());
@@ -72,6 +105,10 @@ namespace Labo.Common.Patterns
             }
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         private void Dispose(bool disposing)
         {
             if (m_Disposed)
@@ -91,6 +128,15 @@ namespace Labo.Common.Patterns
                 m_DisposableCreator = null;
                 m_Disposed = true;
             }
+        }
+
+        /// <summary>
+        /// Gets the or create instance.
+        /// </summary>
+        /// <returns>Disposable object instance.</returns>
+        private TInstance GetOrCreateInstance()
+        {
+            return m_DisposableInstance ?? (m_DisposableInstance = m_DisposableCreator());
         }
     }
 }

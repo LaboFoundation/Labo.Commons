@@ -1,13 +1,41 @@
-﻿using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
-
-using Labo.Common.Exceptions;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="FactoryCreateInstanceException.cs" company="Labo">
+//   The MIT License (MIT)
+//   
+//   Copyright (c) 2013 Bora Akgun
+//   
+//   Permission is hereby granted, free of charge, to any person obtaining a copy of
+//   this software and associated documentation files (the "Software"), to deal in
+//   the Software without restriction, including without limitation the rights to
+//   use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//   the Software, and to permit persons to whom the Software is furnished to do so,
+//   subject to the following conditions:
+//   
+//   The above copyright notice and this permission notice shall be included in all
+//   copies or substantial portions of the Software.
+//   
+//   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+//   FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+//   COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+//   IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+//   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// </copyright>
+// <summary>
+//   Defines the FactoryCreateInstanceException type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Labo.Common.Patterns.Exception
 {
+    using System;
+    using System.Runtime.Serialization;
+    using System.Security.Permissions;
+
+    using Labo.Common.Exceptions;
+
     /// <summary>
-    /// 
+    /// Factory create instance exception.
     /// </summary>
     [Serializable]
     public class FactoryCreateInstanceException : CoreLevelException
@@ -23,7 +51,7 @@ namespace Labo.Common.Patterns.Exception
         /// Initializes a new instance of the <see cref="FactoryCreateInstanceException"/> class.
         /// </summary>
         /// <param name="innerException">The inner exception.</param>
-        public FactoryCreateInstanceException(System.Exception innerException)
+        public FactoryCreateInstanceException(Exception innerException)
             : base(null, innerException)
         {
         }
@@ -40,20 +68,20 @@ namespace Labo.Common.Patterns.Exception
         /// <summary>
         /// Initializes a new instance of the <see cref="FactoryCreateInstanceException"/> class.
         /// </summary>
-        /// <param name="serializationInfo">The serialization info.</param>
-        /// <param name="context">The context.</param>
-        protected FactoryCreateInstanceException(SerializationInfo serializationInfo, StreamingContext context)
-            : base(serializationInfo, context)
+        /// <param name="message">The message.</param>
+        /// <param name="innerException">The inner exception.</param>
+        public FactoryCreateInstanceException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FactoryCreateInstanceException"/> class.
         /// </summary>
-        /// <param name="message">The message.</param>
-        /// <param name="innerException">The inner exception.</param>
-        public FactoryCreateInstanceException(string message, System.Exception innerException)
-            : base(message, innerException)
+        /// <param name="serializationInfo">The serialization info.</param>
+        /// <param name="context">The context.</param>
+        protected FactoryCreateInstanceException(SerializationInfo serializationInfo, StreamingContext context)
+            : base(serializationInfo, context)
         {
         }
 
@@ -63,11 +91,10 @@ namespace Labo.Common.Patterns.Exception
         /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
         /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
         /// <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is a null reference (Nothing in Visual Basic). </exception>
-        ///   
         /// <PermissionSet>
         ///   <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="*AllFiles*" PathDiscovery="*AllFiles*"/>
         ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="SerializationFormatter"/>
-        ///   </PermissionSet>
+        /// </PermissionSet>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
