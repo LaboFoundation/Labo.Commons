@@ -1,23 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
-
-using Labo.Common.Culture;
-
-using Microsoft.VisualBasic.FileIO;
-=======
-=======
->>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
-=======
->>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
-﻿// --------------------------------------------------------------------------------------------------------------------
+﻿﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IOUtils.cs" company="Labo">
 //   The MIT License (MIT)
 //   
@@ -44,14 +25,6 @@ using Microsoft.VisualBasic.FileIO;
 //   Defines the IOUtils type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
-=======
->>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
-=======
->>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
-
 namespace Labo.Common.Utils
 {
     using System;
@@ -61,6 +34,8 @@ namespace Labo.Common.Utils
     using System.IO;
     using System.Linq;
     using System.Text;
+
+    using Labo.Common.Culture;
 
     using Microsoft.VisualBasic.FileIO;
 
@@ -73,20 +48,9 @@ namespace Labo.Common.Utils
         /// Reads all text of the stream.
         /// </summary>
         /// <param name="stream">The stream.</param>
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
         /// <param name="encoding">The text encoding.</param>
-        /// <returns></returns>
-        public static string ReadAllText(Stream stream, Encoding encoding = null)
-=======
-=======
->>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
-=======
->>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
         /// <returns>text.</returns>
-        public static string ReadAllText(Stream stream)
->>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
+        public static string ReadAllText(Stream stream, Encoding encoding = null)
         {
             if (stream == null) throw new ArgumentNullException("stream");
 
@@ -644,11 +608,6 @@ namespace Labo.Common.Utils
                 get; 
                 private set;
             }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
-
             /// <summary>
             /// Gets the target.
             /// </summary>
@@ -662,25 +621,6 @@ namespace Labo.Common.Utils
             }
 
             /// <summary>
-<<<<<<< HEAD
-=======
-
-            /// <summary>
-            /// Gets the target.
-            /// </summary>
-            /// <value>
-            /// The target.
-            /// </value>
-            public string Target
-            {
-                get; 
-                private set;
-            }
-
-            /// <summary>
->>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
-=======
->>>>>>> 055078a42487b16fd73e8bb66466f05278507a2f
             /// Initializes a new instance of the <see cref="Folders"/> class.
             /// </summary>
             /// <param name="source">The source.</param>
