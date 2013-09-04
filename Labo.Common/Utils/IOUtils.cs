@@ -727,11 +727,11 @@ namespace Labo.Common.Utils
         /// <exception cref="System.ArgumentNullException">folder</exception>
         public static void EnsureDirectoryExists(string folder)
         {
-            if(folder.IsNullOrWhiteSpace())
+            if (folder.IsNullOrWhiteSpace())
             {
                 throw new ArgumentNullException("folder");
             }
-            if(!Directory.Exists(folder))
+            if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
             }

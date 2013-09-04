@@ -96,7 +96,7 @@ namespace Labo.Common.Utils
         /// <returns></returns>
         public static DateTime GetFirstDayOfWeek(DateTime currentDate, CultureInfo cultureInfo)
         {
-            cultureInfo = (cultureInfo ?? CultureInfo.CurrentCulture);
+            cultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
             return GetFirstDayOfWeek(currentDate, cultureInfo.DateTimeFormat.FirstDayOfWeek);
         }
 
@@ -129,7 +129,7 @@ namespace Labo.Common.Utils
         /// <returns></returns>
         public static DateTime GetLastDayOfWeek(DateTime currentDate, CultureInfo cultureInfo)
         {
-            cultureInfo = (cultureInfo ?? CultureInfo.CurrentCulture);
+            cultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
             return GetLastDayOfWeek(currentDate, cultureInfo.DateTimeFormat.FirstDayOfWeek);
         }
 

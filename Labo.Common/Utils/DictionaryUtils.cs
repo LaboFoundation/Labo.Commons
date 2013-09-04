@@ -65,7 +65,6 @@ namespace Labo.Common.Utils
             foreach (DictionaryEntry dictionaryEntry in dictionary)
             {
                 result.Add(ConvertUtils.ChangeType<string>(dictionaryEntry.Key, culture), ConvertUtils.ChangeType<string>(dictionaryEntry.Value, culture));
-                
             }
 
             return result;

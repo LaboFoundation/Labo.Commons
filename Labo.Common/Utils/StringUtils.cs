@@ -18,14 +18,14 @@ namespace Labo.Common.Utils
         private static readonly string[] s_NewLineStrings = new[] { "\r\n", "\n\r", "\n", "\r" };
 
         /// <summary>
-        ///  Determines whether two specified <see cref="T:System.String"/> objects have the same value using ordinal ignorecase comparison
+        ///  Determines whether two specified <see cref="T:System.String"/> objects have the same value using ordinal ignore case comparison
         /// </summary>
         /// <param name="a">The first string value.</param>
         /// <param name="b">The second string value.</param>
-        /// <returns></returns>
+        /// <returns>true if the value of the <paramref name="a"/> parameter is equal to the value of the <paramref name="b"/> parameter; otherwise, false.</returns>
         public static bool EqualsOrdinalIgnoreCase(string a, string b)
         {
-            return String.Equals(a, b, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+
 using Labo.Common.Patterns.Exception;
 
 namespace Labo.Common.Patterns

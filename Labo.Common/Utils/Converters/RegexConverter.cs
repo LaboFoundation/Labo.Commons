@@ -20,7 +20,7 @@ namespace Labo.Common.Utils.Converters
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            return (sourceType == typeof(string));
+            return sourceType == typeof(string);
         }
 
         /// <summary>
@@ -43,6 +43,4 @@ namespace Labo.Common.Utils.Converters
             return base.ConvertFrom(context, culture, value);
         }
     }
-
-
 }

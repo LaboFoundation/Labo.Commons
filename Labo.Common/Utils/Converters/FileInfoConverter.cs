@@ -47,6 +47,4 @@ namespace Labo.Common.Utils.Converters
             return base.ConvertFrom(context, culture, value);
         }
     }
-
-
 }

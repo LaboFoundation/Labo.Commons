@@ -19,7 +19,7 @@ namespace Labo.Common.Utils
         {
             if (value == null) throw new ArgumentNullException("value");
 
-            using(MD5 md5 = new MD5CryptoServiceProvider())
+            using (MD5 md5 = new MD5CryptoServiceProvider())
             {
                 UTF8Encoding encoder = new UTF8Encoding();
                 byte[] returnValue = md5.ComputeHash(encoder.GetBytes(value));
@@ -53,4 +53,3 @@ namespace Labo.Common.Utils
         }
     }
 }
-

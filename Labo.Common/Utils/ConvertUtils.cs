@@ -124,7 +124,7 @@ namespace Labo.Common.Utils
                 {
                     return value;
                 }
-                bool convertToNullableBoolean = type == typeof (bool?);
+                bool convertToNullableBoolean = type == typeof(bool?);
                 if (type == typeof(bool) || convertToNullableBoolean)
                 {
                     bool? result;
@@ -175,7 +175,7 @@ namespace Labo.Common.Utils
                 result = new bool?();
                 return true;
             }
-            if (valueType == typeof (string))
+            if (valueType == typeof(string))
             {
                 if (value.Equals("1") || value.Equals("on") || value.Equals("yes"))
                 {
@@ -193,14 +193,14 @@ namespace Labo.Common.Utils
                     return true;
                 }
             }
-            else if (valueType == typeof (int))
+            else if (valueType == typeof(int))
             {
-                if(1.Equals(value))
+                if (1.Equals(value))
                 {
                     result = true;
                     return true;
                 }
-                if(0.Equals(value))
+                if (0.Equals(value))
                 {
                     result = false;
                     return true;                    
@@ -215,59 +215,72 @@ namespace Labo.Common.Utils
             IConvertible convertible = value as IConvertible;
             if (convertible != null)
             {
-                if (type == typeof(Boolean))
+                if (type == typeof(bool))
                 {
                     return convertible.ToBoolean(culture);
                 }
-                if (type == typeof(Byte))
+
+                if (type == typeof(byte))
                 {
                     return convertible.ToByte(culture);
                 }
-                if (type == typeof(Char))
+
+                if (type == typeof(char))
                 {
                     return convertible.ToChar(culture);
                 }
+
                 if (type == typeof(DateTime))
                 {
                     return convertible.ToDateTime(culture);
                 }
-                if (type == typeof(Decimal))
+
+                if (type == typeof(decimal))
                 {
                     return convertible.ToDecimal(culture);
                 }
-                if (type == typeof(Double))
+
+                if (type == typeof(double))
                 {
                     return convertible.ToDouble(culture);
                 }
-                if (type == typeof(Int16))
+
+                if (type == typeof(short))
                 {
                     return convertible.ToInt16(culture);
                 }
-                if (type == typeof(Int32))
+
+                if (type == typeof(int))
                 {
                     return convertible.ToInt32(culture);
                 }
-                if (type == typeof(Int64))
+
+                if (type == typeof(long))
                 {
                     return convertible.ToInt64(culture);
                 }
-                if (type == typeof(SByte))
+
+                if (type == typeof(sbyte))
                 {
                     return convertible.ToSByte(culture);
                 }
-                if (type == typeof(Single))
+
+                if (type == typeof(float))
                 {
                     return convertible.ToSingle(culture);
                 }
-                if (type == typeof(UInt16))
+
+                if (type == typeof(ushort))
                 {
                     return convertible.ToUInt16(culture);
                 }
-                if (type == typeof(UInt32))
+
+                if (type == typeof(uint))
                 {
                     return convertible.ToUInt32(culture);
                 }
-                if (type == typeof(UInt64))
+
+                if (type == typeof(ulong))
                 {
                     return convertible.ToUInt64(culture);
                 }

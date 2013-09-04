@@ -40,7 +40,7 @@ namespace Labo.Common.Utils
         {
             unchecked
             {
-                return (Number*397) ^ (Name != null ? Name.GetHashCode() : 0);
+                return (Number * 397) ^ (Name != null ? Name.GetHashCode() : 0);
             }
         }
 

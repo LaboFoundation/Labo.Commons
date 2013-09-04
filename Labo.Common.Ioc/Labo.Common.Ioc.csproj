@@ -46,6 +46,7 @@
     <Compile Include="IIocContainer.cs" />
     <Compile Include="IIocModule.cs" />
     <Compile Include="IIocModuleModule.cs" />
+    <Compile Include="IocContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

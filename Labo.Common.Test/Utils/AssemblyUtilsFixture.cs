@@ -24,29 +24,29 @@ namespace Labo.Common.Tests.Utils
         [Test]
         public void GetEmbededResourceString()
         {
-            Assert.AreEqual("Lorem ipsum dolor sit amet.", AssemblyUtils.GetEmbededResourceString(Assembly.GetExecutingAssembly(), "Labo.Common.Tests._TestAssembly.EmbeddedResource.txt"));
+            Assert.AreEqual("Lorem ipsum dolor sit amet.", AssemblyUtils.GetEmbeddedResourceString(Assembly.GetExecutingAssembly(), "Labo.Common.Tests._TestAssembly.EmbeddedResource.txt"));
         }
 
         [Test]
         public void GetEmbededResourceStringThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetEmbededResourceString(null, "", EncodingHelper.CurrentCultureEncoding));
-            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetEmbededResourceString(Assembly.GetExecutingAssembly(), null, EncodingHelper.CurrentCultureEncoding));
-            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetEmbededResourceString(Assembly.GetExecutingAssembly(), "", null));
-            Assert.Throws<AssemblyUtilsException>(() => AssemblyUtils.GetEmbededResourceString(Assembly.GetExecutingAssembly(), "Labo.Common.Tests.xxx.txt", EncodingHelper.CurrentCultureEncoding));
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetEmbeddedResourceString(null, "", EncodingHelper.CurrentCultureEncoding));
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetEmbeddedResourceString(Assembly.GetExecutingAssembly(), null, EncodingHelper.CurrentCultureEncoding));
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetEmbeddedResourceString(Assembly.GetExecutingAssembly(), "", null));
+            Assert.Throws<AssemblyUtilsException>(() => AssemblyUtils.GetEmbeddedResourceString(Assembly.GetExecutingAssembly(), "Labo.Common.Tests.xxx.txt", EncodingHelper.CurrentCultureEncoding));
         }
 
         [Test]
         public void GetEmbededResourceBinary()
         {
-            Assert.AreEqual("ï»¿Lorem ipsum dolor sit amet.", EncodingHelper.CurrentCultureEncoding.GetString(AssemblyUtils.GetEmbededResourceBinary(Assembly.GetExecutingAssembly(), "Labo.Common.Tests._TestAssembly.EmbeddedResource.txt")));
+            Assert.AreEqual("ï»¿Lorem ipsum dolor sit amet.", EncodingHelper.CurrentCultureEncoding.GetString(AssemblyUtils.GetEmbeddedResourceBinary(Assembly.GetExecutingAssembly(), "Labo.Common.Tests._TestAssembly.EmbeddedResource.txt")));
         }
 
         [Test]
         public void GetEmbededResourceBinaryThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetEmbededResourceBinary(null, ""));
-            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetEmbededResourceBinary(Assembly.GetExecutingAssembly(), null));
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetEmbeddedResourceBinary(null, ""));
+            Assert.Throws<ArgumentNullException>(() => AssemblyUtils.GetEmbeddedResourceBinary(Assembly.GetExecutingAssembly(), null));
         }
     }
 }

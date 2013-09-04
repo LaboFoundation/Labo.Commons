@@ -16,7 +16,7 @@ namespace Labo.Common.Utils
         /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
         public static TObject IsNull<TObject>(TObject @object, Func<TObject> defaultValueCreator)
-            where TObject: class
+            where TObject : class
         {
             if (defaultValueCreator == null) throw new ArgumentNullException("defaultValueCreator");
 
