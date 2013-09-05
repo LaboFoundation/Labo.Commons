@@ -44,14 +44,6 @@ namespace Labo.Common.Ioc
         void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator);
 
         /// <summary>
-        /// Registers the single instance named.
-        /// </summary>
-        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
-        /// <param name="creator">The creator delegate.</param>
-        /// <param name="name">The instance name.</param>
-        void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name);
-
-        /// <summary>
         /// Registers the single instance.
         /// </summary>
         /// <typeparam name="TService">The type of the service.</typeparam>
@@ -59,6 +51,20 @@ namespace Labo.Common.Ioc
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         void RegisterSingleInstance<TService, TImplementation>()
             where TImplementation : TService;
+
+        /// <summary>
+        /// Registers the single instance.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        void RegisterSingleInstance(Type serviceType);
+
+        /// <summary>
+        /// Registers the single instance named.
+        /// </summary>
+        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        /// <param name="creator">The creator delegate.</param>
+        /// <param name="name">The instance name.</param>
+        void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name);
 
         /// <summary>
         /// Registers the single instance named.
@@ -84,12 +90,6 @@ namespace Labo.Common.Ioc
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         void RegisterInstance(Type serviceType);
-
-        /// <summary>
-        /// Registers the single instance.
-        /// </summary>
-        /// <param name="serviceType">Type of the service.</param>
-        void RegisterSingleInstance(Type serviceType);
 
         /// <summary>
         /// Registers the assembly types.

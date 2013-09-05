@@ -124,8 +124,9 @@ namespace Labo.Common.Ioc.Autofac
         {
             ContainerBuilder containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterType<TImplementation>()
-                .Named<TImplementation>(name)
-                .As<TService>();
+                .As<TService>()
+                .Named<TService>(name)
+                .SingleInstance();
             containerBuilder.Update(m_Container);
         }
 
@@ -149,8 +150,7 @@ namespace Labo.Common.Ioc.Autofac
         public override void RegisterInstance(Type serviceType)
         {
             ContainerBuilder containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterType(serviceType)
-                .SingleInstance();
+            containerBuilder.RegisterType(serviceType);
             containerBuilder.Update(m_Container);
         }
 
