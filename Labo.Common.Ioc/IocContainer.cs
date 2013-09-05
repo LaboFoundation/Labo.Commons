@@ -28,6 +28,8 @@
 
 namespace Labo.Common.Ioc
 {
+    using Labo.Common.Ioc.Exceptions;
+
     /// <summary>
     /// 
     /// </summary>
@@ -39,6 +41,11 @@ namespace Labo.Common.Ioc
         {
             get
             {
+                if (s_IocContainerImplementation == null)
+                {
+                    throw new IocContainerNotResgisteredException();
+                }
+
                 return s_IocContainerImplementation;
             }
         }
