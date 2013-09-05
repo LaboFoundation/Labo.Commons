@@ -44,9 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutofacContainerTestFixture.cs" />
+    <Compile Include="IocContainerTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Labo.Common.Ioc.Autofac\Labo.Common.Ioc.Autofac.csproj">
+      <Project>{2ef836f8-533e-4a39-9d58-e3b92709b9db}</Project>
+      <Name>Labo.Common.Ioc.Autofac</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Labo.Common.Ioc\Labo.Common.Ioc.csproj">
       <Project>{d42706de-715e-463e-86b9-41287191deeb}</Project>
       <Name>Labo.Common.Ioc</Name>
