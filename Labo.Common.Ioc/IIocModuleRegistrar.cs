@@ -3,7 +3,7 @@ namespace Labo.Common.Ioc
     /// <summary>
     /// 
     /// </summary>
-    public interface IIocModuleModule : IIocContainer
+    public interface IIocModuleRegistrar : IIocContainer
     {
         /// <summary>
         /// Registers the module.
