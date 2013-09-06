@@ -91,14 +91,143 @@ namespace Labo.Common.Ioc.Autofac
         /// <summary>
         /// Registers the single instance.
         /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
-        public override void RegisterSingleInstance<TService, TImplementation>()
+        /// <param name="serviceType">The type of the service.</param>
+        /// <param name="implementationType">The type of the implementation.</param>
+        public override void RegisterSingleInstance(Type serviceType, Type implementationType)
         {
             ContainerBuilder containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterType<TImplementation>()
-                .As<TService>()
+            containerBuilder.RegisterType(implementationType)
+                .As(serviceType)
                 .SingleInstance();
+            containerBuilder.Update(m_Container);
+        }
+
+        /// <summary>
+        /// The register singleton named instance.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="implementationType">
+        /// The implementation type.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        public override void RegisterSingleInstanceNamed(Type serviceType, Type implementationType, string name)
+        {
+            ContainerBuilder containerBuilder = new ContainerBuilder();
+            containerBuilder.RegisterType(implementationType)
+                .Named(name, serviceType)
+                .As(serviceType)
+                .SingleInstance();
+            containerBuilder.Update(m_Container);
+        }
+
+        /// <summary>
+        /// The register singleton named instance.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        public override void RegisterSingleInstanceNamed(Type serviceType, string name)
+        {
+            ContainerBuilder containerBuilder = new ContainerBuilder();
+            containerBuilder.RegisterType(serviceType)
+                .Named(name, serviceType)
+                .As(serviceType)
+                .SingleInstance();
+            containerBuilder.Update(m_Container);
+        }
+
+        /// <summary>
+        /// Registers the instance.
+        /// </summary>
+        /// <param name="creator">
+        /// The creator.
+        /// </param>
+        /// <typeparam name="TImplementation">
+        /// The implementation type.
+        /// </typeparam>
+        public override void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
+        {
+            ContainerBuilder containerBuilder = new ContainerBuilder();
+            containerBuilder.Register(x => creator(this))
+                .As<TImplementation>();
+            containerBuilder.Update(m_Container);
+        }
+
+        /// <summary>
+        /// Registers the instance.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="implementationType">
+        /// The implementation type.
+        /// </param>
+        public override void RegisterInstance(Type serviceType, Type implementationType)
+        {
+            ContainerBuilder containerBuilder = new ContainerBuilder();
+            containerBuilder.RegisterType(implementationType)
+                .As(serviceType);
+            containerBuilder.Update(m_Container);
+        }
+
+        /// <summary>
+        /// Registers the instance named.
+        /// </summary>
+        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        /// <param name="creator">The creator delegate.</param>
+        /// <param name="name">The instance name.</param>
+        public override void RegisterInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name)
+        {
+            ContainerBuilder containerBuilder = new ContainerBuilder();
+            containerBuilder.Register(x => creator(this))
+                .Named<TImplementation>(name)
+                .As<TImplementation>();
+            containerBuilder.Update(m_Container);
+        }
+
+        /// <summary>
+        /// The register named instance.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="implementationType">
+        /// The implementation type.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        public override void RegisterInstanceNamed(Type serviceType, Type implementationType, string name)
+        {
+            ContainerBuilder containerBuilder = new ContainerBuilder();
+            containerBuilder.RegisterType(implementationType)
+                .Named(name, serviceType)
+                .As(serviceType);
+            containerBuilder.Update(m_Container);
+        }
+
+        /// <summary>
+        /// The register ınstance named.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        public override void RegisterInstanceNamed(Type serviceType, string name)
+        {
+            ContainerBuilder containerBuilder = new ContainerBuilder();
+            containerBuilder.RegisterType(serviceType)
+                .Named(name, serviceType)
+                .As(serviceType);
             containerBuilder.Update(m_Container);
         }
 
@@ -111,35 +240,6 @@ namespace Labo.Common.Ioc.Autofac
             ContainerBuilder containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterType(serviceType)
                 .SingleInstance();
-            containerBuilder.Update(m_Container);
-        }
-
-        /// <summary>
-        /// Registers the single instance named.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
-        /// <param name="name">The instance name.</param>
-        public override void RegisterSingleInstanceNamed<TService, TImplementation>(string name)
-        {
-            ContainerBuilder containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterType<TImplementation>()
-                .As<TService>()
-                .Named<TService>(name)
-                .SingleInstance();
-            containerBuilder.Update(m_Container);
-        }
-
-        /// <summary>
-        /// Registers the instance.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
-        public override void RegisterInstance<TService, TImplementation>()
-        {
-            ContainerBuilder containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterType<TImplementation>()
-                .As<TService>();
             containerBuilder.Update(m_Container);
         }
 

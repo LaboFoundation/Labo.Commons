@@ -1,7 +1,6 @@
 ﻿namespace Labo.Common.Ioc.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
 
     using NUnit.Framework;
@@ -35,17 +34,6 @@
             AssertRegisterSingleInstance<ITestService>(iocContainer);
         }
 
-        private static void AssertRegisterSingleInstance<TService>(IIocContainerResolver iocContainer)
-            where TService : ITestService
-        {
-            ITestService testService = iocContainer.GetInstance<TService>();
-            Assert.IsNotNull(testService);
-
-            ITestService secondServiceInstance = iocContainer.GetInstance<TService>();
-            Assert.AreSame(testService, secondServiceInstance);
-            Assert.AreEqual(testService.Guid, secondServiceInstance.Guid);
-        }
-
         [Test]
         public void RegisterSingleInstanceGeneric()
         {
@@ -64,12 +52,43 @@
             AssertRegisterSingleInstance<TestServiceImplementation>(iocContainer);
         }
 
+        private static void AssertRegisterSingleInstance<TService>(IIocContainerResolver iocContainer)
+           where TService : ITestService
+        {
+            ITestService testService = iocContainer.GetInstance<TService>();
+            Assert.IsNotNull(testService);
+
+            ITestService secondServiceInstance = iocContainer.GetInstance<TService>();
+            Assert.AreSame(testService, secondServiceInstance);
+            Assert.AreEqual(testService.Guid, secondServiceInstance.Guid);
+        }
+
+        [Test]
+        public void RegisterSingleInstanceNamed()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            iocContainer.RegisterSingleInstanceNamed(typeof(TestServiceImplementation), "TestService1");
+            iocContainer.RegisterSingleInstanceNamed(typeof(TestServiceImplementation), "TestService2");
+
+            AssertRegisterSingleInstanceNamed<TestServiceImplementation>(iocContainer);
+        }
+
         [Test]
         public void RegisterSingleInstanceNamedLambda()
         {
             IIocContainer iocContainer = CreateContainer();
             iocContainer.RegisterSingleInstanceNamed<ITestService>(x => new TestServiceImplementation(), "TestService1");
             iocContainer.RegisterSingleInstanceNamed<ITestService>(x => new TestServiceImplementation(), "TestService2");
+
+            AssertRegisterSingleInstanceNamed<ITestService>(iocContainer);
+        }
+
+        [Test]
+        public void RegisterSingleInstanceNamedGeneric()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            iocContainer.RegisterSingleInstanceNamed<ITestService, TestServiceImplementation>("TestService1");
+            iocContainer.RegisterSingleInstanceNamed<ITestService, TestServiceImplementation>("TestService2");
 
             AssertRegisterSingleInstanceNamed<ITestService>(iocContainer);
         }
@@ -97,13 +116,12 @@
         }
 
         [Test]
-        public void RegisterSingleInstanceNamedGeneric()
+        public void RegisterInstanceLambda()
         {
             IIocContainer iocContainer = CreateContainer();
-            iocContainer.RegisterSingleInstanceNamed<ITestService, TestServiceImplementation>("TestService1");
-            iocContainer.RegisterSingleInstanceNamed<ITestService, TestServiceImplementation>("TestService2");
+            iocContainer.RegisterInstance<ITestService>(x => new TestServiceImplementation());
 
-            AssertRegisterSingleInstanceNamed<ITestService>(iocContainer);
+            AssertRegisterInstance<ITestService>(iocContainer);
         }
 
         [Test]
@@ -133,6 +151,58 @@
             ITestService secondServiceInstance = iocContainer.GetInstance<TService>();
             Assert.AreNotSame(testService, secondServiceInstance);
             Assert.AreNotEqual(testService.Guid, secondServiceInstance.Guid);
+        }
+
+        [Test]
+        public void RegisterInstanceNamed()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            iocContainer.RegisterInstanceNamed(typeof(TestServiceImplementation), "TestService1");
+            iocContainer.RegisterInstanceNamed(typeof(TestServiceImplementation), "TestService2");
+
+            AssertRegisterInstanceNamed<TestServiceImplementation>(iocContainer);
+        }
+
+        [Test]
+        public void RegisterInstanceNamedLambda()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            iocContainer.RegisterInstanceNamed<ITestService>(x => new TestServiceImplementation(), "TestService1");
+            iocContainer.RegisterInstanceNamed<ITestService>(x => new TestServiceImplementation(), "TestService2");
+
+            AssertRegisterInstanceNamed<ITestService>(iocContainer);
+        }
+
+        [Test]
+        public void RegisterInstanceNamedGeneric()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            iocContainer.RegisterInstanceNamed<ITestService, TestServiceImplementation>("TestService1");
+            iocContainer.RegisterInstanceNamed<ITestService, TestServiceImplementation>("TestService2");
+
+            AssertRegisterInstanceNamed<ITestService>(iocContainer);
+        }
+
+        private static void AssertRegisterInstanceNamed<TService>(IIocContainerResolver iocContainer)
+            where TService : ITestService
+        {
+            TService[] allInstances = iocContainer.GetAllInstances<TService>().ToArray();
+            Assert.IsNotNull(allInstances);
+            Assert.AreEqual(2, allInstances.Length);
+
+            TService testService1 = iocContainer.GetInstance<TService>("TestService1");
+            Assert.IsNotNull(testService1);
+
+            TService secondTestService1 = iocContainer.GetInstance<TService>("TestService1");
+            Assert.AreNotSame(testService1, secondTestService1);
+            Assert.AreNotEqual(testService1.Guid, secondTestService1.Guid);
+
+            TService testService2 = iocContainer.GetInstance<TService>("TestService2");
+            Assert.AreNotSame(testService1, testService2);
+            Assert.AreNotEqual(testService1.Guid, testService2.Guid);
+
+            Assert.IsFalse(allInstances.Contains(testService1));
+            Assert.IsFalse(allInstances.Contains(testService2));
         }
     }
 }
