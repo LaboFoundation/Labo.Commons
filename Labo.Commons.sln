@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labo.Common.Ioc.Tests", "La
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labo.Common.Ioc.Autofac", "Labo.Common.Ioc.Autofac\Labo.Common.Ioc.Autofac.csproj", "{2EF836F8-533E-4A39-9D58-E3B92709B9DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labo.Common.Ioc.SimpleInjector", "Labo.Common.Ioc.SimpleInjector\Labo.Common.Ioc.SimpleInjector.csproj", "{043A3435-8E36-4AA5-AB47-8FB490CD2D6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{2EF836F8-533E-4A39-9D58-E3B92709B9DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EF836F8-533E-4A39-9D58-E3B92709B9DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EF836F8-533E-4A39-9D58-E3B92709B9DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{043A3435-8E36-4AA5-AB47-8FB490CD2D6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{043A3435-8E36-4AA5-AB47-8FB490CD2D6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{043A3435-8E36-4AA5-AB47-8FB490CD2D6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{043A3435-8E36-4AA5-AB47-8FB490CD2D6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
