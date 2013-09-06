@@ -55,37 +55,101 @@ namespace Labo.Common.Ioc
         /// <summary>
         /// Registers the single instance.
         /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
-        public abstract void RegisterSingleInstance<TService, TImplementation>() where TImplementation : TService;
-
-        /// <summary>
-        /// Registers the single instance named.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
-        /// <param name="name">The instance name.</param>
-        public abstract void RegisterSingleInstanceNamed<TService, TImplementation>(string name)
-            where TImplementation : TService;
-
-        /// <summary>
-        /// Registers the single instance.
-        /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         public abstract void RegisterSingleInstance(Type serviceType);
 
         /// <summary>
         /// Registers the instance.
         /// </summary>
-        /// <typeparam name="TService">The type of the service.</typeparam>
-        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
-        public abstract void RegisterInstance<TService, TImplementation>() where TImplementation : TService;
+        /// <param name="serviceType">Type of the service.</param>
+        public abstract void RegisterInstance(Type serviceType);
+
+        /// <summary>
+        /// Registers the single instance.
+        /// </summary>
+        /// <param name="serviceType">The type of the service.</param>
+        /// <param name="implementationType">The type of the implementation.</param>
+        public abstract void RegisterSingleInstance(Type serviceType, Type implementationType);
+
+        /// <summary>
+        /// The register singleton named instance.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="implementationType">
+        /// The implementation type.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        public abstract void RegisterSingleInstanceNamed(Type serviceType, Type implementationType, string name);
+
+        /// <summary>
+        /// The register singleton named instance.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        public abstract void RegisterSingleInstanceNamed(Type serviceType, string name);
 
         /// <summary>
         /// Registers the instance.
         /// </summary>
-        /// <param name="serviceType">Type of the service.</param>
-        public abstract void RegisterInstance(Type serviceType);
+        /// <param name="creator">
+        /// The creator.
+        /// </param>
+        /// <typeparam name="TImplementation">
+        /// The implementation type.
+        /// </typeparam>
+        public abstract void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator);
+
+        /// <summary>
+        /// Registers the instance.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="implementationType">
+        /// The implementation type.
+        /// </param>
+        public abstract void RegisterInstance(Type serviceType, Type implementationType);
+
+        /// <summary>
+        /// Registers the instance named.
+        /// </summary>
+        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        /// <param name="creator">The creator delegate.</param>
+        /// <param name="name">The instance name.</param>
+        public abstract void RegisterInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name);
+
+        /// <summary>
+        /// The register named instance.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="implementationType">
+        /// The implementation type.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        public abstract void RegisterInstanceNamed(Type serviceType, Type implementationType, string name);
+
+        /// <summary>
+        /// The register singleton named instance.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        public abstract void RegisterInstanceNamed(Type serviceType, string name);
 
         /// <summary>
         /// Registers the assembly types.
@@ -223,6 +287,49 @@ namespace Labo.Common.Ioc
         public void RegisterAssemblyTypes<TService>(params Assembly[] assemblies)
         {
             RegisterAssemblyTypes(typeof(TService), assemblies);
+        }
+
+        /// <summary>
+        /// Registers the named instance.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        /// <param name="name">The instance name.</param>
+        public void RegisterInstanceNamed<TService, TImplementation>(string name) where TImplementation : TService
+        {
+            RegisterInstanceNamed(typeof(TService), typeof(TImplementation), name);
+        }
+
+        /// <summary>
+        /// Registers the instance.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        public void RegisterInstance<TService, TImplementation>() where TImplementation : TService
+        {
+            RegisterInstance(typeof(TService), typeof(TImplementation));
+        }
+
+        /// <summary>
+        /// Registers the single instance named.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        /// <param name="name">The instance name.</param>
+        public void RegisterSingleInstanceNamed<TService, TImplementation>(string name) where TImplementation : TService
+        {
+            RegisterSingleInstanceNamed(typeof(TService), typeof(TImplementation), name);
+        }
+
+        /// <summary>
+        /// Registers the single instance.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
+        public void RegisterSingleInstance<TService, TImplementation>()
+            where TImplementation : TService
+        {
+            RegisterSingleInstance(typeof(TService), typeof(TImplementation));
         }
     }
 }
