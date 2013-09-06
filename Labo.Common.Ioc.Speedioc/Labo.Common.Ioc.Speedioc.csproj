@@ -7,8 +7,8 @@
     <ProjectGuid>{E197B320-67E5-4622-A864-4FAA221EF36E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Labo.Commons.Ioc.Speedioc</RootNamespace>
-    <AssemblyName>Labo.Commons.Ioc.Speedioc</AssemblyName>
+    <RootNamespace>Labo.Common.Ioc.Speedioc</RootNamespace>
+    <AssemblyName>Labo.Common.Ioc.Speedioc</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
