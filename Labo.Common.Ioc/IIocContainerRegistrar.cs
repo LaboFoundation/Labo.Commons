@@ -41,7 +41,7 @@ namespace Labo.Common.Ioc
         /// </summary>
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="creator">The creator delegate.</param>
-        void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator);
+        void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator) where TImplementation : class;
 
         /// <summary>
         /// Registers the single instance.
@@ -71,7 +71,7 @@ namespace Labo.Common.Ioc
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="creator">The creator delegate.</param>
         /// <param name="name">The instance name.</param>
-        void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name);
+        void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name) where TImplementation : class;
 
         /// <summary>
         /// Registers the singleton named instance.
@@ -126,7 +126,7 @@ namespace Labo.Common.Ioc
         /// <typeparam name="TImplementation">
         /// The implementation type.
         /// </typeparam>
-        void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator);
+        void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator) where TImplementation : class;
 
         /// <summary>
         /// Registers the instance.
@@ -151,7 +151,7 @@ namespace Labo.Common.Ioc
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="creator">The creator delegate.</param>
         /// <param name="name">The instance name.</param>
-        void RegisterInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name);
+        void RegisterInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name) where TImplementation : class;
 
         /// <summary>
         /// Registers the named instance.

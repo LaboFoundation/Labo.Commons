@@ -30,6 +30,7 @@ namespace Labo.Common.Ioc
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
     /// <summary>
@@ -42,7 +43,7 @@ namespace Labo.Common.Ioc
         /// </summary>
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="creator">The creator delegate.</param>
-        public abstract void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator);
+        public abstract void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator) where TImplementation : class;
 
         /// <summary>
         /// Registers the single instance named.
@@ -50,7 +51,7 @@ namespace Labo.Common.Ioc
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="creator">The creator delegate.</param>
         /// <param name="name">The instance name.</param>
-        public abstract void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name);
+        public abstract void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name) where TImplementation : class;
 
         /// <summary>
         /// Registers the single instance.
@@ -105,7 +106,7 @@ namespace Labo.Common.Ioc
         /// <typeparam name="TImplementation">
         /// The implementation type.
         /// </typeparam>
-        public abstract void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator);
+        public abstract void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator) where TImplementation : class;
 
         /// <summary>
         /// Registers the instance.
@@ -124,7 +125,7 @@ namespace Labo.Common.Ioc
         /// <typeparam name="TImplementation">The type of the implementation.</typeparam>
         /// <param name="creator">The creator delegate.</param>
         /// <param name="name">The instance name.</param>
-        public abstract void RegisterInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name);
+        public abstract void RegisterInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name) where TImplementation : class;
 
         /// <summary>
         /// The register named instance.
@@ -251,7 +252,7 @@ namespace Labo.Common.Ioc
         /// <returns>all instances.</returns>
         public IEnumerable<TService> GetAllInstances<TService>()
         {
-            return (IEnumerable<TService>)GetAllInstances(typeof(TService));
+            return GetAllInstances(typeof(TService)).Cast<TService>();
         }
 
         /// <summary>
