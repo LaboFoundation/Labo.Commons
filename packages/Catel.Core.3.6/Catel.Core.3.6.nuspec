@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Catel.Core</id>
+    <version>3.6</version>
+    <title>Catel.Core</title>
+    <authors>GeertvanHorrik</authors>
+    <owners>GeertvanHorrik</owners>
+    <licenseUrl>http://www.catelproject.com/license/</licenseUrl>
+    <projectUrl>http://www.catelproject.com/</projectUrl>
+    <iconUrl>http://www.catenalogic.com/catel.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Catel.Core library which includes the DataObjectBase class.</description>
+    <releaseNotes />
+    <copyright />
+    <language>en-US</language>
+    <tags>mvvm model modelbase logging data object wpf c# ioc servicelocator</tags>
+  </metadata>
+</package>

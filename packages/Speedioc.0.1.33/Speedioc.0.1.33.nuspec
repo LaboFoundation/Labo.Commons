@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Speedioc</id>
+    <version>0.1.33</version>
+    <title>Speedioc</title>
+    <authors>Wade Reynolds</authors>
+    <owners>Wade Reynolds</owners>
+    <licenseUrl>https://github.com/wade/speedioc/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/wade/speedioc/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This package provides the experimental Speedioc assembly that is used to configure and create container instances.</description>
+    <summary>Speedioc is a lightweight, high performance IoC container for .NET that uses code generation to dynamically generate and compile container assemblies. Containers can be precompiled and support static and dynamic injection including constructor, field, property and method injection.</summary>
+    <releaseNotes />
+    <copyright>Copyright © Wade A. Reynolds. All rights reserved.</copyright>
+    <language>en-US</language>
+    <tags>speedioc dependency injection container di ioc service locator resolver dependencyresolver</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.0" />
+      <frameworkAssembly assemblyName="System.Core" targetFramework=".NETFramework4.0" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

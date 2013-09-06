@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>IfInjector</id>
+    <version>0.6.2</version>
+    <title>IfInjector</title>
+    <authors>Michael Ahern</authors>
+    <owners>Michael Ahern</owners>
+    <licenseUrl>https://raw.github.com/iamahern/IfInjector/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/iamahern/IfInjector</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>IfInjector is a lightweight, high performance micro-IoC container. The container is packaged as a PCL 104 library - suitable for WP7.1, Windows Store and SL4+ (MonoDroid, MonoTouch) projects.
+
+Distinguishing features are small size, speed and attribute based configuration.</description>
+    <releaseNotes>https://raw.github.com/iamahern/IfInjector/master/CHANGES.txt</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <language />
+    <tags>IoC micro PCL Xamarin MonoTouch MonoDroid WP7</tags>
+  </metadata>
+</package>

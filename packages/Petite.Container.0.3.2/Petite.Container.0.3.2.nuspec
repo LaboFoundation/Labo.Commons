@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Petite.Container</id>
+    <version>0.3.2</version>
+    <title>Petite.Container</title>
+    <authors>Anders Ljusberg</authors>
+    <owners>Anders Ljusberg</owners>
+    <licenseUrl>https://github.com/andlju/petite/raw/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/andlju/petite</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Petite Container is a very simple and light-weight dependency injection container. It is distributed as source-code only and contains just a single file.</description>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>IoC DI container</tags>
+  </metadata>
+</package>

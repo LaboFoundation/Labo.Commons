@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>MicroSliver</id>
+    <version>2.1.6.0</version>
+    <title>MicroSliver</title>
+    <authors>Jeremiah Billmann</authors>
+    <owners>Jeremiah Billmann</owners>
+    <licenseUrl>http://microsliver.codeplex.com/license</licenseUrl>
+    <projectUrl>http://microsliver.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>MicroSliver is a micro, non-bloat, non-intimidating and speedy .NET (ASP.NET, Silverlight, RIA Services, WPF, Forms and Metro!) dependency injection container which has just the essentials.
+
+Contains dependency injection support for Metro .NET (WinRT) and extensions for Silverlight &amp; Metro MVVM, RIA Services Domain Services and ASP.NET MVC Controllers.  
+
+Tired of large dependency injection frameworks that require a significant amount of knowledge in order to understand or build on top of?  Look no further...</description>
+    <summary>MicroSliver is a micro, non-bloat, non-intimidating and speedy .NET (ASP.NET, Silverlight, RIA Services, WPF, Forms and Metro/WinRT!) dependency injection container which has just the essentials.</summary>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>di ioc dependency injection inversion of control mvc metro silverlight winrt</tags>
+  </metadata>
+</package>
