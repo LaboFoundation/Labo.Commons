@@ -29,7 +29,6 @@
 namespace Labo.Common.Ioc
 {
     using System;
-    using System.Reflection;
 
     /// <summary>
     /// Inversion of control container registrar. 
@@ -187,20 +186,5 @@ namespace Labo.Common.Ioc
         /// The name.
         /// </param>
         void RegisterInstanceNamed(Type serviceType, string name);
-
-        /// <summary>
-        /// Registers the assembly types.
-        /// </summary>
-        /// <typeparam name="TService">The service type.</typeparam>
-        /// <param name="assemblies">The assemblies.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        void RegisterAssemblyTypes<TService>(params Assembly[] assemblies);
-
-        /// <summary>
-        /// Registers the assembly types.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="assemblies">The assemblies.</param>
-        void RegisterAssemblyTypes(Type type, params Assembly[] assemblies);
     }
 }

@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InstanceProducerContainerFactory.cs" />
+    <Compile Include="KeyedService.cs" />
     <Compile Include="SimpleInjectorIocContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -204,5 +204,128 @@
             Assert.IsFalse(allInstances.Contains(testService1));
             Assert.IsFalse(allInstances.Contains(testService2));
         }
+
+        [Test]
+        public void GetInstanceOptional()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            Assert.IsNull(iocContainer.GetInstanceOptional(typeof(ITestService)));
+            Assert.IsNull(iocContainer.GetInstanceOptional<ITestService>());
+            Assert.IsNull(iocContainer.GetInstanceOptionalByName(typeof(ITestService), "TestService"));
+            Assert.IsNull(iocContainer.GetInstanceOptionalByName<ITestService>("TestService"));
+
+            // The container can't be changed after the first call to GetInstance, GetAllInstances and Verify (Simple injector).
+            // So we recreate container
+            iocContainer = CreateContainer();
+
+            iocContainer.RegisterInstance<ITestService, TestServiceImplementation>();
+            Assert.IsNotNull(iocContainer.GetInstanceOptional(typeof(ITestService)));
+            Assert.IsNotNull(iocContainer.GetInstanceOptional<ITestService>());
+
+            // The container can't be changed after the first call to GetInstance, GetAllInstances and Verify (Simple injector).
+            // So we recreate container
+            iocContainer = CreateContainer();
+
+            iocContainer.RegisterInstanceNamed<ITestService, TestServiceImplementation>("TestService");
+            Assert.IsNotNull(iocContainer.GetInstanceOptionalByName(typeof(ITestService), "TestService"));
+            Assert.IsNotNull(iocContainer.GetInstanceOptionalByName<ITestService>("TestService"));
+        }
+
+        [Test]
+        public void IsRegisteredNoRegistration()
+        {
+            IIocContainer iocContainer = CreateContainer();
+
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(TestServiceImplementation)));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(TestServiceImplementation), "TestService"));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(ITestService)));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(ITestService), "TestService"));
+            Assert.IsFalse(iocContainer.IsRegistered<ITestService>());
+            Assert.IsFalse(iocContainer.IsRegistered<ITestService>("TestService"));
+        }
+
+        [Test]
+        public void IsRegisteredGeneric()
+        {
+            IIocContainer iocContainer = CreateContainer();
+
+            iocContainer.RegisterInstance<ITestService, TestServiceImplementation>();
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(TestServiceImplementation)));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(TestServiceImplementation), "TestService"));
+            Assert.IsTrue(iocContainer.IsRegistered(typeof(ITestService)));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(ITestService), "TestService"));
+            Assert.IsTrue(iocContainer.IsRegistered<ITestService>());
+            Assert.IsFalse(iocContainer.IsRegistered<ITestService>("TestService"));
+        }
+
+        [Test]
+        public void IsRegisteredNonGeneric()
+        {
+            IIocContainer iocContainer = CreateContainer();
+
+            iocContainer.RegisterInstance(typeof(ITestService), typeof(TestServiceImplementation));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(TestServiceImplementation)));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(TestServiceImplementation), "TestService"));
+            Assert.IsTrue(iocContainer.IsRegistered(typeof(ITestService)));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(ITestService), "TestService"));
+            Assert.IsTrue(iocContainer.IsRegistered<ITestService>());
+            Assert.IsFalse(iocContainer.IsRegistered<ITestService>("TestService"));
+        }
+
+        [Test]
+        public void IsRegisteredWithNameGeneric()
+        {
+            IIocContainer iocContainer = CreateContainer();
+
+            iocContainer.RegisterInstanceNamed<ITestService, TestServiceImplementation>("TestService");
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(TestServiceImplementation)));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(TestServiceImplementation), "TestService"));
+            Assert.IsTrue(iocContainer.IsRegistered(typeof(ITestService)));
+            Assert.IsTrue(iocContainer.IsRegistered(typeof(ITestService), "TestService"));
+            Assert.IsTrue(iocContainer.IsRegistered<ITestService>());
+            Assert.IsTrue(iocContainer.IsRegistered<ITestService>("TestService"));
+        }
+
+        [Test]
+        public void IsRegisteredWithNameNonGenerice()
+        {
+            IIocContainer iocContainer = CreateContainer();
+
+            iocContainer.RegisterInstanceNamed(typeof(ITestService), typeof(TestServiceImplementation), "TestService");
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(TestServiceImplementation)));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(TestServiceImplementation), "TestService"));
+            Assert.IsTrue(iocContainer.IsRegistered(typeof(ITestService)));
+            Assert.IsTrue(iocContainer.IsRegistered(typeof(ITestService), "TestService"));
+            Assert.IsTrue(iocContainer.IsRegistered<ITestService>());
+            Assert.IsTrue(iocContainer.IsRegistered<ITestService>("TestService"));
+        }
+
+        [Test]
+        public void IsRegisteredWithImplementationClass()
+        {
+            IIocContainer iocContainer = CreateContainer();
+
+            iocContainer.RegisterInstance(typeof(TestServiceImplementation));
+            Assert.IsTrue(iocContainer.IsRegistered(typeof(TestServiceImplementation)));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(TestServiceImplementation), "TestService"));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(ITestService)));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(ITestService), "TestService"));
+            Assert.IsFalse(iocContainer.IsRegistered<ITestService>());
+            Assert.IsFalse(iocContainer.IsRegistered<ITestService>("TestService"));
+        }
+
+        [Test]
+        public void IsRegisteredNamedWithImplementationClass()
+        {
+            IIocContainer iocContainer = CreateContainer();
+
+            iocContainer.RegisterInstanceNamed(typeof(TestServiceImplementation), "TestService");
+            Assert.IsTrue(iocContainer.IsRegistered(typeof(TestServiceImplementation)));
+            Assert.IsTrue(iocContainer.IsRegistered(typeof(TestServiceImplementation), "TestService"));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(ITestService)));
+            Assert.IsFalse(iocContainer.IsRegistered(typeof(ITestService), "TestService"));
+            Assert.IsFalse(iocContainer.IsRegistered<ITestService>());
+            Assert.IsFalse(iocContainer.IsRegistered<ITestService>("TestService"));
+        }
     }
 }

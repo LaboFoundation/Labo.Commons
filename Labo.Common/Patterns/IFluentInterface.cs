@@ -32,6 +32,9 @@ namespace Labo.Common.Patterns
     using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
 
+    /// <summary>
+    /// The FluentInterface interface.
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public interface IFluentInterface
     {
@@ -41,7 +44,7 @@ namespace Labo.Common.Patterns
         /// <returns>
         /// The <see cref="Type"/>.
         /// </returns>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate"), EditorBrowsable(EditorBrowsableState.Never)]
+        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "GetType"), SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate"), EditorBrowsable(EditorBrowsableState.Never)]
         Type GetType();
 
         /// <summary>

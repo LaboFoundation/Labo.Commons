@@ -30,7 +30,6 @@ namespace Labo.Common.Ioc.SimpleInjector
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
 
     using global::SimpleInjector;
@@ -38,17 +37,12 @@ namespace Labo.Common.Ioc.SimpleInjector
     /// <summary>
     /// Instance producer container factory class.
     /// </summary>
-    internal sealed class InstanceProducerContainerFactory : SortedList<string, InstanceProducer>
+    internal sealed class InstanceProducerContainerFactory : SortedList<KeyedService, InstanceProducer>
     {
         /// <summary>
         /// The container
         /// </summary>
         private readonly Container m_Container;
-
-        /// <summary>
-        /// The service type name cache
-        /// </summary>
-        private readonly SortedList<Type, SortedSet<string>> m_ServiceTypeNameCache; 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InstanceProducerContainerFactory"/> class.
@@ -57,7 +51,6 @@ namespace Labo.Common.Ioc.SimpleInjector
         public InstanceProducerContainerFactory(Container container)
         {
             m_Container = container;
-            m_ServiceTypeNameCache = new SortedList<Type, SortedSet<string>>();
         }
 
         /// <summary>
@@ -106,9 +99,8 @@ namespace Labo.Common.Ioc.SimpleInjector
         /// <returns>instance.</returns>
         public object GetInstance(Type serviceType, string name)
         {
-            InstanceProducer instanceProducer = this[GetServiceTypeKey(serviceType, name)];
-            Type type = instanceProducer.ServiceType;
-            return instanceProducer.GetInstance();
+            KeyedService serviceTypeKey = GetServiceTypeKey(serviceType, name);
+            return this.GetInstance(serviceTypeKey);
         }
 
         /// <summary>
@@ -119,14 +111,34 @@ namespace Labo.Common.Ioc.SimpleInjector
         /// <returns>instance or null.</returns>
         public object GetInstanceOptional(Type serviceType, string name)
         {
-            InstanceProducer instanceProducer = this[GetServiceTypeKey(serviceType, name)];
-            if (instanceProducer == null)
+            InstanceProducer instanceProducer;
+            if (!this.TryGetValue(GetServiceTypeKey(serviceType, name), out instanceProducer))
             {
                 return null;
             }
 
-            Type type = instanceProducer.ServiceType;
             return instanceProducer.GetInstance();
+        }
+
+        /// <summary>
+        /// Determines whether the specified service type is registered.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns><c>true</c> if is registered else <c>false</c></returns>
+        public bool IsRegistered(Type serviceType, string name)
+        {
+            return ContainsKey(GetServiceTypeKey(serviceType, name));
+        }
+
+        /// <summary>
+        /// Determines whether the specified service type is registered.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns><c>true</c> if is registered else <c>false</c></returns>
+        public bool IsRegistered(Type serviceType)
+        {
+            return Keys.Any(x => x.ServiceType == serviceType);
         }
 
         /// <summary>
@@ -136,19 +148,17 @@ namespace Labo.Common.Ioc.SimpleInjector
         /// <returns>all instances.</returns>
         public IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            SortedSet<string> serviceTypeNames;
-            if (m_ServiceTypeNameCache.TryGetValue(serviceType, out serviceTypeNames))
+            List<object> instances = new List<object>();
+            for (int i = 0; i < this.Keys.Count; i++)
             {
-                List<object> instances = new List<object>(serviceTypeNames.Count);
-                foreach (string serviceTypeName in serviceTypeNames)
+                KeyedService keyedService = this.Keys[i];
+                if (keyedService.ServiceType == serviceType)
                 {
-                    instances.Add(this.GetInstance(serviceType,  serviceTypeName));
+                    instances.Add(GetInstance(keyedService));                    
                 }
-
-                return instances;
             }
 
-            return Enumerable.Empty<object>();
+            return instances;
         }
 
         /// <summary>
@@ -157,9 +167,20 @@ namespace Labo.Common.Ioc.SimpleInjector
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="name">The name.</param>
         /// <returns>Service type key.</returns>
-        private static string GetServiceTypeKey(Type serviceType, string name)
+        private static KeyedService GetServiceTypeKey(Type serviceType, string name)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0}+{1}", serviceType.AssemblyQualifiedName, name);
+            return new KeyedService(name, serviceType);
+        }
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <param name="serviceTypeKey">The service type key.</param>
+        /// <returns>instance.</returns>
+        private object GetInstance(KeyedService serviceTypeKey)
+        {
+            InstanceProducer instanceProducer = this[serviceTypeKey];
+            return instanceProducer.GetInstance();
         }
 
         /// <summary>
@@ -170,19 +191,7 @@ namespace Labo.Common.Ioc.SimpleInjector
         /// <param name="producer">The producer.</param>
         private void AddServiceInstanceProducer(Type serviceType, string name, InstanceProducer producer)
         {
-            SortedSet<string> serviceTypeNames;
-            string serviceTypeKey = GetServiceTypeKey(serviceType, name);
-            if (m_ServiceTypeNameCache.TryGetValue(serviceType, out serviceTypeNames))
-            {
-                if (!serviceTypeNames.Contains(serviceTypeKey))
-                {
-                    serviceTypeNames.Add(name);
-                }
-            }
-            else
-            {
-                m_ServiceTypeNameCache.Add(serviceType, new SortedSet<string> { name });
-            }
+            KeyedService serviceTypeKey = GetServiceTypeKey(serviceType, name);
 
             Add(serviceTypeKey, producer);
         }

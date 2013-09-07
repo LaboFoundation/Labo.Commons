@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AutofacContainerTestFixture.cs" />
     <Compile Include="IocContainerTestFixture.cs" />
+    <Compile Include="NInjectContainerTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleInjectorIocContainerTestFixture.cs" />
   </ItemGroup>
@@ -53,6 +54,10 @@
     <ProjectReference Include="..\Labo.Common.Ioc.Autofac\Labo.Common.Ioc.Autofac.csproj">
       <Project>{2ef836f8-533e-4a39-9d58-e3b92709b9db}</Project>
       <Name>Labo.Common.Ioc.Autofac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Labo.Common.Ioc.NInject\Labo.Common.Ioc.NInject.csproj">
+      <Project>{098ec3db-eba6-4be0-a5dc-de0be51a825c}</Project>
+      <Name>Labo.Common.Ioc.NInject</Name>
     </ProjectReference>
     <ProjectReference Include="..\Labo.Common.Ioc.SimpleInjector\Labo.Common.Ioc.SimpleInjector.csproj">
       <Project>{043A3435-8E36-4AA5-AB47-8FB490CD2D6D}</Project>

@@ -31,7 +31,6 @@ namespace Labo.Common.Ioc
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
     /// <summary>
     /// Base inversion of control container.
@@ -153,13 +152,6 @@ namespace Labo.Common.Ioc
         public abstract void RegisterInstanceNamed(Type serviceType, string name);
 
         /// <summary>
-        /// Registers the assembly types.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="assemblies">The assemblies.</param>
-        public abstract void RegisterAssemblyTypes(Type type, params Assembly[] assemblies);
-
-        /// <summary>
         /// Gets the instance.
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
@@ -172,8 +164,9 @@ namespace Labo.Common.Ioc
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="name">The name.</param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public abstract object GetInstance(Type serviceType, string name);
+        public abstract object GetInstanceByName(Type serviceType, string name, params object[] parameters);
 
         /// <summary>
         /// Gets the instance optional.
@@ -182,6 +175,15 @@ namespace Labo.Common.Ioc
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
         public abstract object GetInstanceOptional(Type serviceType, params object[] parameters);
+
+        /// <summary>
+        /// Gets the instance optional by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>instance.</returns>
+        public abstract object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters);
 
         /// <summary>
         /// Gets all instances.
@@ -263,7 +265,7 @@ namespace Labo.Common.Ioc
         /// <returns>instance.</returns>
         public TService GetInstance<TService>(string name)
         {
-            return (TService)GetInstance(typeof(TService), name);
+            return (TService)GetInstanceByName(typeof(TService), name);
         }
 
         /// <summary>
@@ -278,16 +280,6 @@ namespace Labo.Common.Ioc
             }
 
             iocModule.Configure(this);
-        }
-
-        /// <summary>
-        /// Registers the assembly types.
-        /// </summary>
-        /// <typeparam name="TService">The service type.</typeparam>
-        /// <param name="assemblies">The assemblies.</param>
-        public void RegisterAssemblyTypes<TService>(params Assembly[] assemblies)
-        {
-            RegisterAssemblyTypes(typeof(TService), assemblies);
         }
 
         /// <summary>
@@ -331,6 +323,29 @@ namespace Labo.Common.Ioc
             where TImplementation : TService
         {
             RegisterSingleInstance(typeof(TService), typeof(TImplementation));
+        }
+
+        /// <summary>
+        /// Gets the instance optional with parameters.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>instance.</returns>
+        public TService GetInstanceOptional<TService>(params object[] parameters)
+        {
+            return (TService)GetInstanceOptional(typeof(TService), parameters);
+        }
+
+        /// <summary>
+        /// Gets the instance optional by instance name.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="name">The instance name.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>instance.</returns>
+        public TService GetInstanceOptionalByName<TService>(string name, params object[] parameters)
+        {
+            return (TService)GetInstanceOptionalByName(typeof(TService), name, parameters);
         }
     }
 }

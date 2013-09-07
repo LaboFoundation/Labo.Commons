@@ -33,11 +33,9 @@ namespace Labo.Common.Ioc.Autofac
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Reflection;
 
     using global::Autofac;
     using global::Autofac.Core;
-    using global::Autofac.Features.Variance;
 
     /// <summary>
     /// Autofac inversion of control container class.
@@ -255,20 +253,6 @@ namespace Labo.Common.Ioc.Autofac
         }
 
         /// <summary>
-        /// Registers the assembly types.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="assemblies">The assemblies.</param>
-        public override void RegisterAssemblyTypes(Type type, params Assembly[] assemblies)
-        {
-            ContainerBuilder containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterSource(new ContravariantRegistrationSource());
-            containerBuilder.RegisterAssemblyTypes(assemblies)
-                .AsClosedTypesOf(type);
-            containerBuilder.Update(m_Container);
-        }
-
-        /// <summary>
         /// Gets the instance.
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
@@ -284,10 +268,11 @@ namespace Labo.Common.Ioc.Autofac
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="name">The name.</param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstance(Type serviceType, string name)
+        public override object GetInstanceByName(Type serviceType, string name, params object[] parameters)
         {
-            return m_Container.ResolveNamed(name, serviceType);
+            return m_Container.ResolveNamed(name, serviceType, GetAutofacParameters(parameters));
         }
 
         /// <summary>
@@ -299,6 +284,18 @@ namespace Labo.Common.Ioc.Autofac
         public override object GetInstanceOptional(Type serviceType, params object[] parameters)
         {
             return m_Container.ResolveOptional(serviceType, GetAutofacParameters(parameters));
+        }
+
+        /// <summary>
+        /// Gets the instance optional by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters)
+        {
+            return m_Container.ResolveOptionalService(new KeyedService(name, serviceType), GetAutofacParameters(parameters));
         }
 
         /// <summary>
