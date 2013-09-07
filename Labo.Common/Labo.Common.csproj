@@ -53,6 +53,7 @@
     <Compile Include="Patterns\Exception\FactoryCreateInstanceException.cs" />
     <Compile Include="Patterns\Factory.cs" />
     <Compile Include="Patterns\IFactoryInstanceCreator.cs" />
+    <Compile Include="Patterns\IFluentInterface.cs" />
     <Compile Include="Patterns\LazyFactoryInstanceCreator.cs" />
     <Compile Include="Patterns\Singleton.cs" />
     <Compile Include="Patterns\TransientFactoryInstanceCreator.cs" />
