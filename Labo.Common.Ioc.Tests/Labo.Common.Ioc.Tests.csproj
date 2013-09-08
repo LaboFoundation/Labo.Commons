@@ -45,6 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutofacContainerTestFixture.cs" />
+    <Compile Include="CatelContainerTestFixture.cs" />
+    <Compile Include="DynamoContainerTestFixture.cs" />
+    <Compile Include="GriffinContainerTestFixture.cs" />
     <Compile Include="IocContainerTestFixture.cs" />
     <Compile Include="NInjectContainerTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -54,6 +57,18 @@
     <ProjectReference Include="..\Labo.Common.Ioc.Autofac\Labo.Common.Ioc.Autofac.csproj">
       <Project>{2ef836f8-533e-4a39-9d58-e3b92709b9db}</Project>
       <Name>Labo.Common.Ioc.Autofac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Labo.Common.Ioc.Catel\Labo.Common.Ioc.Catel.csproj">
+      <Project>{AB6DB19D-82C8-423B-A4EB-DBB4B63CE083}</Project>
+      <Name>Labo.Common.Ioc.Catel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Labo.Common.Ioc.Dynamo\Labo.Common.Ioc.Dynamo.csproj">
+      <Project>{BCD721B8-722F-47EB-A115-6779311ACBBC}</Project>
+      <Name>Labo.Common.Ioc.Dynamo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Labo.Common.Ioc.Griffin\Labo.Common.Ioc.Griffin.csproj">
+      <Project>{5C3A13A8-40A5-4561-80EA-FDD5A4C50C07}</Project>
+      <Name>Labo.Common.Ioc.Griffin</Name>
     </ProjectReference>
     <ProjectReference Include="..\Labo.Common.Ioc.NInject\Labo.Common.Ioc.NInject.csproj">
       <Project>{098ec3db-eba6-4be0-a5dc-de0be51a825c}</Project>
