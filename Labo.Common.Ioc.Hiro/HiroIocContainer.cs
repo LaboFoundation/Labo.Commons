@@ -29,10 +29,8 @@
 namespace Labo.Common.Ioc.Hiro
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
 
     using global::Hiro;
     using global::Hiro.Containers;
