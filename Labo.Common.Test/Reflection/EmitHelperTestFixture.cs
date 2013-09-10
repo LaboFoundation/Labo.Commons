@@ -1,6 +1,7 @@
 ﻿namespace Labo.Common.Tests.Reflection
 {
     using System;
+    using System.Drawing;
     using System.Reflection;
 
     using Labo.Common.Reflection;
@@ -151,21 +152,28 @@
             Assert.AreEqual(default(ulong), EmitHelper.EmitConstructorInvoker(typeof(ulong))());
             Assert.AreEqual(default(float), EmitHelper.EmitConstructorInvoker(typeof(float))());
             Assert.AreEqual(default(decimal), EmitHelper.EmitConstructorInvoker(typeof(decimal))());
+            Assert.AreEqual(default(Rectangle), EmitHelper.EmitConstructorInvoker(typeof(Rectangle))());
+            Assert.AreEqual(default(Point), EmitHelper.EmitConstructorInvoker(typeof(Point))());
+            Assert.AreEqual(default(Color), EmitHelper.EmitConstructorInvoker(typeof(Color))());
             Assert.AreEqual(default(DateTime), EmitHelper.EmitConstructorInvoker(typeof(DateTime))());
         }
 
         [Test]
         public void EmitConstructorInvokerConstructStructValuesWithParameters()
         {
-            Type dateTimeType = typeof(DateTime);
+            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
             Type[] parameterTypes = { typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int) };
-            ConstructorInfo constructorInfo =
-                dateTimeType.GetConstructor(
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-                    null,
-                    parameterTypes,
-                    null);
-            Assert.AreEqual(new DateTime(2013, 9, 10, 16, 40, 30), EmitHelper.EmitConstructorInvoker(dateTimeType, constructorInfo, parameterTypes)(2013, 9, 10, 16, 40, 30));
+            object value = EmitHelper.EmitConstructorInvoker(typeof(DateTime), typeof(DateTime).GetConstructor(bindingFlags, null, parameterTypes, null), parameterTypes)(2013, 9, 10, 16, 40, 30);
+            Assert.AreEqual(new DateTime(2013, 9, 10, 16, 40, 30), value);
+            
+            parameterTypes = new [] { typeof(int), typeof(int), typeof(int), typeof(int) };
+            value = EmitHelper.EmitConstructorInvoker(typeof(Rectangle), typeof(Rectangle).GetConstructor(bindingFlags, null, parameterTypes, null), parameterTypes)(40, 20, 300, 200);
+            Assert.AreEqual(new Rectangle(40, 20, 300, 200), value);
+
+            parameterTypes = new [] { typeof(int), typeof(int) };
+            value = EmitHelper.EmitConstructorInvoker(typeof(Point), typeof(Point).GetConstructor(bindingFlags, null, parameterTypes, null), parameterTypes)(10, 20);
+            Assert.AreEqual(new Point(10, 20), value);
         }
 
         [Test]
