@@ -58,6 +58,7 @@
     <Compile Include="Patterns\Singleton.cs" />
     <Compile Include="Patterns\TransientFactoryInstanceCreator.cs" />
     <Compile Include="Reflection\Delegates.cs" />
+    <Compile Include="Reflection\DynamicMethodHelper.cs" />
     <Compile Include="Reflection\EmitHelper.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <AutoGen>True</AutoGen>

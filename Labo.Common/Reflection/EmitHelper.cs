@@ -39,57 +39,176 @@ namespace Labo.Common.Reflection
     public static class EmitHelper
     {
         /// <summary>
-        /// Emits the constructor invoker.
+        /// Pushes a null reference (type O) onto the evaluation stack.
         /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="constructorInfo">The constructor info.</param>
-        /// <param name="parameterTypes">The parameter types.</param>
-        /// <returns>constructor invoker.</returns>
-        public static ConstructorInvoker EmitConstructorInvoker(Type type, ConstructorInfo constructorInfo = null, Type[] parameterTypes = null)
+        /// <param name="generator">The generator.</param>
+        public static void LdNull(ILGenerator generator)
         {
-            if (type == null)
+            if (generator == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException("generator");
             }
 
-            if (parameterTypes == null)
+            generator.Emit(OpCodes.Ldnull);
+        }
+
+        /// <summary>
+        ///  Pops the current value from the top of the evaluation stack and stores it in a the local variable list at a specified index.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="index">The index.</param>
+        public static void Stloc(ILGenerator generator, short index)
+        {
+            if (generator == null)
             {
-                parameterTypes = Type.EmptyTypes;
+                throw new ArgumentNullException("generator");
             }
 
-            DynamicMethod dynamicMethod = new DynamicMethod("ctor", MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard, typeof(object), new[] { typeof(object) }, type, true);
-            ILGenerator generator = dynamicMethod.GetILGenerator();
-
-            if (type.IsValueType && parameterTypes.Length == 0)
+            if (index >= byte.MinValue && index <= byte.MaxValue)
             {
-                generator.DeclareLocal(type);
-                LdlocaS(generator, 0);
-                Initobj(generator, type);
-                Ldloc0(generator);
-            }
-            else
-            {
-                if (constructorInfo == null)
-                {
-                    throw new ArgumentNullException("constructorInfo");
-                }
-
-                for (int i = 0; i < parameterTypes.Length; i++)
-                {
-                    Type parameterType = parameterTypes[i];
-                    Ldarg(generator, 0);
-                    LdcI4(generator, i);
-                    LdelemRef(generator);
-                    CastIfNotObject(generator, parameterType);
-                }
-
-                Newobj(generator, constructorInfo);
+                StlocS(generator, (byte)index);
             }
 
-            BoxIfValueType(generator, type);
-            Ret(generator);
+            generator.Emit(OpCodes.Stloc, index);
+        }
 
-           return (ConstructorInvoker)dynamicMethod.CreateDelegate(typeof(ConstructorInvoker));
+        /// <summary>
+        ///  Pops the current value from the top of the evaluation stack and stores it in a the local variable list at index (short form).
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="index">The index.</param>
+        public static void StlocS(ILGenerator generator, byte index)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            switch (index)
+            {
+                case 0:
+                    Stloc0(generator);
+                    break;
+                case 1:
+                    Stloc1(generator);
+                    break;
+                case 2:
+                    Stloc2(generator);
+                    break;
+                case 3:
+                    Stloc3(generator);
+                    break;
+
+                default:
+                    generator.Emit(OpCodes.Stloc_S, index);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Pops the current value from the top of the evaluation stack and stores it in a the local variable list at index 0.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        public static void Stloc0(ILGenerator generator)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Stloc_0);
+        }
+
+        /// <summary>
+        /// Pops the current value from the top of the evaluation stack and stores it in a the local variable list at index 1.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        public static void Stloc1(ILGenerator generator)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Stloc_1);
+        }
+
+        /// <summary>
+        /// Pops the current value from the top of the evaluation stack and stores it in a the local variable list at index 2.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        public static void Stloc2(ILGenerator generator)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Stloc_2);
+        }
+
+        /// <summary>
+        /// Pops the current value from the top of the evaluation stack and stores it in a the local variable list at index 3.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        public static void Stloc3(ILGenerator generator)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Stloc_3);
+        }
+
+        /// <summary>
+        /// Calls the method indicated by the passed method descriptor.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="methodInfo">The method information.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// generator
+        /// or
+        /// methodInfo
+        /// </exception>
+        public static void Call(ILGenerator generator, MethodInfo methodInfo)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            if (methodInfo == null)
+            {
+                throw new ArgumentNullException("methodInfo");
+            }
+
+            generator.Emit(OpCodes.Call, methodInfo);
+        }
+
+        /// <summary>
+        ///  Calls a late-bound method on an object, pushing the return value onto the evaluation stack.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="methodInfo">The method information.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// generator
+        /// or
+        /// methodInfo
+        /// </exception>
+        public static void CallVirt(ILGenerator generator, MethodInfo methodInfo)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            if (methodInfo == null)
+            {
+                throw new ArgumentNullException("methodInfo");
+            }
+
+            generator.Emit(OpCodes.Callvirt, methodInfo);
         }
 
         /// <summary>
@@ -113,7 +232,7 @@ namespace Labo.Common.Reflection
         }
 
         /// <summary>
-        /// Boxes the type of if value.
+        /// Boxes the type of if it is value type.
         /// </summary>
         /// <param name="generator">The il generator.</param>
         /// <param name="type">The type.</param>
@@ -132,6 +251,34 @@ namespace Labo.Common.Reflection
             if (type.IsValueType)
             {
                 Box(generator, type);
+            }
+        }
+
+        /// <summary>
+        /// UnBoxes the type of if it is value type.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="type">The type.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// generator
+        /// or
+        /// type
+        /// </exception>
+        public static void UnBoxIfValueType(ILGenerator generator, Type type)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (type.IsValueType)
+            {
+                UnboxAny(generator, type);
             }
         }
 
@@ -429,6 +576,22 @@ namespace Labo.Common.Reflection
             }
 
             generator.Emit(OpCodes.Ldloc_0);
+        }
+
+        /// <summary>
+        /// Loads the local variable at a specific index onto the evaluation stack.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="index">The index.</param>
+        /// <exception cref="System.ArgumentNullException">generator</exception>
+        public static void Ldloc(ILGenerator generator, short index)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Ldloc, index);
         }
     }
 }

@@ -1,15 +1,15 @@
 ﻿namespace Labo.Common.Ioc.Tests
 {
-    using Labo.Common.Ioc.Autofac;
+    using Labo.Common.Ioc.SimpleInjector;
 
     using NUnit.Framework;
 
     [TestFixture]
-    public class AutofacContainerTestFixture : IocContainerTestFixture
+    public class SimpleInjectorContainerTestFixture : IocContainerTestFixture
     {
         public override IIocContainer CreateContainer()
         {
-            return new AutofacIocContainer();
+            return new SimpleInjectorIocContainer();
         }
     }
 }

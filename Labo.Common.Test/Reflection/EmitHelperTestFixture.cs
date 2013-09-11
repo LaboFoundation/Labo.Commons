@@ -3,13 +3,14 @@
     using System;
     using System.Drawing;
     using System.Reflection;
+    using System.Text;
 
     using Labo.Common.Reflection;
 
     using NUnit.Framework;
 
     [TestFixture]
-    public class EmitHelperTestFixture
+    public class DynamicMethodHelperTestFixture
     {
         private class Person
         {
@@ -63,7 +64,7 @@
         {
             Type personType = typeof(Person);
             Type[] parameterTypes = { typeof(string), typeof(string), typeof(int) };
-            ConstructorInvoker constructorInvoker = EmitHelper.EmitConstructorInvoker(
+            ConstructorInvoker constructorInvoker = DynamicMethodHelper.EmitConstructorInvoker(
                 personType,
                 personType.GetConstructor(
                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
@@ -89,7 +90,7 @@
         {
             Type personType = typeof(Person);
             Type[] parameterTypes = { typeof(string), typeof(string), typeof(int), typeof(Child) };
-            ConstructorInvoker constructorInvoker = EmitHelper.EmitConstructorInvoker(
+            ConstructorInvoker constructorInvoker = DynamicMethodHelper.EmitConstructorInvoker(
                 personType,
                 personType.GetConstructor(
                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
@@ -121,7 +122,7 @@
         {
             Type personType = typeof(Person);
             Type[] parameterTypes = { };
-            ConstructorInvoker constructorInvoker = EmitHelper.EmitConstructorInvoker(
+            ConstructorInvoker constructorInvoker = DynamicMethodHelper.EmitConstructorInvoker(
                 personType,
                 personType.GetConstructor(
                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
@@ -141,21 +142,21 @@
         [Test]
         public void EmitConstructorInvokerConstructStructValues()
         {
-            Assert.AreEqual(default(bool), EmitHelper.EmitConstructorInvoker(typeof(bool))());
-            Assert.AreEqual(default(byte), EmitHelper.EmitConstructorInvoker(typeof(byte))());
-            Assert.AreEqual(default(sbyte), EmitHelper.EmitConstructorInvoker(typeof(sbyte))());
-            Assert.AreEqual(default(short), EmitHelper.EmitConstructorInvoker(typeof(short))());
-            Assert.AreEqual(default(ushort), EmitHelper.EmitConstructorInvoker(typeof(ushort))());
-            Assert.AreEqual(default(int), EmitHelper.EmitConstructorInvoker(typeof(int))());
-            Assert.AreEqual(default(uint), EmitHelper.EmitConstructorInvoker(typeof(uint))());
-            Assert.AreEqual(default(long), EmitHelper.EmitConstructorInvoker(typeof(long))());
-            Assert.AreEqual(default(ulong), EmitHelper.EmitConstructorInvoker(typeof(ulong))());
-            Assert.AreEqual(default(float), EmitHelper.EmitConstructorInvoker(typeof(float))());
-            Assert.AreEqual(default(decimal), EmitHelper.EmitConstructorInvoker(typeof(decimal))());
-            Assert.AreEqual(default(Rectangle), EmitHelper.EmitConstructorInvoker(typeof(Rectangle))());
-            Assert.AreEqual(default(Point), EmitHelper.EmitConstructorInvoker(typeof(Point))());
-            Assert.AreEqual(default(Color), EmitHelper.EmitConstructorInvoker(typeof(Color))());
-            Assert.AreEqual(default(DateTime), EmitHelper.EmitConstructorInvoker(typeof(DateTime))());
+            Assert.AreEqual(default(bool), DynamicMethodHelper.EmitConstructorInvoker(typeof(bool))());
+            Assert.AreEqual(default(byte), DynamicMethodHelper.EmitConstructorInvoker(typeof(byte))());
+            Assert.AreEqual(default(sbyte), DynamicMethodHelper.EmitConstructorInvoker(typeof(sbyte))());
+            Assert.AreEqual(default(short), DynamicMethodHelper.EmitConstructorInvoker(typeof(short))());
+            Assert.AreEqual(default(ushort), DynamicMethodHelper.EmitConstructorInvoker(typeof(ushort))());
+            Assert.AreEqual(default(int), DynamicMethodHelper.EmitConstructorInvoker(typeof(int))());
+            Assert.AreEqual(default(uint), DynamicMethodHelper.EmitConstructorInvoker(typeof(uint))());
+            Assert.AreEqual(default(long), DynamicMethodHelper.EmitConstructorInvoker(typeof(long))());
+            Assert.AreEqual(default(ulong), DynamicMethodHelper.EmitConstructorInvoker(typeof(ulong))());
+            Assert.AreEqual(default(float), DynamicMethodHelper.EmitConstructorInvoker(typeof(float))());
+            Assert.AreEqual(default(decimal), DynamicMethodHelper.EmitConstructorInvoker(typeof(decimal))());
+            Assert.AreEqual(default(Rectangle), DynamicMethodHelper.EmitConstructorInvoker(typeof(Rectangle))());
+            Assert.AreEqual(default(Point), DynamicMethodHelper.EmitConstructorInvoker(typeof(Point))());
+            Assert.AreEqual(default(Color), DynamicMethodHelper.EmitConstructorInvoker(typeof(Color))());
+            Assert.AreEqual(default(DateTime), DynamicMethodHelper.EmitConstructorInvoker(typeof(DateTime))());
         }
 
         [Test]
@@ -164,40 +165,75 @@
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
             Type[] parameterTypes = { typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int) };
-            object value = EmitHelper.EmitConstructorInvoker(typeof(DateTime), typeof(DateTime).GetConstructor(bindingFlags, null, parameterTypes, null), parameterTypes)(2013, 9, 10, 16, 40, 30);
+            object value = DynamicMethodHelper.EmitConstructorInvoker(typeof(DateTime), typeof(DateTime).GetConstructor(bindingFlags, null, parameterTypes, null), parameterTypes)(2013, 9, 10, 16, 40, 30);
             Assert.AreEqual(new DateTime(2013, 9, 10, 16, 40, 30), value);
             
             parameterTypes = new [] { typeof(int), typeof(int), typeof(int), typeof(int) };
-            value = EmitHelper.EmitConstructorInvoker(typeof(Rectangle), typeof(Rectangle).GetConstructor(bindingFlags, null, parameterTypes, null), parameterTypes)(40, 20, 300, 200);
+            value = DynamicMethodHelper.EmitConstructorInvoker(typeof(Rectangle), typeof(Rectangle).GetConstructor(bindingFlags, null, parameterTypes, null), parameterTypes)(40, 20, 300, 200);
             Assert.AreEqual(new Rectangle(40, 20, 300, 200), value);
 
             parameterTypes = new [] { typeof(int), typeof(int) };
-            value = EmitHelper.EmitConstructorInvoker(typeof(Point), typeof(Point).GetConstructor(bindingFlags, null, parameterTypes, null), parameterTypes)(10, 20);
+            value = DynamicMethodHelper.EmitConstructorInvoker(typeof(Point), typeof(Point).GetConstructor(bindingFlags, null, parameterTypes, null), parameterTypes)(10, 20);
             Assert.AreEqual(new Point(10, 20), value);
         }
 
         [Test]
         public void EmitConstructorInvokerConstructNullableValues()
         {
-            Assert.AreEqual(default(bool?), EmitHelper.EmitConstructorInvoker(typeof(bool?))());
-            Assert.AreEqual(default(byte?), EmitHelper.EmitConstructorInvoker(typeof(byte?))());
-            Assert.AreEqual(default(sbyte?), EmitHelper.EmitConstructorInvoker(typeof(sbyte?))());
-            Assert.AreEqual(default(short?), EmitHelper.EmitConstructorInvoker(typeof(short?))());
-            Assert.AreEqual(default(ushort?), EmitHelper.EmitConstructorInvoker(typeof(ushort?))());
-            Assert.AreEqual(default(int?), EmitHelper.EmitConstructorInvoker(typeof(int?))());
-            Assert.AreEqual(default(uint?), EmitHelper.EmitConstructorInvoker(typeof(uint?))());
-            Assert.AreEqual(default(long?), EmitHelper.EmitConstructorInvoker(typeof(long?))());
-            Assert.AreEqual(default(ulong?), EmitHelper.EmitConstructorInvoker(typeof(ulong?))());
-            Assert.AreEqual(default(float?), EmitHelper.EmitConstructorInvoker(typeof(float?))());
-            Assert.AreEqual(default(decimal?), EmitHelper.EmitConstructorInvoker(typeof(decimal?))());
-            Assert.AreEqual(default(DateTime?), EmitHelper.EmitConstructorInvoker(typeof(DateTime?))());
+            Assert.AreEqual(default(bool?), DynamicMethodHelper.EmitConstructorInvoker(typeof(bool?))());
+            Assert.AreEqual(default(byte?), DynamicMethodHelper.EmitConstructorInvoker(typeof(byte?))());
+            Assert.AreEqual(default(sbyte?), DynamicMethodHelper.EmitConstructorInvoker(typeof(sbyte?))());
+            Assert.AreEqual(default(short?), DynamicMethodHelper.EmitConstructorInvoker(typeof(short?))());
+            Assert.AreEqual(default(ushort?), DynamicMethodHelper.EmitConstructorInvoker(typeof(ushort?))());
+            Assert.AreEqual(default(int?), DynamicMethodHelper.EmitConstructorInvoker(typeof(int?))());
+            Assert.AreEqual(default(uint?), DynamicMethodHelper.EmitConstructorInvoker(typeof(uint?))());
+            Assert.AreEqual(default(long?), DynamicMethodHelper.EmitConstructorInvoker(typeof(long?))());
+            Assert.AreEqual(default(ulong?), DynamicMethodHelper.EmitConstructorInvoker(typeof(ulong?))());
+            Assert.AreEqual(default(float?), DynamicMethodHelper.EmitConstructorInvoker(typeof(float?))());
+            Assert.AreEqual(default(decimal?), DynamicMethodHelper.EmitConstructorInvoker(typeof(decimal?))());
+            Assert.AreEqual(default(DateTime?), DynamicMethodHelper.EmitConstructorInvoker(typeof(DateTime?))());
         }
 
         [Test]
         public void EmitConstructorInvokerConstructEnum()
         {
-            TestEnum enumValue = (TestEnum)EmitHelper.EmitConstructorInvoker(typeof(TestEnum))();
+            TestEnum enumValue = (TestEnum)DynamicMethodHelper.EmitConstructorInvoker(typeof(TestEnum))();
             Assert.AreEqual(default(TestEnum), enumValue);
+        }
+
+        private class MathHelper
+        {
+            public double PI { get; private set; }
+
+            public int Sum(int a, int b)
+            {
+                return a + b;
+            }
+
+            public void SetPI(double pi)
+            {
+                PI = pi;
+            }
+        }
+
+        [Test]
+        public void EmitMethodInvoker()
+        {
+            Type[] parameterTypes = { typeof(int), typeof(int) };
+            MathHelper mathHelper = new MathHelper();
+            object value = DynamicMethodHelper.EmitMethodInvoker(
+                typeof(MathHelper),
+                typeof(MathHelper).GetMethod("Sum", parameterTypes),
+                parameterTypes)(mathHelper, 10, 5);
+
+            Assert.AreEqual(mathHelper.Sum(10, 5), (int)value);
+
+            DynamicMethodHelper.EmitMethodInvoker(
+                typeof(MathHelper),
+                typeof(MathHelper).GetMethod("SetPI", new[] { typeof(double) }),
+                new []{ typeof(double) })(mathHelper, Math.PI);
+
+            Assert.AreEqual(Math.PI, mathHelper.PI);
         }
     }
 }
