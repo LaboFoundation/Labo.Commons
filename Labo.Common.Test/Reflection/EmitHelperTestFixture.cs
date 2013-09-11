@@ -210,14 +210,32 @@
                 return a + b;
             }
 
+            public virtual int GetAnInteger()
+            {
+                return 10;
+            }
+
             public void SetPI(double pi)
             {
                 PI = pi;
             }
+
+            public double GetPI()
+            {
+                return PI;
+            }
+        }
+
+        private class MathHelperImpl : MathHelper
+        {
+            public override int GetAnInteger()
+            {
+                return 20;
+            }
         }
 
         [Test]
-        public void EmitMethodInvoker()
+        public void EmitMethodInvokerInvokeMethodWithReturnType()
         {
             Type[] parameterTypes = { typeof(int), typeof(int) };
             MathHelper mathHelper = new MathHelper();
@@ -227,11 +245,46 @@
                 parameterTypes)(mathHelper, 10, 5);
 
             Assert.AreEqual(mathHelper.Sum(10, 5), (int)value);
+        }
 
-            DynamicMethodHelper.EmitMethodInvoker(
+        [Test]
+        public void EmitMethodInvokerInvokeMethodWithReturnTypeAndNoArguments()
+        {
+            MathHelper mathHelper = new MathHelper();
+            mathHelper.SetPI(Math.PI);
+            object value = DynamicMethodHelper.EmitMethodInvoker(
                 typeof(MathHelper),
-                typeof(MathHelper).GetMethod("SetPI", new[] { typeof(double) }),
-                new []{ typeof(double) })(mathHelper, Math.PI);
+                typeof(MathHelper).GetMethod("GetPI"))(mathHelper);
+
+            Assert.AreEqual(Math.PI, (double)value);
+        }
+
+        [Test]
+        public void EmitMethodInvokerInvokeVirtualMethodWithReturnTypeAndNoArguments()
+        {
+            MathHelper mathHelper = new MathHelper();
+            object value = DynamicMethodHelper.EmitMethodInvoker(
+                typeof(MathHelper),
+                typeof(MathHelper).GetMethod("GetAnInteger"))(mathHelper);
+
+            Assert.AreEqual(10, (int)value);
+
+            MathHelperImpl mathHelperImpl = new MathHelperImpl();
+            value = DynamicMethodHelper.EmitMethodInvoker(
+                typeof(MathHelperImpl),
+                typeof(MathHelperImpl).GetMethod("GetAnInteger"))(mathHelperImpl);
+
+            Assert.AreEqual(20, (int)value);
+        }
+
+        [Test]
+        public void EmitMethodInvokerInvokeMethodWithoutReturnType()
+        {
+            MathHelper mathHelper = new MathHelper();
+            DynamicMethodHelper.EmitMethodInvoker(
+            typeof(MathHelper),
+            typeof(MathHelper).GetMethod("SetPI", new[] { typeof(double) }),
+            new[] { typeof(double) })(mathHelper, Math.PI);
 
             Assert.AreEqual(Math.PI, mathHelper.PI);
         }

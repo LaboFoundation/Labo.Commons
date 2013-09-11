@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Funq">
+      <HintPath>..\sharedlibs\Funq\NET40\Funq.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -51,12 +54,18 @@
     <Compile Include="HaveBoxContainerTestFixture.cs" />
     <Compile Include="HiroContainerTestFixture.cs" />
     <Compile Include="IocContainerTestFixture.cs" />
+    <Compile Include="LaboContainerTestFixture.cs" />
     <Compile Include="LightCoreContainerTestFixture.cs" />
     <Compile Include="LightInjectContainerTestFixture.cs" />
     <Compile Include="LinfuContainerTestFixture.cs" />
     <Compile Include="MugenContainerTestFixture.cs" />
     <Compile Include="MunqContainerTestFixture.cs" />
     <Compile Include="NInjectContainerTestFixture.cs" />
+    <Compile Include="Performance\Domain\ErrorHandler.cs" />
+    <Compile Include="Performance\Domain\IErrorHandler.cs" />
+    <Compile Include="Performance\Domain\ILogger.cs" />
+    <Compile Include="Performance\Domain\Logger.cs" />
+    <Compile Include="Performance\IocContainerPerformanceTest.cs" />
     <Compile Include="PetiteContainerTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleInjectorContainerTestFixture.cs" />
@@ -148,10 +157,15 @@
       <Project>{d42706de-715e-463e-86b9-41287191deeb}</Project>
       <Name>Labo.Common.Ioc</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Labo.Common\Labo.Common.csproj">
+      <Project>{d26f97ad-fe8c-4e37-b84f-463efcd0464f}</Project>
+      <Name>Labo.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -50,7 +50,15 @@
     <Compile Include="IIocContainerResolver.cs" />
     <Compile Include="IIocModule.cs" />
     <Compile Include="IIocModuleRegistrar.cs" />
+    <Compile Include="ILaboIocServiceCreator.cs" />
+    <Compile Include="ILaboIocServiceLifetimeManager.cs" />
     <Compile Include="IocContainer.cs" />
+    <Compile Include="LaboIocContainer.cs" />
+    <Compile Include="LaboIocEmitServiceCreator.cs" />
+    <Compile Include="LaboIocFuncServiceCreator.cs" />
+    <Compile Include="LaboIocServiceKey.cs" />
+    <Compile Include="LaboIocServiceSingletonLifetimeManager.cs" />
+    <Compile Include="LaboIocServiceTransientLifetimeManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

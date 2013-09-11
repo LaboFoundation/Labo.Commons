@@ -96,7 +96,7 @@ namespace Labo.Common.Ioc
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        TService GetInstance<TService>(params object[] parameters);
+        TService GetInstance<TService>(params object[] parameters) where TService : class;
 
         /// <summary>
         /// Gets the instance by instance name.

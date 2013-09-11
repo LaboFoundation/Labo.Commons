@@ -243,6 +243,7 @@ namespace Labo.Common.Ioc
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
         public TService GetInstance<TService>(params object[] parameters)
+              where TService : class 
         {
             return (TService)GetInstance(typeof(TService), parameters);
         }

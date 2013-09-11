@@ -53,7 +53,7 @@
         }
 
         private static void AssertRegisterSingleInstance<TService>(IIocContainerResolver iocContainer)
-           where TService : ITestService
+           where TService : class, ITestService
         {
             ITestService testService = iocContainer.GetInstance<TService>();
             Assert.IsNotNull(testService);
@@ -143,7 +143,7 @@
         }
 
         private static void AssertRegisterInstance<TService>(IIocContainerResolver iocContainer)
-            where TService : ITestService
+            where TService : class, ITestService
         {
             ITestService testService = iocContainer.GetInstance<TService>();
             Assert.IsNotNull(testService);
