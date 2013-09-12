@@ -34,7 +34,7 @@
             {
                 IIocContainer container = containerEntry.Value();
 
-                container.RegisterSingleInstance<ILogger>(x => new Logger());
+                container.RegisterSingleInstance<ILogger, Logger>();
                 container.RegisterSingleInstance<IErrorHandler, ErrorHandler>();
 
                 Console.Write(string.Format("\n{0}", containerEntry.Key).PadRight(20, ' '));

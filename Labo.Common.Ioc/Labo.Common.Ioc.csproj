@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseIocContainer.cs" />
+    <Compile Include="CircularDependencyValidator.cs" />
     <Compile Include="Exceptions\IocContainerDependencyResolutionException.cs" />
     <Compile Include="Exceptions\IocContainerNotResgisteredException.cs" />
     <Compile Include="IIocContainer.cs" />

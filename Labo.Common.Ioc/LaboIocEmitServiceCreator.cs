@@ -50,6 +50,11 @@ namespace Labo.Common.Ioc
         private readonly ConcurrentDictionary<ConstructorInfo, ConstructorInvoker> m_ConstructorInvokerCache;
 
         /// <summary>
+        /// The circular dependency validator.
+        /// </summary>
+        private readonly CircularDependencyValidator m_CircularDependencyValidator;
+
+        /// <summary>
         /// The service implementation type
         /// </summary>
         private readonly Type m_ServiceImplementationType;
@@ -61,7 +66,7 @@ namespace Labo.Common.Ioc
         public LaboIocEmitServiceCreator(Type serviceImplemetationType)
         {
             m_ServiceImplementationType = serviceImplemetationType;
-
+            m_CircularDependencyValidator = new CircularDependencyValidator(serviceImplemetationType);
             m_ConstructorInvokerCache = new ConcurrentDictionary<ConstructorInfo, ConstructorInvoker>();
         }
 
@@ -96,25 +101,34 @@ namespace Labo.Common.Ioc
             }
             else
             {
-                constructor = m_ServiceImplementationType.GetConstructors(bindingFlags).FirstOrDefault();
-
-                if (constructor == null)
+                try
                 {
-                    throw new IocContainerDependencyResolutionException(string.Format(CultureInfo.CurrentCulture, Strings.LaboIocEmitServiceCreator_CreateServiceInstance_NoConstructorsCanBeFound, m_ServiceImplementationType.FullName));
+                    m_CircularDependencyValidator.CheckCircularDependency();
+
+                    constructor = m_ServiceImplementationType.GetConstructors(bindingFlags).FirstOrDefault();
+
+                    if (constructor == null)
+                    {
+                        throw new IocContainerDependencyResolutionException(string.Format(CultureInfo.CurrentCulture, Strings.LaboIocEmitServiceCreator_CreateServiceInstance_NoConstructorsCanBeFound, m_ServiceImplementationType.FullName));
+                    }
+
+                    ParameterInfo[] constructorParameters = constructor.GetParameters();
+                    int constructorParametersLength = constructorParameters.Length;
+                    parameters = new object[constructorParametersLength];
+                    parameterTypes = new Type[constructorParametersLength];
+                    for (int i = 0; i < constructorParametersLength; i++)
+                    {
+                        ParameterInfo constructorParameter = constructorParameters[i];
+                        Type constructorParameterType = constructorParameter.ParameterType;
+                        parameterTypes[i] = constructorParameterType;
+
+                        object parameterInstance = containerResolver.GetInstanceOptional(constructorParameterType) ?? TypeUtils.GetDefaultValueOfType(constructorParameterType);
+                        parameters[i] = parameterInstance;
+                    }
                 }
-
-                ParameterInfo[] constructorParameters = constructor.GetParameters();
-                int constructorParametersLength = constructorParameters.Length;
-                parameters = new object[constructorParametersLength];
-                parameterTypes = new Type[constructorParametersLength];
-                for (int i = 0; i < constructorParametersLength; i++)
+                finally 
                 {
-                    ParameterInfo constructorParameter = constructorParameters[i];
-                    Type constructorParameterType = constructorParameter.ParameterType;
-                    parameterTypes[i] = constructorParameterType;
-
-                    object parameterInstance = containerResolver.GetInstanceOptional(constructorParameterType) ?? TypeUtils.GetDefaultValueOfType(constructorParameterType);
-                    parameters[i] = parameterInstance;
+                    m_CircularDependencyValidator.Release();
                 }
             }
 
