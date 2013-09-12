@@ -18,9 +18,9 @@
         private static readonly List<long> s_BatchIterations = new List<long> { 1000, 5000, 20000, 100000, 250000, 1000000, 5000000 };
         private static readonly Dictionary<string, Func<IIocContainer>> s_Containers = new Dictionary<string, Func<IIocContainer>>
                                                                                      {
-                                                                                         { "Labo", () => new LaboIocContainer() },
                                                                                          { "Autofac", () => new AutofacIocContainer() },
-                                                                                         { "SimpleInjector", () => new SimpleInjectorIocContainer()}
+                                                                                         { "SimpleInjector", () => new SimpleInjectorIocContainer()},
+                                                                                         { "Labo", () => new LaboIocContainer() },
                                                                                      };
             
         [Test]
@@ -42,10 +42,11 @@
                 s_BatchIterations.ForEach(
                     x =>
                         {
+                            GC.Collect();
+                            GC.WaitForPendingFinalizers();
+
                             //warm up
                             container.GetInstance<IErrorHandler>();
-
-                            GC.Collect();
 
                             Console.Write(MeasurePerformance(() => container.GetInstance<IErrorHandler>(), x).ToStringInvariant().PadRight(20, ' '));
                         });

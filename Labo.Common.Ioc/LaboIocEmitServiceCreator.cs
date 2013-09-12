@@ -30,9 +30,12 @@ namespace Labo.Common.Ioc
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
 
+    using Labo.Common.Ioc.Exceptions;
+    using Labo.Common.Ioc.Resources;
     using Labo.Common.Reflection;
     using Labo.Common.Utils;
 
@@ -85,6 +88,11 @@ namespace Labo.Common.Ioc
                 }
 
                 constructor = m_ServiceImplementationType.GetConstructor(bindingFlags, null, parameterTypes, null);
+
+                if (constructor == null)
+                {
+                    throw new IocContainerDependencyResolutionException(string.Format(CultureInfo.CurrentCulture, Strings.LaboIocEmitServiceCreator_CreateServiceInstance_RequiredConstructorNotMatchWithSignature, m_ServiceImplementationType.FullName, StringUtils.Join(parameterTypes.Select(x => x.FullName), ", ")));
+                }
             }
             else
             {
@@ -92,7 +100,7 @@ namespace Labo.Common.Ioc
 
                 if (constructor == null)
                 {
-                    throw new InvalidOperationException();
+                    throw new IocContainerDependencyResolutionException(string.Format(CultureInfo.CurrentCulture, Strings.LaboIocEmitServiceCreator_CreateServiceInstance_NoConstructorsCanBeFound, m_ServiceImplementationType.FullName));
                 }
 
                 ParameterInfo[] constructorParameters = constructor.GetParameters();
@@ -102,8 +110,11 @@ namespace Labo.Common.Ioc
                 for (int i = 0; i < constructorParametersLength; i++)
                 {
                     ParameterInfo constructorParameter = constructorParameters[i];
-                    parameterTypes[i] = constructorParameter.ParameterType;
-                    parameters[i] = containerResolver.GetInstance(constructorParameter.ParameterType);
+                    Type constructorParameterType = constructorParameter.ParameterType;
+                    parameterTypes[i] = constructorParameterType;
+
+                    object parameterInstance = containerResolver.GetInstanceOptional(constructorParameterType) ?? TypeUtils.GetDefaultValueOfType(constructorParameterType);
+                    parameters[i] = parameterInstance;
                 }
             }
 
