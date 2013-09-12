@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IocContainerNotResgisteredException.cs" company="Labo">
+// <copyright file="IocContainerRegistrationException.cs" company="Labo">
 //   The MIT License (MIT)
 //   
 //   Copyright (c) 2013 Bora Akgun
@@ -22,7 +22,7 @@
 //   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//  Inversion of control container is not registered exception class.
+//   Inversion of control container registration exceptions.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -35,52 +35,52 @@ namespace Labo.Common.Ioc.Exceptions
     using Labo.Common.Exceptions;
 
     /// <summary>
-    /// Inversion of control container is not registered exception class.
+    /// Inversion of control container registration exceptions.
     /// </summary>
     [Serializable]
-    public class IocContainerNotResgisteredException : CoreLevelException
+    public class IocContainerRegistrationException : CoreLevelException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Labo.Common.Ioc.Exceptions.IocContainerNotResgisteredException"/> class.
+        /// Initializes a new instance of the <see cref="Labo.Common.Ioc.Exceptions.IocContainerRegistrationException"/> class.
         /// </summary>
-        public IocContainerNotResgisteredException()
+        public IocContainerRegistrationException()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Labo.Common.Ioc.Exceptions.IocContainerNotResgisteredException"/> class.
+        /// Initializes a new instance of the <see cref="Labo.Common.Ioc.Exceptions.IocContainerRegistrationException"/> class.
         /// </summary>
         /// <param name="innerException">The inner exception.</param>
-        public IocContainerNotResgisteredException(Exception innerException)
+        public IocContainerRegistrationException(Exception innerException)
             : base(null, innerException)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Labo.Common.Ioc.Exceptions.IocContainerNotResgisteredException"/> class.
+        /// Initializes a new instance of the <see cref="Labo.Common.Ioc.Exceptions.IocContainerRegistrationException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public IocContainerNotResgisteredException(string message)
+        public IocContainerRegistrationException(string message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Labo.Common.Ioc.Exceptions.IocContainerNotResgisteredException"/> class.
+        /// Initializes a new instance of the <see cref="Labo.Common.Ioc.Exceptions.IocContainerRegistrationException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
-        public IocContainerNotResgisteredException(string message, Exception innerException)
+        public IocContainerRegistrationException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Labo.Common.Ioc.Exceptions.IocContainerNotResgisteredException"/> class.
+        /// Initializes a new instance of the <see cref="Labo.Common.Ioc.Exceptions.IocContainerRegistrationException"/> class.
         /// </summary>
         /// <param name="serializationInfo">The serialization info.</param>
         /// <param name="context">The context.</param>
-        protected IocContainerNotResgisteredException(SerializationInfo serializationInfo, StreamingContext context)
+        protected IocContainerRegistrationException(SerializationInfo serializationInfo, StreamingContext context)
             : base(serializationInfo, context)
         {
         }

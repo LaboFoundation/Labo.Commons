@@ -33,6 +33,10 @@ namespace Labo.Common.Ioc
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
+    using Labo.Common.Ioc.Exceptions;
+    using Labo.Common.Ioc.Resources;
+    using Labo.Common.Utils;
+
     /// <summary>
     /// Labo inversion of control container class.
     /// </summary>
@@ -79,6 +83,8 @@ namespace Labo.Common.Ioc
         /// <param name="serviceType">Type of the service.</param>
         public override void RegisterSingleInstance(Type serviceType)
         {
+            ValidateServiceType(serviceType, "serviceType");
+
             m_ServiceEntries[new LaboIocServiceKey(null, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType));
         }
 
@@ -88,6 +94,8 @@ namespace Labo.Common.Ioc
         /// <param name="serviceType">Type of the service.</param>
         public override void RegisterInstance(Type serviceType)
         {
+            ValidateServiceType(serviceType, "serviceType");
+
             m_ServiceEntries[new LaboIocServiceKey(null, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType));
         }
 
@@ -98,6 +106,8 @@ namespace Labo.Common.Ioc
         /// <param name="implementationType">The type of the implementation.</param>
         public override void RegisterSingleInstance(Type serviceType, Type implementationType)
         {
+            ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
+
             m_ServiceEntries[new LaboIocServiceKey(null, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(implementationType));
         }
 
@@ -115,6 +125,8 @@ namespace Labo.Common.Ioc
         /// </param>
         public override void RegisterSingleInstanceNamed(Type serviceType, Type implementationType, string name)
         {
+            ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
+
             m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(implementationType));
         }
 
@@ -129,6 +141,8 @@ namespace Labo.Common.Ioc
         /// </param>
         public override void RegisterSingleInstanceNamed(Type serviceType, string name)
         {
+            ValidateServiceType(serviceType, "serviceType");
+
             m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType));
         }
 
@@ -157,6 +171,8 @@ namespace Labo.Common.Ioc
         /// </param>
         public override void RegisterInstance(Type serviceType, Type implementationType)
         {
+            ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
+
             m_ServiceEntries[new LaboIocServiceKey(null, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(implementationType));
         }
 
@@ -185,6 +201,8 @@ namespace Labo.Common.Ioc
         /// </param>
         public override void RegisterInstanceNamed(Type serviceType, Type implementationType, string name)
         {
+            ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
+
             m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(implementationType));
         }
 
@@ -199,6 +217,8 @@ namespace Labo.Common.Ioc
         /// </param>
         public override void RegisterInstanceNamed(Type serviceType, string name)
         {
+            ValidateServiceType(serviceType, "serviceType");
+
             m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType));
         }
 
@@ -314,6 +334,68 @@ namespace Labo.Common.Ioc
         public override bool IsRegistered(Type type, string name)
         {
             return m_ServiceEntries.ContainsKey(new LaboIocServiceKey(name, type));
+        }
+
+        /// <summary>
+        /// Validates the registration types.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="implementationType">Type of the implementation.</param>
+        /// <param name="serviceParamName">Name of the service param.</param>
+        /// <param name="implementationParamName">Name of the implementation param.</param>
+        /// <exception cref="System.ArgumentNullException">serviceType or implementationType
+        /// </exception>
+        /// <exception cref="Labo.Common.Ioc.Exceptions.IocContainerRegistrationException">
+        /// </exception>
+        private static void ValidateRegistrationTypes(Type serviceType, Type implementationType, string serviceParamName, string implementationParamName)
+        {
+            ValidateServiceType(serviceType, serviceParamName);
+
+            if (implementationType == null)
+            {
+                throw new ArgumentNullException(implementationParamName);
+            }
+
+            if (!serviceType.IsAssignableFrom(implementationType))
+            {
+                throw new IocContainerRegistrationException(Strings.LaboIocContainer_ValidateRegistrationTypes_XMustBeAssignableFromY.FormatWith(serviceType.FullName, implementationType.FullName));
+            }
+
+            if (!TypeUtils.IsReferenceType(implementationType))
+            {
+                throw new IocContainerRegistrationException(Strings.LaboIocContainer_ValidateRegistrationTypes_ImplementationTypeMustBeReferenceType.FormatWith(implementationType.FullName));
+            }
+
+            if (implementationType.IsAbstract || implementationType.IsInterface || implementationType.IsArray || implementationType == typeof(object))
+            {
+                throw new IocContainerRegistrationException(Strings.LaboIocContainer_ValidateRegistrationTypes_ImplementationCannotBeInRestrictedForms.FormatWith(implementationType.FullName));
+            }
+        }
+
+        /// <summary>
+        /// Validates the type of the service.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="serviceParamName">Name of the service param.</param>
+        /// <exception cref="System.ArgumentNullException">serviceType</exception>
+        /// <exception cref="Labo.Common.Ioc.Exceptions.IocContainerRegistrationException">
+        /// </exception>
+        private static void ValidateServiceType(Type serviceType, string serviceParamName)
+        {
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(serviceParamName);
+            }
+
+            if (serviceType == typeof(Type) || serviceType == typeof(string))
+            {
+                throw new IocContainerRegistrationException(Strings.LaboIocContainer_ValidateServiceType_ServiceTypeCannotBeOfRestrictedTypes.FormatWith(serviceType.FullName));
+            }
+
+            if (!TypeUtils.IsReferenceType(serviceType))
+            {
+                throw new IocContainerRegistrationException(Strings.LaboIocContainer_ValidateServiceType_ServiceTypeMustBeReferenceType.FormatWith(serviceType.FullName));
+            }
         }
     }
 }

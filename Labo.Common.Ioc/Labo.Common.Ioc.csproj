@@ -46,7 +46,8 @@
     <Compile Include="BaseIocContainer.cs" />
     <Compile Include="CircularDependencyValidator.cs" />
     <Compile Include="Exceptions\IocContainerDependencyResolutionException.cs" />
-    <Compile Include="Exceptions\IocContainerNotResgisteredException.cs" />
+    <Compile Include="Exceptions\IocContainerNotRegisteredException.cs" />
+    <Compile Include="Exceptions\IocContainerRegistrationException.cs" />
     <Compile Include="IIocContainer.cs" />
     <Compile Include="IIocContainerRegistrar.cs" />
     <Compile Include="IIocContainerResolver.cs" />

@@ -43,7 +43,7 @@ namespace Labo.Common.Ioc
             {
                 if (s_IocContainerImplementation == null)
                 {
-                    throw new IocContainerNotResgisteredException();
+                    throw new IocContainerNotRegisteredException();
                 }
 
                 return s_IocContainerImplementation;

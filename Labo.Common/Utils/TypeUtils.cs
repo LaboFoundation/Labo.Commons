@@ -204,5 +204,23 @@ namespace Labo.Common.Utils
 
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
+
+        /// <summary>
+        /// Determines whether [is reference type] [the specified type].
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>
+        ///   <c>true</c> if [is reference type] [the specified type]; otherwise, <c>false</c>.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">type</exception>
+        public static bool IsReferenceType(Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            return type.IsClass || type.IsInterface || type.IsAbstract;
+        }
     }
 }

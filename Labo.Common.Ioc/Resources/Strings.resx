@@ -104,4 +104,19 @@
   <data name="LaboIocEmitServiceCreator_CreateServiceInstance_NoConstructorsCanBeFound" xml:space="preserve">
     <value>No constructors on type '{0}' can be found.</value>
   </data>
+  <data name="LaboIocContainer_ValidateRegistrationTypes_ImplementationTypeMustBeReferenceType" xml:space="preserve">
+    <value>Implementation type '{0}' must be reference type</value>
+  </data>
+  <data name="LaboIocContainer_ValidateRegistrationTypes_XMustBeAssignableFromY" xml:space="preserve">
+    <value>'{0}' must be assignable from '{1}'</value>
+  </data>
+  <data name="LaboIocContainer_ValidateRegistrationTypes_ImplementationCannotBeInRestrictedForms" xml:space="preserve">
+    <value>Implementation type '{0}' cannot be abstract, interface, array or type of object</value>
+  </data>
+  <data name="LaboIocContainer_ValidateServiceType_ServiceTypeCannotBeOfRestrictedTypes" xml:space="preserve">
+    <value>Service type '{0}' cannot be type of Type or String</value>
+  </data>
+  <data name="LaboIocContainer_ValidateServiceType_ServiceTypeMustBeReferenceType" xml:space="preserve">
+    <value>Service type '{0}' must be reference type</value>
+  </data>
 </root>

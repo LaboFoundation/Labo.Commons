@@ -61,6 +61,52 @@ namespace Labo.Common.Ioc.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implementation type &apos;{0}&apos; cannot be abstract, interface, array or type of object.
+        /// </summary>
+        internal static string LaboIocContainer_ValidateRegistrationTypes_ImplementationCannotBeInRestrictedForms {
+            get {
+                return ResourceManager.GetString("LaboIocContainer_ValidateRegistrationTypes_ImplementationCannotBeInRestrictedForm" +
+                        "s", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implementation type &apos;{0}&apos; must be reference type.
+        /// </summary>
+        internal static string LaboIocContainer_ValidateRegistrationTypes_ImplementationTypeMustBeReferenceType {
+            get {
+                return ResourceManager.GetString("LaboIocContainer_ValidateRegistrationTypes_ImplementationTypeMustBeReferenceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; must be assignable from &apos;{1}&apos;.
+        /// </summary>
+        internal static string LaboIocContainer_ValidateRegistrationTypes_XMustBeAssignableFromY {
+            get {
+                return ResourceManager.GetString("LaboIocContainer_ValidateRegistrationTypes_XMustBeAssignableFromY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service type &apos;{0}&apos; cannot be type of Type or String.
+        /// </summary>
+        internal static string LaboIocContainer_ValidateServiceType_ServiceTypeCannotBeOfRestrictedTypes {
+            get {
+                return ResourceManager.GetString("LaboIocContainer_ValidateServiceType_ServiceTypeCannotBeOfRestrictedTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service type &apos;{0}&apos; must be reference type.
+        /// </summary>
+        internal static string LaboIocContainer_ValidateServiceType_ServiceTypeMustBeReferenceType {
+            get {
+                return ResourceManager.GetString("LaboIocContainer_ValidateServiceType_ServiceTypeMustBeReferenceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No constructors on type &apos;{0}&apos; can be found..
         /// </summary>
         internal static string LaboIocEmitServiceCreator_CreateServiceInstance_NoConstructorsCanBeFound {
