@@ -101,6 +101,7 @@ namespace Labo.Common.Ioc
             }
             else
             {
+                // TODO: Emit Constructor parameter invocations and cache method implementation.
                 try
                 {
                     m_CircularDependencyValidator.CheckCircularDependency();

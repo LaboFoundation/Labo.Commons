@@ -10,8 +10,8 @@
         {
             IIocContainer container = new LaboIocContainer();
 
-            container.RegisterInstance<ILogger, Logger>();
-            container.RegisterInstance<IErrorHandler, ErrorHandler>();
+            container.RegisterSingleInstance<ILogger, Logger>();
+            container.RegisterSingleInstance<IErrorHandler, ErrorHandler>();
 
             for (int i = 0; i < 10000; i++)
             {

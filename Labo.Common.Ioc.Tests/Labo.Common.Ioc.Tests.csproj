@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Funq">
-      <HintPath>..\sharedlibs\Funq\NET40\Funq.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -48,9 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutofacContainerTestFixture.cs" />
-    <Compile Include="CatelContainerTestFixture.cs" />
     <Compile Include="DynamoContainerTestFixture.cs" />
-    <Compile Include="GriffinContainerTestFixture.cs" />
     <Compile Include="HaveBoxContainerTestFixture.cs" />
     <Compile Include="HiroContainerTestFixture.cs" />
     <Compile Include="IocContainerTestFixture.cs" />
@@ -66,32 +61,21 @@
     <Compile Include="Performance\Domain\ILogger.cs" />
     <Compile Include="Performance\Domain\Logger.cs" />
     <Compile Include="Performance\IocContainerPerformanceTest.cs" />
-    <Compile Include="PetiteContainerTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleInjectorContainerTestFixture.cs" />
     <Compile Include="SimpleInjectorIocContainerTestFixture.cs" />
-    <Compile Include="SpeediocContainerTestFixture.cs" />
     <Compile Include="StructureMapContainerTestFixture.cs" />
     <Compile Include="TinyIocContainerTestFixture.cs" />
     <Compile Include="UnityContainerTestFixture.cs" />
-    <Compile Include="WindsorContainerTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Labo.Common.Ioc.Autofac\Labo.Common.Ioc.Autofac.csproj">
       <Project>{2ef836f8-533e-4a39-9d58-e3b92709b9db}</Project>
       <Name>Labo.Common.Ioc.Autofac</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Labo.Common.Ioc.Catel\Labo.Common.Ioc.Catel.csproj">
-      <Project>{AB6DB19D-82C8-423B-A4EB-DBB4B63CE083}</Project>
-      <Name>Labo.Common.Ioc.Catel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Labo.Common.Ioc.Dynamo\Labo.Common.Ioc.Dynamo.csproj">
       <Project>{BCD721B8-722F-47EB-A115-6779311ACBBC}</Project>
       <Name>Labo.Common.Ioc.Dynamo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Labo.Common.Ioc.Griffin\Labo.Common.Ioc.Griffin.csproj">
-      <Project>{5C3A13A8-40A5-4561-80EA-FDD5A4C50C07}</Project>
-      <Name>Labo.Common.Ioc.Griffin</Name>
     </ProjectReference>
     <ProjectReference Include="..\Labo.Common.Ioc.HaveBox\Labo.Common.Ioc.HaveBox.csproj">
       <Project>{9DFF95EF-2C66-4F6B-8C95-AA26085A1ACC}</Project>
@@ -125,17 +109,9 @@
       <Project>{098ec3db-eba6-4be0-a5dc-de0be51a825c}</Project>
       <Name>Labo.Common.Ioc.NInject</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Labo.Common.Ioc.Petite\Labo.Common.Ioc.Petite.csproj">
-      <Project>{B53DBDCA-5F70-4042-9E48-C3EF6FBB3740}</Project>
-      <Name>Labo.Common.Ioc.Petite</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Labo.Common.Ioc.SimpleInjector\Labo.Common.Ioc.SimpleInjector.csproj">
       <Project>{043A3435-8E36-4AA5-AB47-8FB490CD2D6D}</Project>
       <Name>Labo.Common.Ioc.SimpleInjector</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Labo.Common.Ioc.Speedioc\Labo.Common.Ioc.Speedioc.csproj">
-      <Project>{E197B320-67E5-4622-A864-4FAA221EF36E}</Project>
-      <Name>Labo.Common.Ioc.Speedioc</Name>
     </ProjectReference>
     <ProjectReference Include="..\Labo.Common.Ioc.StructureMap\Labo.Common.Ioc.StructureMap.csproj">
       <Project>{D5458F81-BDB8-4686-9C40-8F7207DB1E6A}</Project>
@@ -148,10 +124,6 @@
     <ProjectReference Include="..\Labo.Common.Ioc.Unity\Labo.Common.Ioc.Unity.csproj">
       <Project>{A8D7E36F-0711-4BDF-9425-0B718FD41DCB}</Project>
       <Name>Labo.Common.Ioc.Unity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Labo.Common.Ioc.Windsor\Labo.Common.Ioc.Windsor.csproj">
-      <Project>{CD673A04-8216-4172-B753-48E065383C14}</Project>
-      <Name>Labo.Common.Ioc.Windsor</Name>
     </ProjectReference>
     <ProjectReference Include="..\Labo.Common.Ioc\Labo.Common.Ioc.csproj">
       <Project>{d42706de-715e-463e-86b9-41287191deeb}</Project>
