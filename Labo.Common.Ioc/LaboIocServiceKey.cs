@@ -53,11 +53,6 @@ namespace Labo.Common.Ioc
         public string ServiceName { get; private set; }
 
         /// <summary>
-        /// The hash
-        /// </summary>
-        private readonly int m_Hash;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="LaboIocServiceKey"/> struct.
         /// </summary>
         /// <param name="serviceName">Name of the service.</param>
@@ -72,15 +67,6 @@ namespace Labo.Common.Ioc
 
             ServiceName = serviceName;
             ServiceType = serviceType;
-
-            unchecked
-            {
-                m_Hash = serviceType.GetHashCode();
-                if (serviceName != null)
-                {
-                    m_Hash ^= serviceName.GetHashCode();
-                }
-            }
         }
 
         /// <summary>
@@ -114,7 +100,7 @@ namespace Labo.Common.Ioc
         /// <param name="other">An object to compare with this object.</param>
         public bool Equals(LaboIocServiceKey other)
         {
-            return ServiceType == other.ServiceType && string.Equals(ServiceName, other.ServiceName);
+            return ServiceType == other.ServiceType && string.Equals(ServiceName, other.ServiceName, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -126,7 +112,15 @@ namespace Labo.Common.Ioc
         /// <filterpriority>2</filterpriority>
         public override int GetHashCode()
         {
-            return m_Hash;
+            unchecked
+            {
+                int hash = ServiceType.GetHashCode();
+                if (ServiceName != null)
+                {
+                    hash ^= ServiceName.GetHashCode();
+                }
+                return hash;
+            }
         }
 
         /// <summary>
