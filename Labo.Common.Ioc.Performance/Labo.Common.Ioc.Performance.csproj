@@ -56,6 +56,10 @@
       <Project>{d42706de-715e-463e-86b9-41287191deeb}</Project>
       <Name>Labo.Common.Ioc</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Labo.Common\Labo.Common.csproj">
+      <Project>{D26F97AD-FE8C-4E37-B84F-463EFCD0464F}</Project>
+      <Name>Labo.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

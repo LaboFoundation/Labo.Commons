@@ -131,7 +131,7 @@ namespace Labo.Common.Ioc.SimpleInjector
         /// </typeparam>
         public override void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            m_Container.Register(() => creator(this));
+            m_Container.Register(() => creator(this), Lifestyle.Transient);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Labo.Common.Ioc.SimpleInjector
         /// </param>
         public override void RegisterInstance(Type serviceType, Type implementationType)
         {
-            m_Container.Register(serviceType, implementationType);
+            m_Container.Register(serviceType, implementationType, Lifestyle.Transient);
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace Labo.Common.Ioc.SimpleInjector
         /// <param name="name">The instance name.</param>
         public override void RegisterInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name)
         {
-            m_InstanceProducerContainerFactory.Register(() => creator(this), name);
+            m_InstanceProducerContainerFactory.Register(() => creator(this), name, Lifestyle.Transient);
         }
 
         /// <summary>

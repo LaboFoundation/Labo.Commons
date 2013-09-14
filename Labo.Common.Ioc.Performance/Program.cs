@@ -3,6 +3,7 @@
     using System;
 
     using Labo.Common.Ioc.Performance.Domain;
+    using Labo.Common.Utils;
 
     class Program
     {
@@ -10,8 +11,8 @@
         {
             IIocContainer container = new LaboIocContainer();
 
-            container.RegisterSingleInstance<ILogger, Logger>();
-            container.RegisterSingleInstance<IErrorHandler, ErrorHandler>();
+            container.RegisterInstance<ILogger, Logger>();
+            container.RegisterInstance<IErrorHandler, ErrorHandler>();
 
             for (int i = 0; i < 10000; i++)
             {

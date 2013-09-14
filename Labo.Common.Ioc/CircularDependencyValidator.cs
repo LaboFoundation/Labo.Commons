@@ -51,12 +51,25 @@ namespace Labo.Common.Ioc
         private readonly HashSet<Thread> m_Threads = new HashSet<Thread>();
 
         /// <summary>
+        /// The disabled
+        /// </summary>
+        private bool m_Disabled = false;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CircularDependencyValidator"/> class.
         /// </summary>
         /// <param name="typeToValidate">The type to validate.</param>
         public CircularDependencyValidator(Type typeToValidate)
         {
-            this.m_TypeToValidate = typeToValidate;
+            m_TypeToValidate = typeToValidate;
+        }
+
+        /// <summary>
+        /// Disables validator.
+        /// </summary>
+        public void Disable()
+        {
+            m_Disabled = true;
         }
 
         /// <summary>
@@ -65,14 +78,19 @@ namespace Labo.Common.Ioc
         /// <exception cref="IocContainerDependencyResolutionException">thrown when circular dependency detected.</exception>
         public void CheckCircularDependency()
         {
+            if (m_Disabled)
+            {
+                return;
+            }
+
             lock (this)
             {
                 if (this.m_Threads.Contains(Thread.CurrentThread))
                 {
-                    throw new IocContainerDependencyResolutionException(string.Format(CultureInfo.CurrentCulture, "Circular dependency detected for the type '{0}'", this.m_TypeToValidate.FullName));
+                    throw new IocContainerDependencyResolutionException(string.Format(CultureInfo.CurrentCulture, "Circular dependency detected for the type '{0}'", m_TypeToValidate.FullName));
                 }
 
-                this.m_Threads.Add(Thread.CurrentThread);
+                m_Threads.Add(Thread.CurrentThread);
             }
         }
 
@@ -81,9 +99,14 @@ namespace Labo.Common.Ioc
         /// </summary>
         public void Release()
         {
+            if (m_Disabled)
+            {
+                return;
+            }
+
             lock (this)
             {
-                this.m_Threads.Remove(Thread.CurrentThread);
+                m_Threads.Remove(Thread.CurrentThread);
             }
         }
     }

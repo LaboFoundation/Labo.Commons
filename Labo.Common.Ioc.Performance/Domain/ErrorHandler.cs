@@ -6,9 +6,9 @@
 
         public ErrorHandler(ILogger logger)
         {
-            this.m_Logger = logger;
+            m_Logger = logger;
         }
 
-        public ILogger Logger { get { return this.m_Logger; } }
+        public ILogger Logger { get { return m_Logger; } }
     }
 }

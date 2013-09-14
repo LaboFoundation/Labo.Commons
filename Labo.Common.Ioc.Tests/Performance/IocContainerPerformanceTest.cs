@@ -37,7 +37,7 @@
                                                                                          { "LightCore", () => new LightCoreIocContainer() },
                                                                                          { "Dynamo", () => new DynamoIocContainer() },
                                                                                          { "Hiro", () => new HiroIocContainer() },
-                                                                                         { "Munq", () => new MunqIocContainer() },
+                                                                                         //{ "Munq", () => new MunqIocContainer() },
                                                                                          { "LightInject", () => new LightInjectIocContainer() },
                                                                                          //{ "Structuremap", () => new StructureMapIocContainer() },
                                                                                          { "SimpleInjector", () => new SimpleInjectorIocContainer()},
@@ -49,6 +49,27 @@
         [Test]
         public void TestPerformance()
         {
+            TestPerformance(
+                "Singleton;",
+                container =>
+                    {
+                        container.RegisterSingleInstance<ILogger, Logger>();
+                        container.RegisterSingleInstance<IErrorHandler, ErrorHandler>();
+                    });
+
+            TestPerformance(
+               "Transient;",
+               container =>
+               {
+                   container.RegisterInstance<ILogger, Logger>();
+                   container.RegisterInstance<IErrorHandler, ErrorHandler>();
+               });
+        }
+
+        private static void TestPerformance(string title, Action<IIocContainer> registerAction)
+        {
+            Console.WriteLine("\n" + title);
+
             Console.Write(string.Empty.PadRight(19, ' '));
 
             s_BatchIterations.ForEach(x => Console.Write(x.ToStringInvariant().PadRight(20, ' ')));
@@ -57,8 +78,7 @@
             {
                 IIocContainer container = containerEntry.Value();
 
-                container.RegisterSingleInstance<ILogger, Logger>();
-                container.RegisterSingleInstance<IErrorHandler, ErrorHandler>();
+                registerAction(container);
 
                 Console.Write(string.Format("\n{0}", containerEntry.Key).PadRight(20, ' '));
 
@@ -71,7 +91,10 @@
                             //warm up
                             container.GetInstance<IErrorHandler>();
 
-                            Console.Write(MeasurePerformance(() => container.GetInstance<IErrorHandler>(), x).ToStringInvariant().PadRight(20, ' '));
+                            Console.Write(
+                                MeasurePerformance(() => container.GetInstance<IErrorHandler>(), x)
+                                    .ToStringInvariant()
+                                    .PadRight(20, ' '));
                         });
             }
         }
