@@ -30,6 +30,12 @@ namespace Labo.Common.Ioc
 {
     using System;
 
+    public enum LaboIocServiceLifetime
+    {
+        Singleton,
+        Transient
+    }
+
     /// <summary>
     /// Inversion of control lifetime manager.
     /// </summary>
@@ -50,6 +56,8 @@ namespace Labo.Common.Ioc
         /// The service creator.
         /// </value>
         ILaboIocServiceCreator ServiceCreator { get; }
+
+        LaboIocServiceLifetime Lifetime { get; }
 
         /// <summary>
         /// Gets the service instance creator.

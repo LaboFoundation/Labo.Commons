@@ -194,6 +194,22 @@ namespace Labo.Common.Reflection
         }
 
         /// <summary>
+        /// Pushes the address of a static field onto the evaluation stack.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="field">The field.</param>
+        /// <exception cref="System.ArgumentNullException">generator</exception>
+        public static void Ldsflda(ILGenerator generator, FieldInfo field)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Ldsflda, field);
+        }
+
+        /// <summary>
         /// Calls the method indicated by the passed method descriptor.
         /// </summary>
         /// <param name="generator">The generator.</param>

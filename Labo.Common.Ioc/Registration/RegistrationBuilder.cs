@@ -43,7 +43,7 @@ namespace Labo.Common.Ioc.Registration
 
         private static long s_TypeCounter;
 
-        public Func<object> BuildRegistration(ILaboIocLifetimeManagerProvider lifetimeManagerProvider, ModuleBuilder moduleBuilder, Type serviceImplementationType)
+        public Func<object> BuildRegistration(ILaboIocLifetimeManagerProvider lifetimeManagerProvider, ModuleBuilder moduleBuilder, Type serviceImplementationType, LaboIocServiceLifetime lifetime)
         {
             ConstructorInfo constructor = serviceImplementationType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault();
             TypeBuilder typeBuilder = moduleBuilder.DefineType(string.Format(CultureInfo.InvariantCulture, "ServiceFactory{0}", GetTypeId()), TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit);
@@ -55,7 +55,7 @@ namespace Labo.Common.Ioc.Registration
             ILGenerator createInstanceMethodGenerator = createInstanceMethodBuilder.GetILGenerator();
 
             ParameterInfo[] constructorParameters = constructor.GetParameters();
-            byte localCounter = 0;
+            byte localVariableIndex = 0;
             for (int i = 0; i < constructorParameters.Length; i++)
             {
                 ParameterInfo parameterInfo = constructorParameters[i];
@@ -63,24 +63,45 @@ namespace Labo.Common.Ioc.Registration
                 ILaboIocServiceLifetimeManager serviceLifetimeManager = lifetimeManagerProvider.GetServiceLifetimeManager(serviceType);
                 if (serviceLifetimeManager != null)
                 {
-                    BuildRegistration(lifetimeManagerProvider, typeBuilder, constructorGenerator, createInstanceMethodGenerator, serviceLifetimeManager.ServiceCreator.ServiceImplementationType);
+                    BuildRegistration(lifetimeManagerProvider, typeBuilder, constructorGenerator, createInstanceMethodGenerator, serviceLifetimeManager.ServiceCreator.ServiceImplementationType, serviceLifetimeManager.Lifetime);
                 }
                 else
                 {
-                    if (serviceType.IsValueType)
+                    if (lifetime == LaboIocServiceLifetime.Singleton) // Singleton
                     {
-                        createInstanceMethodGenerator.DeclareLocal(serviceType);
-                        EmitHelper.LdlocaS(createInstanceMethodGenerator, localCounter);
-                        EmitHelper.Initobj(createInstanceMethodGenerator, serviceType);
-                        EmitHelper.Ldloc(createInstanceMethodGenerator, localCounter);
+                        FieldBuilder fieldBuilder = typeBuilder.DefineField(string.Format(CultureInfo.InvariantCulture, "field{0}", GetTypeFieldId()), serviceType, FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
 
-                        localCounter++;
+                        if (serviceType.IsValueType)
+                        {
+                            EmitHelper.Ldsflda(constructorGenerator, fieldBuilder);
+                            EmitHelper.Initobj(constructorGenerator, serviceType);
+                        }
+                        else
+                        {
+                            EmitHelper.Stsfld(constructorGenerator, fieldBuilder);
+                        }
+
+                        EmitHelper.Ldsfld(constructorGenerator, fieldBuilder);
                     }
-                    // TypeUtils.GetDefaultValueOfType()
+                    else
+                    {
+                        if (serviceType.IsValueType)
+                        {
+                            EmitHelper.LdlocaS(constructorGenerator, localVariableIndex);
+                            EmitHelper.Initobj(constructorGenerator, serviceType);
+                            EmitHelper.Ldloc(constructorGenerator, localVariableIndex);
+
+                            localVariableIndex++;
+                        }
+                        else
+                        {
+                            EmitHelper.LdNull(constructorGenerator);
+                        }
+                    }
                 }
             }
 
-            if (true) // Singleton
+            if (lifetime == LaboIocServiceLifetime.Singleton) // Singleton
             {
                 FieldBuilder fieldBuilder = typeBuilder.DefineField(string.Format(CultureInfo.InvariantCulture, "field{0}", GetTypeFieldId()), serviceImplementationType, FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
                 EmitHelper.Newobj(constructorGenerator, constructor);
@@ -102,12 +123,11 @@ namespace Labo.Common.Ioc.Registration
             return (Func<object>)Delegate.CreateDelegate(typeof(Func<object>), createInstanceMethod);
         }
 
-        private void BuildRegistration(ILaboIocLifetimeManagerProvider lifetimeManagerProvider, TypeBuilder typeBuilder, ILGenerator constructorGenerator, ILGenerator createInstanceMethodGenerator, Type serviceImplementationType)
+        private void BuildRegistration(ILaboIocLifetimeManagerProvider lifetimeManagerProvider, TypeBuilder typeBuilder, ILGenerator constructorGenerator, ILGenerator createInstanceMethodGenerator, Type serviceImplementationType, LaboIocServiceLifetime currentServiceLifetime)
         {
             ConstructorInfo constructor = serviceImplementationType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault();
 
             ParameterInfo[] constructorParameters = constructor.GetParameters();
-            byte localCounter = 0;
             for (int i = 0; i < constructorParameters.Length; i++)
             {
                 ParameterInfo parameterInfo = constructorParameters[i];
@@ -115,24 +135,27 @@ namespace Labo.Common.Ioc.Registration
                 ILaboIocServiceLifetimeManager serviceLifetimeManager = lifetimeManagerProvider.GetServiceLifetimeManager(serviceType);
                 if (serviceLifetimeManager != null)
                 {
-                    BuildRegistration(lifetimeManagerProvider, typeBuilder, constructorGenerator, createInstanceMethodGenerator, serviceLifetimeManager.ServiceCreator.ServiceImplementationType);
+                    BuildRegistration(lifetimeManagerProvider, typeBuilder, constructorGenerator, createInstanceMethodGenerator, serviceLifetimeManager.ServiceCreator.ServiceImplementationType, serviceLifetimeManager.Lifetime);
                 }
                 else
                 {
+                    FieldBuilder fieldBuilder = typeBuilder.DefineField(string.Format(CultureInfo.InvariantCulture, "field{0}", GetTypeFieldId()), serviceType, FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
+
                     if (serviceType.IsValueType)
                     {
-                        createInstanceMethodGenerator.DeclareLocal(serviceType);
-                        EmitHelper.LdlocaS(createInstanceMethodGenerator, localCounter);
-                        EmitHelper.Initobj(createInstanceMethodGenerator, serviceType);
-                        EmitHelper.Ldloc(createInstanceMethodGenerator, localCounter);
-
-                        localCounter++;
+                        EmitHelper.Ldsflda(constructorGenerator, fieldBuilder);
+                        EmitHelper.Initobj(constructorGenerator, serviceType);
                     }
-                    // TypeUtils.GetDefaultValueOfType()
+                    else
+                    {
+                        EmitHelper.Stsfld(constructorGenerator, fieldBuilder);
+                    }
+
+                    EmitHelper.Ldsfld(constructorGenerator, fieldBuilder);
                 }
             }
 
-            if (true) // Singleton
+            if (currentServiceLifetime == LaboIocServiceLifetime.Singleton) // Singleton
             {
                 FieldBuilder fieldBuilder = typeBuilder.DefineField(string.Format(CultureInfo.InvariantCulture, "field{0}", GetTypeFieldId()), serviceImplementationType, FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
                 EmitHelper.Newobj(constructorGenerator, constructor);
@@ -146,12 +169,12 @@ namespace Labo.Common.Ioc.Registration
             }
         }
 
-        private long GetTypeFieldId()
+        public long GetTypeFieldId()
         {
             return Interlocked.Increment(ref m_TypeFieldCounter);
         }
 
-        private long GetTypeId()
+        public long GetTypeId()
         {
             return Interlocked.Increment(ref s_TypeCounter);
         }

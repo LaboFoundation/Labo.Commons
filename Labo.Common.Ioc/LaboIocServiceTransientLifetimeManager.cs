@@ -79,5 +79,10 @@ namespace Labo.Common.Ioc
         {
             return m_IocServiceCreator.GenerateServiceInstanceCreator();
         }
+
+        public LaboIocServiceLifetime Lifetime
+        {
+            get { return LaboIocServiceLifetime.Transient; }
+        }
     }
 }

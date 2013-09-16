@@ -128,5 +128,10 @@ namespace Labo.Common.Ioc
                 throw;
             }
         }
+
+        public LaboIocServiceLifetime Lifetime
+        {
+            get { return LaboIocServiceLifetime.Singleton; }
+        }
     }
 }

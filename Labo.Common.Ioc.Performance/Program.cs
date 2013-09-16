@@ -20,7 +20,7 @@
             container.RegisterInstance<IController, Controller>();
 
             RegistrationBuilder registrationBuilder = new RegistrationBuilder();
-            IApplication application = (IApplication)registrationBuilder.BuildRegistration(container, container.ModuleBuilder, typeof(Application))();
+            IApplication application = (IApplication)registrationBuilder.BuildRegistration(container, container.ModuleBuilder, typeof(Application), LaboIocServiceLifetime.Transient)();
             application.ToStringInvariant();
 
             for (int i = 0; i < 10000; i++)
@@ -35,7 +35,15 @@
     {
         private static readonly ILogger s_Logger = new Logger();
         private static readonly IConfigurationManager s_ConfigurationManager = new ConfigurationManager();
-        private static readonly IErrorHandler s_ErrorHandler = new ErrorHandler(s_Logger, new Settings(s_ConfigurationManager));
+        private static readonly IErrorHandler s_ErrorHandler = new ErrorHandler(s_Logger, new Settings(s_ConfigurationManager, s_Integer));
+
+        private static readonly DateTime s_DateTime = default(DateTime);
+
+        private static readonly DateTime s_Integer = default(DateTime);
+
+        private static readonly short s_Short = default(short);
+
+        private static readonly ILogger s_NullLogger = default(ILogger);
 
         public static IApplication CreateInstance()
         {
@@ -46,13 +54,18 @@
         {
             return s_ErrorHandler;
         }
+
+        public static IApplication CreateTransientInstance()
+        {
+            return new Application(new Controller(new ErrorHandler(new Logger(), new Settings(new ConfigurationManager(), default(DateTime), default(DateTime)))));
+        }
     }
 
     public static class ServiceInvoker1
     {
         private static readonly ILogger s_Logger = new Logger();
         private static readonly IConfigurationManager s_ConfigurationManager = new ConfigurationManager();
-        private static readonly ISettings s_Settings = new Settings(s_ConfigurationManager);
+        private static readonly ISettings s_Settings = new Settings(s_ConfigurationManager, default(DateTime));
         private static readonly IErrorHandler s_ErrorHandler = new ErrorHandler(s_Logger, s_Settings);
         private static readonly IController s_Controller = new Controller(s_ErrorHandler);
         private static readonly IApplication s_Application = new Application(s_Controller);
