@@ -45,12 +45,26 @@ namespace Labo.Common.Ioc
     /// </summary>
     internal sealed class LaboIocEmitServiceCreator : ILaboIocServiceCreator
     {
-        /// <summary>
-        /// Service invoker delegate.
-        /// </summary>
-        /// <param name="resolver">The resolver.</param>
-        /// <returns>service instance.</returns>
-        private delegate object ServiceInvoker(IIocContainerResolver resolver);
+        private sealed class ServiceInstanceInvoker
+        {
+            private readonly Func<Func<object>[], object> m_InvocationFunction;
+
+            /// <summary>
+            /// The parameters
+            /// </summary>
+            private readonly Func<object>[] m_Parameters;
+
+            public ServiceInstanceInvoker(Func<Func<object>[], object> invocationFunction, Func<object>[] parameters)
+            {
+                m_InvocationFunction = invocationFunction;
+                m_Parameters = parameters;
+            }
+
+            public object InvokeService()
+            {
+                return m_InvocationFunction(m_Parameters);
+            }
+        }
 
         /// <summary>
         /// The constructor binding flags.
@@ -63,43 +77,36 @@ namespace Labo.Common.Ioc
         private readonly ConcurrentDictionary<ConstructorInfo, ConstructorInvoker> m_ConstructorInvokerCache;
 
         /// <summary>
-        /// The default constructor invoker cache.
-        /// </summary>
-        private readonly Lazy<ServiceInvoker> m_DefaultConstructorInvoker; 
-
-        /// <summary>
-        /// The circular dependency validator.
-        /// </summary>
-        private readonly CircularDependencyValidator m_CircularDependencyValidator;
-
-        /// <summary>
         /// The service implementation type
         /// </summary>
         private readonly Type m_ServiceImplementationType;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LaboIocEmitServiceCreator"/> class.
+        /// The service instance invoker.
         /// </summary>
-        /// <param name="serviceImplemetationType">Type of the service implementation.</param>
-        public LaboIocEmitServiceCreator(Type serviceImplemetationType)
-        {
-            m_ServiceImplementationType = serviceImplemetationType;
-            m_CircularDependencyValidator = new CircularDependencyValidator(serviceImplemetationType);
-            m_ConstructorInvokerCache = new ConcurrentDictionary<ConstructorInfo, ConstructorInvoker>();
+        private readonly Lazy<ServiceInstanceInvoker> m_ServiceInstanceInvoker;
 
-            m_DefaultConstructorInvoker = new Lazy<ServiceInvoker>(() => CreateConstructorInvocationInfo(serviceImplemetationType), true);
+        /// <summary>
+        /// Gets the type of the service implementation.
+        /// </summary>
+        /// <value>
+        /// The type of the service implementation.
+        /// </value>
+        public Type ServiceImplementationType
+        {
+            get { return m_ServiceImplementationType; }
         }
 
         /// <summary>
-        /// Resolver the instance value using container resolver. If null returns from container resolver than returns the default value of the type.
+        /// Initializes a new instance of the <see cref="LaboIocEmitServiceCreator"/> class.
         /// </summary>
-        /// <typeparam name="TType">The type of the type.</typeparam>
-        /// <param name="containerResolver">The container resolver.</param>
-        /// <returns>The instance.</returns>
-        public static TType GetValueOfType<TType>(IIocContainerResolver containerResolver)
+        /// <param name="serviceImplemetationType">Type of the service implementation.</param>
+        /// <param name="lifetimeManagerProvider">Service lifetime manager provider.</param>
+        public LaboIocEmitServiceCreator(Type serviceImplemetationType, ILaboIocLifetimeManagerProvider lifetimeManagerProvider)
         {
-            object instance = containerResolver.GetInstanceOptional(typeof(TType));
-            return instance == null ? (TType)TypeUtils.GetDefaultValueOfType(typeof(TType)) : (TType)instance;
+            m_ServiceImplementationType = serviceImplemetationType;
+            m_ConstructorInvokerCache = new ConcurrentDictionary<ConstructorInfo, ConstructorInvoker>();
+            m_ServiceInstanceInvoker = new Lazy<ServiceInstanceInvoker>(() => CreateConstructorInvocationDelegate(serviceImplemetationType, lifetimeManagerProvider), true);
         }
 
         /// <summary>
@@ -129,65 +136,91 @@ namespace Labo.Common.Ioc
                 return m_ConstructorInvokerCache.GetOrAdd(constructor, c => DynamicMethodHelper.EmitConstructorInvoker(m_ServiceImplementationType, c, parameterTypes))(parameters);
             }
 
-            try
-            {
-                m_CircularDependencyValidator.CheckCircularDependency();
-
-                object serviceInstance = m_DefaultConstructorInvoker.Value(containerResolver);
-
-                m_CircularDependencyValidator.Disable();
-
-                return serviceInstance;
-            }
-            catch 
-            {
-                m_CircularDependencyValidator.Release();
-
-                throw;
-            }
+            return InvokeServiceInstance();
         }
 
         /// <summary>
-        /// Creates constructor invocation info.
+        /// Generates the service instance creator.
+        /// </summary>
+        /// <returns>Service instance creator delegate.</returns>
+        public Func<object> GenerateServiceInstanceCreator()
+        {
+            return InvokeServiceInstance;
+        }
+
+        /// <summary>
+        /// Gets the constructor info of the service implementation type.
         /// </summary>
         /// <param name="serviceImplementationType">Type of the service implementation.</param>
-        /// <returns>Constructor invocation info.</returns>
-        /// <exception cref="IocContainerDependencyResolutionException">Thrown when no constructor found in <param name="serviceImplementationType">serviceImplementationType</param></exception>
-        private static ServiceInvoker CreateConstructorInvocationInfo(Type serviceImplementationType)
+        /// <returns>The constructor info.</returns>
+        /// <exception cref="IocContainerDependencyResolutionException">Thrown when no suited constructor is found.</exception>
+        private static ConstructorInfo GetConstructorInfo(Type serviceImplementationType)
         {
             ConstructorInfo constructor = serviceImplementationType.GetConstructors(CONSTRUCTOR_BINDING_FLAGS).FirstOrDefault();
 
             if (constructor == null)
             {
-                throw new IocContainerDependencyResolutionException(string.Format(
+                throw new IocContainerDependencyResolutionException(
+                    string.Format(
                         CultureInfo.CurrentCulture,
                         Strings.LaboIocEmitServiceCreator_CreateServiceInstance_NoConstructorsCanBeFound,
                         serviceImplementationType.FullName));
             }
 
-            DynamicMethod createMethod = new DynamicMethod("CreateServiceInstance", MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(object), new[] { typeof(IIocContainerResolver) }, serviceImplementationType, true);
+            return constructor;
+        }
 
-            ParameterInfo[] constructorParameters = constructor.GetParameters();
+        /// <summary>
+        /// Creates the constructor invocation delegate.
+        /// </summary>
+        /// <param name="serviceImplementationType">
+        /// Type of the service implementation.
+        /// </param>
+        /// <param name="lifetimeManagerProvider">
+        /// The lifetime Manager Provider.
+        /// </param>
+        /// <returns>
+        /// The constructor invocation delegate.
+        /// </returns>
+        private static ServiceInstanceInvoker CreateConstructorInvocationDelegate(Type serviceImplementationType, ILaboIocLifetimeManagerProvider lifetimeManagerProvider)
+        {
+            LaboIocServiceCreationInfo serviceCreationInfo = new LaboIocServiceCreationInfo(GetConstructorInfo(serviceImplementationType), lifetimeManagerProvider);
+            ConstructorInfo constructor = serviceCreationInfo.ServiceConstructor;
+
+            DynamicMethod createMethod = new DynamicMethod("CreateServiceInstance", MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(object), new[] { typeof(Func<object>).MakeArrayType() }, serviceImplementationType, true);
 
             ILGenerator generator = createMethod.GetILGenerator();
 
-            // TODO: generate service creation codes instead of recursive call
-            MethodInfo getValueOfTypeMethod = typeof(LaboIocEmitServiceCreator).GetMethod("GetValueOfType", BindingFlags.Public | BindingFlags.Static);
+            MethodInfo createDependentServiceMethod = typeof(Func<object>).GetMethod("Invoke");
 
-            int constructorParametersLength = constructorParameters.Length;
+            Type[] dependentServiceTypes = serviceCreationInfo.DependentServiceTypes;
+            int constructorParametersLength = dependentServiceTypes.Length;
             for (int i = 0; i < constructorParametersLength; i++)
             {
-                ParameterInfo constructorParameter = constructorParameters[i];
-                Type constructorParameterType = constructorParameter.ParameterType;
+                Type dependentServiceType = dependentServiceTypes[i];
 
                 EmitHelper.Ldarg0(generator);
-                EmitHelper.Call(generator, getValueOfTypeMethod.MakeGenericMethod(constructorParameterType));
+                EmitHelper.LdcI4(generator, i);
+                EmitHelper.LdelemRef(generator);
+                EmitHelper.CallVirt(generator, createDependentServiceMethod);
+                EmitHelper.Castclass(generator, dependentServiceType);
             }
 
             EmitHelper.Newobj(generator, constructor);
             EmitHelper.Ret(generator);
 
-            return (ServiceInvoker)createMethod.CreateDelegate(typeof(ServiceInvoker));
+            Func<Func<object>[], object> constructorInvocationDelegate = (Func<Func<object>[], object>)createMethod.CreateDelegate(typeof(Func<Func<object>[], object>));
+
+            return new ServiceInstanceInvoker(constructorInvocationDelegate, serviceCreationInfo.DependentServiceCreators);
+        }
+
+        /// <summary>
+        /// Invokes the service instance.
+        /// </summary>
+        /// <returns>The service instance.</returns>
+        private object InvokeServiceInstance()
+        {
+            return m_ServiceInstanceInvoker.Value.InvokeService();
         }
     }
 }

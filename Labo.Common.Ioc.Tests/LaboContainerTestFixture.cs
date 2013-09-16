@@ -63,6 +63,13 @@
             container.RegisterSingleInstance<ICircularDependencyClass3, CircularDependencyClass3>();
 
             Assert.Throws<IocContainerDependencyResolutionException>(() => container.GetInstance<ICircularDependencyClass1>());
+
+            container = new LaboIocContainer();
+            container.RegisterInstance<ICircularDependencyClass1, CircularDependencyClass1>();
+            container.RegisterInstance<ICircularDependencyClass2, CircularDependencyClass2>();
+            container.RegisterInstance<ICircularDependencyClass3, CircularDependencyClass3>();
+
+            Assert.Throws<IocContainerDependencyResolutionException>(() => container.GetInstance<ICircularDependencyClass1>());
         }
     }
 }

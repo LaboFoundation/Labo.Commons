@@ -41,6 +41,17 @@ namespace Labo.Common.Ioc
         private readonly Func<object> m_Creator;
 
         /// <summary>
+        /// Gets the type of the service implementation.
+        /// </summary>
+        /// <value>
+        /// The type of the service implementation.
+        /// </value>
+        public Type ServiceImplementationType
+        {
+            get { return typeof(object); }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="LaboIocFuncServiceCreator"/> class.
         /// </summary>
         /// <param name="creator">The creator.</param>
@@ -58,6 +69,15 @@ namespace Labo.Common.Ioc
         public object CreateServiceInstance(IIocContainerResolver containerResolver, params object[] parameters)
         {
             return m_Creator();
+        }
+
+        /// <summary>
+        /// Generates the service instance creator.
+        /// </summary>
+        /// <returns>Service instance creator delegate.</returns>
+        public Func<object> GenerateServiceInstanceCreator()
+        {
+            return m_Creator;
         }
     }
 }

@@ -28,6 +28,8 @@
 
 namespace Labo.Common.Ioc
 {
+    using System;
+
     /// <summary>
     /// Singleton lifetime manager.
     /// </summary>
@@ -39,9 +41,16 @@ namespace Labo.Common.Ioc
         private readonly ILaboIocServiceCreator m_IocServiceCreator;
 
         /// <summary>
+        /// The service instance creator
+        /// </summary>
+        private readonly Lazy<object> m_ServiceInstanceCreator; 
+
+        /// <summary>
         /// The locker object.
         /// </summary>
         private readonly object m_Lock = new object();
+
+        private readonly CircularDependencyValidator m_CircularDependencyValidator;
         
         /// <summary>
         /// The service instance
@@ -49,12 +58,30 @@ namespace Labo.Common.Ioc
         private object m_Instance;
 
         /// <summary>
+        /// Gets the service creator.
+        /// </summary>
+        /// <value>
+        /// The service creator.
+        /// </value>
+        public ILaboIocServiceCreator ServiceCreator
+        {
+            get { return m_IocServiceCreator; }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="LaboIocServiceSingletonLifetimeManager"/> class.
         /// </summary>
         /// <param name="iocServiceCreator">The inversion of control service creator.</param>
         public LaboIocServiceSingletonLifetimeManager(ILaboIocServiceCreator iocServiceCreator)
         {
+            if (iocServiceCreator == null)
+            {
+                throw new ArgumentNullException("iocServiceCreator");
+            }
+
             m_IocServiceCreator = iocServiceCreator;
+            m_ServiceInstanceCreator = new Lazy<object>(() => m_IocServiceCreator.GenerateServiceInstanceCreator()(), true);
+            m_CircularDependencyValidator = new CircularDependencyValidator(iocServiceCreator.ServiceImplementationType);
         }
 
         /// <summary>
@@ -76,7 +103,30 @@ namespace Labo.Common.Ioc
                  }
             }
 
+            m_CircularDependencyValidator.Disable();
+
             return m_Instance;
+        }
+
+        /// <summary>
+        /// Gets the service instance creator.
+        /// </summary>
+        /// <returns>service instance creator delegate.</returns>
+        public Func<object> GetServiceInstanceCreator()
+        {
+            try
+            {
+                m_CircularDependencyValidator.CheckCircularDependency();
+
+                Func<object> serviceInstanceCreator = () => m_ServiceInstanceCreator.Value;
+
+                return serviceInstanceCreator;
+            }
+            catch
+            {
+                m_CircularDependencyValidator.Release();
+                throw;
+            }
         }
     }
 }

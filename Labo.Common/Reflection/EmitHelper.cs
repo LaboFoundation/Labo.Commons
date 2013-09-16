@@ -162,6 +162,38 @@ namespace Labo.Common.Reflection
         }
 
         /// <summary>
+        /// Replaces the value of a static field with a value from the evaluation stack.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="field">The field.</param>
+        /// <exception cref="System.ArgumentNullException">generator</exception>
+        public static void Stsfld(ILGenerator generator, FieldInfo field)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Stsfld, field);
+        }
+
+        /// <summary>
+        /// Pushes the value of a static field onto the evaluation stack..
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="field">The field.</param>
+        /// <exception cref="System.ArgumentNullException">generator</exception>
+        public static void Ldsfld(ILGenerator generator, FieldInfo field)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Ldsfld, field);
+        }
+
+        /// <summary>
         /// Calls the method indicated by the passed method descriptor.
         /// </summary>
         /// <param name="generator">The generator.</param>

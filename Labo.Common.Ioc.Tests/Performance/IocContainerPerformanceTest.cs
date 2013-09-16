@@ -25,12 +25,12 @@
     [TestFixture]
     public class IocContainerPerformanceTest
     {
-        private static readonly List<long> s_BatchIterations = new List<long> { 1000, 5000, 20000, 100000, 250000, 1000000, 5000000 };
+        private static readonly List<long> s_BatchIterations = new List<long> { 1000, 5000, 20000, 100000, 250000, 1000000 };
         private static readonly Dictionary<string, Func<IIocContainer>> s_Containers = new Dictionary<string, Func<IIocContainer>>
                                                                                      {
-                                                                                         { "NInject", () => new NInjectIocContainer() },
-                                                                                         { "Linfu", () => new LinfuIocContainer() },
-                                                                                         { "Unity", () => new UnityIocContainer() },
+                                                                                         //{ "NInject", () => new NInjectIocContainer() },
+                                                                                         //{ "Linfu", () => new LinfuIocContainer() },
+                                                                                         //{ "Unity", () => new UnityIocContainer() },
                                                                                          { "Autofac", () => new AutofacIocContainer() },
                                                                                          { "Mugen", () => new MugenIocContainer() },
                                                                                          { "TinyIoc", () => new TinyIocContainer() },
@@ -54,7 +54,11 @@
                 container =>
                     {
                         container.RegisterSingleInstance<ILogger, Logger>();
+                        container.RegisterSingleInstance<IConfigurationManager, ConfigurationManager>();
+                        container.RegisterSingleInstance<ISettings, Settings>();
                         container.RegisterSingleInstance<IErrorHandler, ErrorHandler>();
+                        container.RegisterSingleInstance<IController, Controller>();
+                        container.RegisterSingleInstance<IApplication, Application>();
                     });
 
             TestPerformance(
@@ -62,7 +66,11 @@
                container =>
                {
                    container.RegisterInstance<ILogger, Logger>();
+                   container.RegisterInstance<IConfigurationManager, ConfigurationManager>();
+                   container.RegisterInstance<ISettings, Settings>();
                    container.RegisterInstance<IErrorHandler, ErrorHandler>();
+                   container.RegisterInstance<IController, Controller>();
+                   container.RegisterInstance<IApplication, Application>();
                });
         }
 
@@ -89,10 +97,10 @@
                             GC.WaitForPendingFinalizers();
 
                             //warm up
-                            container.GetInstance<IErrorHandler>();
+                            container.GetInstance<IApplication>();
 
                             Console.Write(
-                                MeasurePerformance(() => container.GetInstance<IErrorHandler>(), x)
+                                MeasurePerformance(() => container.GetInstance<IApplication>(), x)
                                     .ToStringInvariant()
                                     .PadRight(20, ' '));
                         });

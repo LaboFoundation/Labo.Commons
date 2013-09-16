@@ -32,6 +32,9 @@ namespace Labo.Common.Ioc
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Reflection;
+    using System.Reflection.Emit;
+    using System.Threading;
 
     using Labo.Common.Ioc.Exceptions;
     using Labo.Common.Ioc.Resources;
@@ -41,8 +44,13 @@ namespace Labo.Common.Ioc
     /// Labo inversion of control container class.
     /// </summary>
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
-    public sealed class LaboIocContainer : BaseIocContainer
+    public sealed class LaboIocContainer : BaseIocContainer, ILaboIocLifetimeManagerProvider
     {
+        /// <summary>
+        /// The container unique identifier counter.
+        /// </summary>
+        private static long s_ContainerIdCounter;
+
         /// <summary>
         /// The service entries
         /// </summary>
@@ -54,12 +62,36 @@ namespace Labo.Common.Ioc
         private readonly Dictionary<Type, ILaboIocServiceLifetimeManager> m_ServiceEntriesByServiceType;
 
         /// <summary>
+        /// The container unique identifier.
+        /// </summary>
+        private readonly long m_ContainerId;
+
+        /// <summary>
+        /// The module builder.
+        /// </summary>
+        private readonly Lazy<ModuleBuilder> m_ModuleBuilder;
+
+        /// <summary>
+        /// Gets the module builder.
+        /// </summary>
+        /// <value>
+        /// The module builder.
+        /// </value>
+        public ModuleBuilder ModuleBuilder
+        {
+            get { return m_ModuleBuilder.Value; }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="LaboIocContainer"/> class.
         /// </summary>
         public LaboIocContainer()
         {
             m_ServiceEntries = new Dictionary<LaboIocServiceKey, ILaboIocServiceLifetimeManager>();
             m_ServiceEntriesByServiceType = new Dictionary<Type, ILaboIocServiceLifetimeManager>();
+
+            m_ContainerId = Interlocked.Increment(ref s_ContainerIdCounter);
+            m_ModuleBuilder = new Lazy<ModuleBuilder>(CreateModuleBuilder, true);
         }
 
         /// <summary>
@@ -91,7 +123,7 @@ namespace Labo.Common.Ioc
         {
             ValidateServiceType(serviceType, "serviceType");
 
-            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType));
+            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType, this));
         }
 
         /// <summary>
@@ -102,7 +134,7 @@ namespace Labo.Common.Ioc
         {
             ValidateServiceType(serviceType, "serviceType");
 
-            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType));
+            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType, this));
         }
 
         /// <summary>
@@ -114,7 +146,7 @@ namespace Labo.Common.Ioc
         {
             ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
 
-            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(implementationType));
+            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(implementationType, this));
         }
 
         /// <summary>
@@ -133,7 +165,7 @@ namespace Labo.Common.Ioc
         {
             ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
 
-            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(implementationType));
+            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(implementationType, this));
         }
 
         /// <summary>
@@ -149,7 +181,7 @@ namespace Labo.Common.Ioc
         {
             ValidateServiceType(serviceType, "serviceType");
 
-            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType));
+            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType, this));
         }
 
         /// <summary>
@@ -179,7 +211,7 @@ namespace Labo.Common.Ioc
         {
             ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
 
-            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(implementationType));
+            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(implementationType, this));
         }
 
         /// <summary>
@@ -209,7 +241,7 @@ namespace Labo.Common.Ioc
         {
             ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
 
-            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(implementationType));
+            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(implementationType, this));
         }
 
         /// <summary>
@@ -225,7 +257,7 @@ namespace Labo.Common.Ioc
         {
             ValidateServiceType(serviceType, "serviceType");
 
-            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType));
+            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType, this));
         }
 
         /// <summary>
@@ -278,6 +310,18 @@ namespace Labo.Common.Ioc
             }
 
             return serviceEntry.GetServiceInstance(this, parameters);
+        }
+
+        /// <summary>
+        /// Gets the service lifetime manage.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>Service lifetime manager.</returns>
+        public ILaboIocServiceLifetimeManager GetServiceLifetimeManager(Type serviceType)
+        {
+            ILaboIocServiceLifetimeManager serviceEntry;
+            m_ServiceEntriesByServiceType.TryGetValue(serviceType, out serviceEntry);
+            return serviceEntry;
         }
 
         /// <summary>
@@ -410,6 +454,17 @@ namespace Labo.Common.Ioc
             {
                 throw new IocContainerRegistrationException(Strings.LaboIocContainer_ValidateServiceType_ServiceTypeMustBeReferenceType.FormatWith(serviceType.FullName));
             }
+        }
+
+        /// <summary>
+        /// Creates the module builder.
+        /// </summary>
+        /// <returns>The module builder.</returns>
+        private ModuleBuilder CreateModuleBuilder()
+        {
+            return AppDomain.CurrentDomain
+                .DefineDynamicAssembly(new AssemblyName("Labo.Common.Ioc.Container.Compiled_" + m_ContainerId), AssemblyBuilderAccess.Run)
+                .DefineDynamicModule("Labo.Common.Ioc.DynamicModule");
         }
     }
 }

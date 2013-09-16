@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ILaboIocServiceCreator.cs" company="Labo">
+// <copyright file="ILaboIocLifetimeManagerProvider.cs" company="Labo">
 //   The MIT License (MIT)
 //   
 //   Copyright (c) 2013 Bora Akgun
@@ -22,7 +22,7 @@
 //   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   Inversion of control service creator.
+//   Service lifetime manager provider.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -31,30 +31,15 @@ namespace Labo.Common.Ioc
     using System;
 
     /// <summary>
-    /// Inversion of control service creator.
+    /// Service lifetime manager provider.
     /// </summary>
-    public interface ILaboIocServiceCreator
+    public interface ILaboIocLifetimeManagerProvider
     {
         /// <summary>
-        /// Gets the type of the service implementation.
+        /// Gets the service lifetime manager.
         /// </summary>
-        /// <value>
-        /// The type of the service implementation.
-        /// </value>
-        Type ServiceImplementationType { get; }
-
-        /// <summary>
-        /// Creates the service instance.
-        /// </summary>
-        /// <param name="containerResolver">Container resolver.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>Service instance.</returns>
-        object CreateServiceInstance(IIocContainerResolver containerResolver, params object[] parameters);
-
-        /// <summary>
-        /// Generates the service instance creator.
-        /// </summary>
-        /// <returns>Service instance creator delegate.</returns>
-        Func<object> GenerateServiceInstanceCreator();
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>Service lifetime manager.</returns>
+        ILaboIocServiceLifetimeManager GetServiceLifetimeManager(Type serviceType);
     }
 }

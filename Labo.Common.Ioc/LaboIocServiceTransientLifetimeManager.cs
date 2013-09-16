@@ -28,6 +28,8 @@
 
 namespace Labo.Common.Ioc
 {
+    using System;
+
     /// <summary>
     /// Transient lifetime manager.
     /// </summary>
@@ -37,6 +39,17 @@ namespace Labo.Common.Ioc
         /// The service creator
         /// </summary>
         private readonly ILaboIocServiceCreator m_IocServiceCreator;
+
+        /// <summary>
+        /// Gets the service creator.
+        /// </summary>
+        /// <value>
+        /// The service creator.
+        /// </value>
+        public ILaboIocServiceCreator ServiceCreator
+        {
+            get { return m_IocServiceCreator; }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LaboIocServiceTransientLifetimeManager"/> class.
@@ -56,6 +69,15 @@ namespace Labo.Common.Ioc
         public object GetServiceInstance(IIocContainerResolver resolver, params object[] parameters)
         {
             return m_IocServiceCreator.CreateServiceInstance(resolver, parameters);
+        }
+
+        /// <summary>
+        /// Gets the service instance creator.
+        /// </summary>
+        /// <returns>service instance creator delegate.</returns>
+        public Func<object> GetServiceInstanceCreator()
+        {
+            return m_IocServiceCreator.GenerateServiceInstanceCreator();
         }
     }
 }

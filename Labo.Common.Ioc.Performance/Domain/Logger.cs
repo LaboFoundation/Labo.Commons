@@ -4,6 +4,11 @@
 
     public class Logger : ILogger
     {
+        public Logger()
+        {
+            
+        }
+
         public void Log(Exception ex)
         {
         }

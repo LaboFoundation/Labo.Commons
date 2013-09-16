@@ -41,10 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Application.cs" />
+    <Compile Include="Domain\ConfigurationManager.cs" />
+    <Compile Include="Domain\Controller.cs" />
     <Compile Include="Domain\ErrorHandler.cs" />
+    <Compile Include="Domain\IApplication.cs" />
+    <Compile Include="Domain\IConfigurationManager.cs" />
+    <Compile Include="Domain\IController.cs" />
     <Compile Include="Domain\IErrorHandler.cs" />
     <Compile Include="Domain\ILogger.cs" />
+    <Compile Include="Domain\ISettings.cs" />
     <Compile Include="Domain\Logger.cs" />
+    <Compile Include="Domain\Settings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

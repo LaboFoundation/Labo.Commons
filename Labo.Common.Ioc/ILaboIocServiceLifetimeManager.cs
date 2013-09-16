@@ -28,10 +28,12 @@
 
 namespace Labo.Common.Ioc
 {
+    using System;
+
     /// <summary>
     /// Inversion of control lifetime manager.
     /// </summary>
-    internal interface ILaboIocServiceLifetimeManager
+    public interface ILaboIocServiceLifetimeManager
     {
         /// <summary>
         /// Gets the service instance.
@@ -40,5 +42,19 @@ namespace Labo.Common.Ioc
         /// <param name="parameters">The parameters.</param>
         /// <returns>service instance.</returns>
         object GetServiceInstance(IIocContainerResolver resolver, params object[] parameters);
+
+        /// <summary>
+        /// Gets the service creator.
+        /// </summary>
+        /// <value>
+        /// The service creator.
+        /// </value>
+        ILaboIocServiceCreator ServiceCreator { get; }
+
+        /// <summary>
+        /// Gets the service instance creator.
+        /// </summary>
+        /// <returns>service instance creator delegate.</returns>
+        Func<object> GetServiceInstanceCreator();
     }
 }
