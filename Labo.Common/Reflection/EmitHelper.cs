@@ -178,6 +178,22 @@ namespace Labo.Common.Reflection
         }
 
         /// <summary>
+        /// Replaces the value stored in the field of an object reference or pointer with a new value.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="field">The field.</param>
+        /// <exception cref="System.ArgumentNullException">generator</exception>
+        public static void Stfld(ILGenerator generator, FieldInfo field)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Stfld, field);
+        }
+
+        /// <summary>
         /// Pushes the value of a static field onto the evaluation stack..
         /// </summary>
         /// <param name="generator">The generator.</param>
@@ -191,6 +207,22 @@ namespace Labo.Common.Reflection
             }
 
             generator.Emit(OpCodes.Ldsfld, field);
+        }
+
+        /// <summary>
+        /// Finds the value of a field in the object whose reference is currently on the evaluation stack.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="field">The field.</param>
+        /// <exception cref="System.ArgumentNullException">generator</exception>
+        public static void Ldfld(ILGenerator generator, FieldInfo field)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Ldfld, field);
         }
 
         /// <summary>

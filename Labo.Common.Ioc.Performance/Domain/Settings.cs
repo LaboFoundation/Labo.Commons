@@ -6,15 +6,9 @@
     {
         private readonly IConfigurationManager m_ConfigurationManager;
 
-        private readonly DateTime m_DateTime;
-
-        private readonly DateTime m_DateTime1;
-
-        public Settings(IConfigurationManager configurationManager, DateTime dateTime, DateTime dateTime1 = default(DateTime))
+        public Settings(IConfigurationManager configurationManager)
         {
             m_ConfigurationManager = configurationManager;
-            m_DateTime = dateTime;
-            m_DateTime1 = dateTime1;
         }
     }
 }
