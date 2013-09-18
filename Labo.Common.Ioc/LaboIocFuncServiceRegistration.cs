@@ -1,5 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ILaboIocServiceCreator.cs" company="Labo">
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="LaboIocFuncServiceRegistration.cs" company="Labo">
 //   The MIT License (MIT)
 //   
 //   Copyright (c) 2013 Bora Akgun
@@ -22,7 +22,7 @@
 //   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   Inversion of control service creator.
+//   Function service registration implementation.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -31,17 +31,29 @@ namespace Labo.Common.Ioc
     using System;
 
     /// <summary>
-    /// Inversion of control service creator.
+    /// Function service registration implementation.
     /// </summary>
-    public interface ILaboIocServiceCreator
+    internal sealed class LaboIocFuncServiceRegistration : LaboIocServiceRegistration
     {
         /// <summary>
-        /// Gets the type of the service implementation.
+        /// The lazy instance creator
         /// </summary>
-        /// <value>
-        /// The type of the service implementation.
-        /// </value>
-        Type ServiceImplementationType { get; }
+        private readonly Lazy<object> m_LazyCreator;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LaboIocFuncServiceRegistration"/> class.
+        /// </summary>
+        /// <param name="creator">The creator.</param>
+        /// <param name="lifetime">The lifetime.</param>
+        /// <param name="serviceName">The name of the service.</param>
+        public LaboIocFuncServiceRegistration(Func<object> creator, LaboIocServiceLifetime lifetime, string serviceName = null)
+            : base(creator, lifetime, serviceName)
+        {
+            if (lifetime == LaboIocServiceLifetime.Singleton)
+            {
+                m_LazyCreator = new Lazy<object>(creator, true);
+            }
+        }
 
         /// <summary>
         /// Creates the service instance.
@@ -49,12 +61,14 @@ namespace Labo.Common.Ioc
         /// <param name="containerResolver">Container resolver.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>Service instance.</returns>
-        object CreateServiceInstance(IIocContainerResolver containerResolver, params object[] parameters);
+        public override object GetServiceInstance(IIocContainerResolver containerResolver, params object[] parameters)
+        {
+            if (Lifetime == LaboIocServiceLifetime.Singleton)
+            {
+                return m_LazyCreator.Value;
+            }
 
-        /// <summary>
-        /// Generates the service instance creator.
-        /// </summary>
-        /// <returns>Service instance creator delegate.</returns>
-        Func<object> GenerateServiceInstanceCreator();
+            return InstanceCreator();
+        }
     }
 }

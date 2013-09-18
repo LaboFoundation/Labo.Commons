@@ -32,10 +32,13 @@ namespace Labo.Common.Ioc.Registration
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Reflection;
     using System.Reflection.Emit;
     using System.Threading;
 
+    using Labo.Common.Ioc.Exceptions;
+    using Labo.Common.Ioc.Resources;
     using Labo.Common.Reflection;
 
     public interface IInstanceGenerator
@@ -175,6 +178,33 @@ namespace Labo.Common.Ioc.Registration
             m_InstanceGenerator.Generate(generator);
 
             EmitHelper.Castclass(generator, Type);
+        }
+    }
+
+    public sealed class FuncInstanceGenerator<T> : BaseInstanceGenerator
+    {
+        private readonly Func<T> m_InstanceCreator;
+
+        private readonly ClassGenerator m_Owner;
+
+        public FuncInstanceGenerator(Func<T> instanceCreator, ClassGenerator owner)
+            : base(typeof(T))
+        {
+            m_InstanceCreator = instanceCreator;
+            m_Owner = owner;
+        }
+
+        public override void Generate(ILGenerator generator)
+        {
+            MethodBuilder method = m_Owner.TypeBuilder.DefineMethod("Asd", MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig);
+            
+            Expression expression = Expression.Invoke(Expression.Constant(m_InstanceCreator));
+            Func<T> creator = Expression.Lambda<Func<T>>(expression, new ParameterExpression[0]).Compile();
+            Expression<Func<T>> creatorExpression = () => creator();
+
+            creatorExpression.CompileToMethod(method);
+
+            EmitHelper.Call(generator, method);
         }
     }
 
@@ -323,14 +353,33 @@ namespace Labo.Common.Ioc.Registration
 
     public sealed class RegistrationBuilder
     {
-        private long m_TypeFieldCounter;
+        /// <summary>
+        /// The constructor binding flags.
+        /// </summary>
+        private const BindingFlags CONSTRUCTOR_BINDING_FLAGS = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
+        /// <summary>
+        /// The type counter
+        /// </summary>
         private static long s_TypeCounter;
 
-        public Func<object> BuildServiceMethodInvoker(ILaboIocLifetimeManagerProvider lifetimeManagerProvider, ModuleBuilder moduleBuilder, Type serviceType)
+        /// <summary>
+        /// The type field counter
+        /// </summary>
+        private long m_TypeFieldCounter;
+
+        /// <summary>
+        /// Builds the service invoker method.
+        /// </summary>
+        /// <param name="serviceRegistryProvider">The service registry provider.</param>
+        /// <param name="moduleBuilder">The module builder.</param>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="serviceName">The name of the service.</param>
+        /// <returns>Service invoker delegate.</returns>
+        public Func<object> BuildServiceInvokerMethod(ILaboIocServiceRegistryProvider serviceRegistryProvider, ModuleBuilder moduleBuilder, Type serviceType, string serviceName = null)
         {
             ClassGenerator classGenerator = new ClassGenerator(moduleBuilder, string.Format(CultureInfo.InvariantCulture, "ServiceFactory{0}", GetTypeId()), TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit);
-            MethodGenerator createInstanceMethodGenerator = new MethodGenerator(classGenerator, "CreateInstance", MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig, this.BuildInstanceGenerator(lifetimeManagerProvider, classGenerator, serviceType));
+            MethodGenerator createInstanceMethodGenerator = new MethodGenerator(classGenerator, "CreateInstance", MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig, this.BuildInstanceGenerator(serviceRegistryProvider, classGenerator, serviceType, serviceName));
             classGenerator.AddMethod(createInstanceMethodGenerator);
             Type serviceFactoryType = classGenerator.Generate();
 
@@ -343,11 +392,50 @@ namespace Labo.Common.Ioc.Registration
             return (Func<object>)createServiceInstanceDynamicMethod.CreateDelegate(typeof(Func<object>));
         }
 
-        private IInstanceGenerator BuildInstanceGenerator(ILaboIocLifetimeManagerProvider lifetimeManagerProvider, ClassGenerator classGenerator, Type serviceType)
+        /// <summary>
+        /// Gets the constructor info of the service implementation type.
+        /// </summary>
+        /// <param name="serviceImplementationType">Type of the service implementation.</param>
+        /// <returns>The constructor info.</returns>
+        /// <exception cref="IocContainerDependencyResolutionException">Thrown when no suited constructor is found.</exception>
+        private static ConstructorInfo GetConstructorInfo(Type serviceImplementationType)
         {
-            ILaboIocServiceLifetimeManager serviceLifetimeManager = lifetimeManagerProvider.GetServiceLifetimeManager(serviceType);
-            Type serviceImplementationType = serviceLifetimeManager.ServiceCreator.ServiceImplementationType;
-            ConstructorInfo constructor = serviceImplementationType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault();
+            ConstructorInfo constructor = serviceImplementationType.GetConstructors(CONSTRUCTOR_BINDING_FLAGS).FirstOrDefault();
+
+            if (constructor == null)
+            {
+                throw new IocContainerDependencyResolutionException(
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        Strings.LaboIocEmitServiceCreator_CreateServiceInstance_NoConstructorsCanBeFound,
+                        serviceImplementationType.FullName));
+            }
+
+            return constructor;
+        }
+
+        /// <summary>
+        /// Gets the type id.
+        /// </summary>
+        /// <returns>Next type unique id.</returns>
+        private static long GetTypeId()
+        {
+            return Interlocked.Increment(ref s_TypeCounter);
+        }
+
+        /// <summary>
+        /// Builds the instance generator.
+        /// </summary>
+        /// <param name="serviceRegistryProvider">The service registry provider.</param>
+        /// <param name="classGenerator">The class generator.</param>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="serviceName">The name of the service.</param>
+        /// <returns>The instance generator.</returns>
+        private IInstanceGenerator BuildInstanceGenerator(ILaboIocServiceRegistryProvider serviceRegistryProvider, ClassGenerator classGenerator, Type serviceType, string serviceName = null)
+        {
+            LaboIocServiceRegistration serviceRegistryEntry = serviceRegistryProvider.GetServiceRegistryEntry(serviceType, serviceName);
+            Type serviceImplementationType = serviceRegistryEntry.ImplementationType;
+            ConstructorInfo constructor = GetConstructorInfo(serviceImplementationType);
 
             ParameterInfo[] constructorParameters = constructor.GetParameters();
             int constructorParametersLength = constructorParameters.Length;
@@ -355,11 +443,11 @@ namespace Labo.Common.Ioc.Registration
             for (int i = 0; i < constructorParametersLength; i++)
             {
                 ParameterInfo parameterInfo = constructorParameters[i];
-                childServices[i] = BuildInstanceGenerator(lifetimeManagerProvider, classGenerator, parameterInfo.ParameterType);
+                childServices[i] = BuildInstanceGenerator(serviceRegistryProvider, classGenerator, parameterInfo.ParameterType);
             }
 
             InstanceGenerator serviceInstanceGenerator = new InstanceGenerator(serviceImplementationType, constructor, childServices);
-            if (serviceLifetimeManager.Lifetime == LaboIocServiceLifetime.Singleton)
+            if (serviceRegistryEntry.Lifetime == LaboIocServiceLifetime.Singleton)
             {
                 FieldGenerator fieldGenerator = new FieldGenerator(classGenerator, string.Format(CultureInfo.InvariantCulture, "fld{0}", this.GetTypeFieldId()), serviceInstanceGenerator, FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
                 classGenerator.AddField(fieldGenerator);
@@ -371,14 +459,13 @@ namespace Labo.Common.Ioc.Registration
             }
         }
 
-        public long GetTypeFieldId()
+        /// <summary>
+        /// Gets the type field id.
+        /// </summary>
+        /// <returns>Next type field unique id.</returns>
+        private long GetTypeFieldId()
         {
             return Interlocked.Increment(ref m_TypeFieldCounter);
-        }
-
-        public long GetTypeId()
-        {
-            return Interlocked.Increment(ref s_TypeCounter);
         }
     }
 }

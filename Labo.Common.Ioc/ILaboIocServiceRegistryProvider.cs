@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ILaboIocServiceLifetimeManager.cs" company="Labo">
+// <copyright file="ILaboIocServiceRegistryProvider.cs" company="Labo">
 //   The MIT License (MIT)
 //   
 //   Copyright (c) 2013 Bora Akgun
@@ -22,7 +22,7 @@
 //   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   Inversion of control lifetime manager.
+//   Service registry provider.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -30,39 +30,17 @@ namespace Labo.Common.Ioc
 {
     using System;
 
-    public enum LaboIocServiceLifetime
-    {
-        Singleton,
-        Transient
-    }
-
     /// <summary>
-    /// Inversion of control lifetime manager.
+    /// Service service registry provider.
     /// </summary>
-    public interface ILaboIocServiceLifetimeManager
+    public interface ILaboIocServiceRegistryProvider
     {
         /// <summary>
-        /// Gets the service instance.
+        /// Gets the service registry entry.
         /// </summary>
-        /// <param name="resolver">Container resolver</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>service instance.</returns>
-        object GetServiceInstance(IIocContainerResolver resolver, params object[] parameters);
-
-        /// <summary>
-        /// Gets the service creator.
-        /// </summary>
-        /// <value>
-        /// The service creator.
-        /// </value>
-        ILaboIocServiceCreator ServiceCreator { get; }
-
-        LaboIocServiceLifetime Lifetime { get; }
-
-        /// <summary>
-        /// Gets the service instance creator.
-        /// </summary>
-        /// <returns>service instance creator delegate.</returns>
-        Func<object> GetServiceInstanceCreator();
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="serviceName">Service name.</param>
+        /// <returns>Service registry entry.</returns>
+        LaboIocServiceRegistration GetServiceRegistryEntry(Type serviceType, string serviceName = null);
     }
 }

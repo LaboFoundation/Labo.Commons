@@ -31,10 +31,10 @@
                                                                                          //{ "NInject", () => new NInjectIocContainer() },
                                                                                          //{ "Linfu", () => new LinfuIocContainer() },
                                                                                          //{ "Unity", () => new UnityIocContainer() },
-                                                                                         { "Autofac", () => new AutofacIocContainer() },
-                                                                                         { "Mugen", () => new MugenIocContainer() },
-                                                                                         { "TinyIoc", () => new TinyIocContainer() },
-                                                                                         { "LightCore", () => new LightCoreIocContainer() },
+                                                                                         //{ "Autofac", () => new AutofacIocContainer() },
+                                                                                         //{ "Mugen", () => new MugenIocContainer() },
+                                                                                         //{ "TinyIoc", () => new TinyIocContainer() },
+                                                                                         //{ "LightCore", () => new LightCoreIocContainer() },
                                                                                          { "Dynamo", () => new DynamoIocContainer() },
                                                                                          { "Hiro", () => new HiroIocContainer() },
                                                                                          //{ "Munq", () => new MunqIocContainer() },
@@ -72,6 +72,18 @@
                    container.RegisterInstance<IController, Controller>();
                    container.RegisterInstance<IApplication, Application>();
                });
+
+            TestPerformance(
+             "Combined;",
+             container =>
+             {
+                 container.RegisterSingleInstance<ILogger, Logger>();
+                 container.RegisterInstance<IConfigurationManager, ConfigurationManager>();
+                 container.RegisterSingleInstance<ISettings, Settings>();
+                 container.RegisterInstance<IErrorHandler, ErrorHandler>();
+                 container.RegisterSingleInstance<IController, Controller>();
+                 container.RegisterInstance<IApplication, Application>();
+             });
         }
 
         private static void TestPerformance(string title, Action<IIocContainer> registerAction)

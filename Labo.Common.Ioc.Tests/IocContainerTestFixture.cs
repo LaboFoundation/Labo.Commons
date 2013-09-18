@@ -5,24 +5,24 @@
 
     using NUnit.Framework;
 
+    public interface ITestService
+    {
+        Guid Guid { get; set; }
+    }
+
+    public class TestServiceImplementation : ITestService
+    {
+        public Guid Guid { get; set; }
+
+        public TestServiceImplementation()
+        {
+            Guid = Guid.NewGuid();
+        }
+    }
+
     [TestFixture]
     public abstract class IocContainerTestFixture
     {
-        private interface ITestService
-        {
-            Guid Guid { get; set; }
-        }
-
-        private class TestServiceImplementation : ITestService
-        {
-            public Guid Guid { get; set; }
-
-            public TestServiceImplementation()
-            {
-                Guid = Guid.NewGuid();
-            }
-        }
-
         public abstract IIocContainer CreateContainer();
 
         [Test]

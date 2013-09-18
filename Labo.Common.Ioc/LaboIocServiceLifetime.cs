@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ILaboIocLifetimeManagerProvider.cs" company="Labo">
+// <copyright file="LaboIocServiceLifetime.cs" company="Labo">
 //   The MIT License (MIT)
 //   
 //   Copyright (c) 2013 Bora Akgun
@@ -22,24 +22,25 @@
 //   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   Service lifetime manager provider.
+//   Defines the LaboIocServiceLifetime type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Labo.Common.Ioc
 {
-    using System;
-
     /// <summary>
-    /// Service lifetime manager provider.
+    /// Service lifetime.
     /// </summary>
-    public interface ILaboIocLifetimeManagerProvider
+    public enum LaboIocServiceLifetime
     {
         /// <summary>
-        /// Gets the service lifetime manager.
+        /// Singleton
         /// </summary>
-        /// <param name="serviceType">Type of the service.</param>
-        /// <returns>Service lifetime manager.</returns>
-        ILaboIocServiceLifetimeManager GetServiceLifetimeManager(Type serviceType);
+        Singleton,
+
+        /// <summary>
+        /// Transient
+        /// </summary>
+        Transient
     }
 }

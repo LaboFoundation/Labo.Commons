@@ -54,7 +54,7 @@
             }
         }
 
-        [Test]
+        [Test, Ignore]
         public void ResolveDetectCircularDependency()
         {
             LaboIocContainer container = new LaboIocContainer();

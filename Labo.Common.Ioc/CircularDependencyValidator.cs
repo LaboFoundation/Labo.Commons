@@ -53,7 +53,7 @@ namespace Labo.Common.Ioc
         /// <summary>
         /// The disabled
         /// </summary>
-        private bool m_Disabled = false;
+        private bool m_Disabled;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CircularDependencyValidator"/> class.
