@@ -123,7 +123,7 @@ namespace Labo.Common.Ioc
         {
             ValidateServiceType(serviceType, "serviceType");
 
-            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType, this));
+            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType, serviceType, this));
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace Labo.Common.Ioc
         {
             ValidateServiceType(serviceType, "serviceType");
 
-            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType, this));
+            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType, serviceType, this));
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Labo.Common.Ioc
         {
             ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
 
-            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(implementationType, this));
+            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType, implementationType, this));
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace Labo.Common.Ioc
         {
             ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
 
-            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(implementationType, this));
+            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType, implementationType, this));
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace Labo.Common.Ioc
         {
             ValidateServiceType(serviceType, "serviceType");
 
-            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType, this));
+            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceSingletonLifetimeManager(new LaboIocEmitServiceCreator(serviceType, serviceType, this));
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace Labo.Common.Ioc
         {
             ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
 
-            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(implementationType, this));
+            m_ServiceEntriesByServiceType[serviceType] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType, implementationType, this));
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace Labo.Common.Ioc
         {
             ValidateRegistrationTypes(serviceType, implementationType, "serviceType", "implementationType");
 
-            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(implementationType, this));
+            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType, implementationType, this));
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace Labo.Common.Ioc
         {
             ValidateServiceType(serviceType, "serviceType");
 
-            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType, this));
+            m_ServiceEntries[new LaboIocServiceKey(name, serviceType)] = new LaboIocServiceTransientLifetimeManager(new LaboIocEmitServiceCreator(serviceType, serviceType, this));
         }
 
         /// <summary>

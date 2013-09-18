@@ -92,6 +92,8 @@ namespace Labo.Common.Ioc
         /// <returns>service instance.</returns>
         public object GetServiceInstance(IIocContainerResolver resolver, params object[] parameters)
         {
+            return m_IocServiceCreator.CreateServiceInstance(resolver, parameters);
+
             if (m_Instance == null)
             {
                  lock (m_Lock)

@@ -36,6 +36,7 @@ namespace Labo.Common.Ioc
     using System.Reflection.Emit;
 
     using Labo.Common.Ioc.Exceptions;
+    using Labo.Common.Ioc.Registration;
     using Labo.Common.Ioc.Resources;
     using Labo.Common.Reflection;
     using Labo.Common.Utils;
@@ -45,27 +46,6 @@ namespace Labo.Common.Ioc
     /// </summary>
     internal sealed class LaboIocEmitServiceCreator : ILaboIocServiceCreator
     {
-        private sealed class ServiceInstanceInvoker
-        {
-            private readonly Func<Func<object>[], object> m_InvocationFunction;
-
-            /// <summary>
-            /// The parameters
-            /// </summary>
-            private readonly Func<object>[] m_Parameters;
-
-            public ServiceInstanceInvoker(Func<Func<object>[], object> invocationFunction, Func<object>[] parameters)
-            {
-                m_InvocationFunction = invocationFunction;
-                m_Parameters = parameters;
-            }
-
-            public object InvokeService()
-            {
-                return m_InvocationFunction(m_Parameters);
-            }
-        }
-
         /// <summary>
         /// The constructor binding flags.
         /// </summary>
@@ -84,7 +64,7 @@ namespace Labo.Common.Ioc
         /// <summary>
         /// The service instance invoker.
         /// </summary>
-        private readonly Lazy<ServiceInstanceInvoker> m_ServiceInstanceInvoker;
+        private readonly Lazy<Func<object>> m_ServiceInstanceInvoker;
 
         /// <summary>
         /// Gets the type of the service implementation.
@@ -102,11 +82,11 @@ namespace Labo.Common.Ioc
         /// </summary>
         /// <param name="serviceImplemetationType">Type of the service implementation.</param>
         /// <param name="lifetimeManagerProvider">Service lifetime manager provider.</param>
-        public LaboIocEmitServiceCreator(Type serviceImplemetationType, ILaboIocLifetimeManagerProvider lifetimeManagerProvider)
+        public LaboIocEmitServiceCreator(Type serviceType, Type serviceImplemetationType, LaboIocContainer lifetimeManagerProvider)
         {
             m_ServiceImplementationType = serviceImplemetationType;
             m_ConstructorInvokerCache = new ConcurrentDictionary<ConstructorInfo, ConstructorInvoker>();
-            m_ServiceInstanceInvoker = new Lazy<ServiceInstanceInvoker>(() => CreateConstructorInvocationDelegate(serviceImplemetationType, lifetimeManagerProvider), true);
+            m_ServiceInstanceInvoker = new Lazy<Func<object>>(() => CreateConstructorInvocationDelegate(serviceType, serviceImplemetationType, lifetimeManagerProvider), true);
         }
 
         /// <summary>
@@ -135,7 +115,7 @@ namespace Labo.Common.Ioc
 
                 return m_ConstructorInvokerCache.GetOrAdd(constructor, c => DynamicMethodHelper.EmitConstructorInvoker(m_ServiceImplementationType, c, parameterTypes))(parameters);
             }
-
+            
             return InvokeServiceInstance();
         }
 
@@ -182,36 +162,38 @@ namespace Labo.Common.Ioc
         /// <returns>
         /// The constructor invocation delegate.
         /// </returns>
-        private static ServiceInstanceInvoker CreateConstructorInvocationDelegate(Type serviceImplementationType, ILaboIocLifetimeManagerProvider lifetimeManagerProvider)
+        private static Func<object> CreateConstructorInvocationDelegate(Type serviceType, Type serviceImplementationType, LaboIocContainer lifetimeManagerProvider)
         {
-            LaboIocServiceCreationInfo serviceCreationInfo = new LaboIocServiceCreationInfo(GetConstructorInfo(serviceImplementationType), lifetimeManagerProvider);
-            ConstructorInfo constructor = serviceCreationInfo.ServiceConstructor;
+            RegistrationBuilder registrationBuilder = new RegistrationBuilder();
+            return registrationBuilder.BuildServiceMethodInvoker(lifetimeManagerProvider, lifetimeManagerProvider.ModuleBuilder, serviceType);
+            //LaboIocServiceCreationInfo serviceCreationInfo = new LaboIocServiceCreationInfo(GetConstructorInfo(serviceImplementationType), lifetimeManagerProvider);
+            //ConstructorInfo constructor = serviceCreationInfo.ServiceConstructor;
 
-            DynamicMethod createMethod = new DynamicMethod("CreateServiceInstance", MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(object), new[] { typeof(Func<object>).MakeArrayType() }, serviceImplementationType, true);
+            //DynamicMethod createMethod = new DynamicMethod("CreateServiceInstance", MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(object), new[] { typeof(Func<object>).MakeArrayType() }, serviceImplementationType, true);
 
-            ILGenerator generator = createMethod.GetILGenerator();
+            //ILGenerator generator = createMethod.GetILGenerator();
 
-            MethodInfo createDependentServiceMethod = typeof(Func<object>).GetMethod("Invoke");
+            //MethodInfo createDependentServiceMethod = typeof(Func<object>).GetMethod("Invoke");
 
-            Type[] dependentServiceTypes = serviceCreationInfo.DependentServiceTypes;
-            int constructorParametersLength = dependentServiceTypes.Length;
-            for (int i = 0; i < constructorParametersLength; i++)
-            {
-                Type dependentServiceType = dependentServiceTypes[i];
+            //Type[] dependentServiceTypes = serviceCreationInfo.DependentServiceTypes;
+            //int constructorParametersLength = dependentServiceTypes.Length;
+            //for (int i = 0; i < constructorParametersLength; i++)
+            //{
+            //    Type dependentServiceType = dependentServiceTypes[i];
 
-                EmitHelper.Ldarg0(generator);
-                EmitHelper.LdcI4(generator, i);
-                EmitHelper.LdelemRef(generator);
-                EmitHelper.CallVirt(generator, createDependentServiceMethod);
-                EmitHelper.Castclass(generator, dependentServiceType);
-            }
+            //    EmitHelper.Ldarg0(generator);
+            //    EmitHelper.LdcI4(generator, i);
+            //    EmitHelper.LdelemRef(generator);
+            //    EmitHelper.CallVirt(generator, createDependentServiceMethod);
+            //    EmitHelper.Castclass(generator, dependentServiceType);
+            //}
 
-            EmitHelper.Newobj(generator, constructor);
-            EmitHelper.Ret(generator);
+            //EmitHelper.Newobj(generator, constructor);
+            //EmitHelper.Ret(generator);
 
-            Func<Func<object>[], object> constructorInvocationDelegate = (Func<Func<object>[], object>)createMethod.CreateDelegate(typeof(Func<Func<object>[], object>));
+            //Func<Func<object>[], object> constructorInvocationDelegate = (Func<Func<object>[], object>)createMethod.CreateDelegate(typeof(Func<Func<object>[], object>));
 
-            return new ServiceInstanceInvoker(constructorInvocationDelegate, serviceCreationInfo.DependentServiceCreators);
+            //return new ServiceInstanceInvoker(constructorInvocationDelegate, serviceCreationInfo.DependentServiceCreators);
         }
 
         /// <summary>
@@ -220,7 +202,7 @@ namespace Labo.Common.Ioc
         /// <returns>The service instance.</returns>
         private object InvokeServiceInstance()
         {
-            return m_ServiceInstanceInvoker.Value.InvokeService();
+            return m_ServiceInstanceInvoker.Value();
         }
     }
 }
