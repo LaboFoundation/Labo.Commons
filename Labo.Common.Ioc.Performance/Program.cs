@@ -13,74 +13,74 @@
     {
         static void Main(string[] args)
         {
-            AssemblyBuilder dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("Labo.Common.Ioc.Container.Compiled"), AssemblyBuilderAccess.Run);
-            ModuleBuilder moduleBuilder = dynamicAssembly.DefineDynamicModule("Labo.Common.Ioc.DynamicModule");
+            //AssemblyBuilder dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("Labo.Common.Ioc.Container.Compiled"), AssemblyBuilderAccess.Run);
+            //ModuleBuilder moduleBuilder = dynamicAssembly.DefineDynamicModule("Labo.Common.Ioc.DynamicModule");
 
-            ClassGenerator classGenerator = new ClassGenerator(moduleBuilder, "InstanceCreator", TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit);
-            const FieldAttributes privateStaticReadonly = FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly;
+            //ClassGenerator classGenerator = new ClassGenerator(moduleBuilder, "InstanceCreator", TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit);
+            //const FieldAttributes privateStaticReadonly = FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly;
 
-            MethodGenerator createInstanceMtd = new MethodGenerator(classGenerator, "CreateInstance", MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig, new FuncInstanceGenerator<Logger>(() => new Logger(), classGenerator));
-            classGenerator.AddMethod(createInstanceMtd);
+            //MethodGenerator createInstanceMtd = new MethodGenerator(classGenerator, "CreateInstance", MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig, new FuncInstanceGenerator<Logger>(() => new Logger(), classGenerator));
+            //classGenerator.AddMethod(createInstanceMtd);
 
-            Type t = classGenerator.Generate();
-            object o = t.GetMethod("CreateInstance").Invoke(null, null);
-            o.ToStringInvariant();
+            //Type t = classGenerator.Generate();
+            //object o = t.GetMethod("CreateInstance").Invoke(null, null);
+            //o.ToStringInvariant();
             
-            FieldGenerator loggerField = new FieldGenerator(classGenerator, "fld1", new FuncInstanceGenerator<Logger>(() => new Logger(), classGenerator), privateStaticReadonly);
-            classGenerator.AddField(loggerField);
+            //FieldGenerator loggerField = new FieldGenerator(classGenerator, "fld1", new FuncInstanceGenerator<Logger>(() => new Logger(), classGenerator), privateStaticReadonly);
+            //classGenerator.AddField(loggerField);
 
-            CastInstanceGenerator loggerInstanceGenerator = new CastInstanceGenerator(typeof(ILogger), new LoadFieldGenerator(loggerField));
+            //CastInstanceGenerator loggerInstanceGenerator = new CastInstanceGenerator(typeof(ILogger), new LoadFieldGenerator(loggerField));
 
-            CastInstanceGenerator configurationManagerInstanceGenerator = new InstanceGenerator(
-                        typeof(ConfigurationManager),
-                        typeof(ConfigurationManager).GetConstructors().FirstOrDefault()).Cast(typeof(IConfigurationManager));
-            CastInstanceGenerator settingsInstanceGenerator = new InstanceGenerator(
-                    typeof(Settings),
-                    typeof(Settings).GetConstructors().FirstOrDefault(),
-                    configurationManagerInstanceGenerator).Cast(typeof(ISettings));
-            CastInstanceGenerator errorHandlerInstanceGenerator =
-                new InstanceGenerator(
-                    typeof(ErrorHandler),
-                    typeof(ErrorHandler).GetConstructors().FirstOrDefault(),
-                    loggerInstanceGenerator,
-                    settingsInstanceGenerator).Cast(typeof(IErrorHandler));
+            //CastInstanceGenerator configurationManagerInstanceGenerator = new InstanceGenerator(
+            //            typeof(ConfigurationManager),
+            //            typeof(ConfigurationManager).GetConstructors().FirstOrDefault()).Cast(typeof(IConfigurationManager));
+            //CastInstanceGenerator settingsInstanceGenerator = new InstanceGenerator(
+            //        typeof(Settings),
+            //        typeof(Settings).GetConstructors().FirstOrDefault(),
+            //        configurationManagerInstanceGenerator).Cast(typeof(ISettings));
+            //CastInstanceGenerator errorHandlerInstanceGenerator =
+            //    new InstanceGenerator(
+            //        typeof(ErrorHandler),
+            //        typeof(ErrorHandler).GetConstructors().FirstOrDefault(),
+            //        loggerInstanceGenerator,
+            //        settingsInstanceGenerator).Cast(typeof(IErrorHandler));
 
-            FieldGenerator errorHandlerField = new FieldGenerator(classGenerator, "fld2", errorHandlerInstanceGenerator, privateStaticReadonly);
-            classGenerator.AddField(errorHandlerField);
+            //FieldGenerator errorHandlerField = new FieldGenerator(classGenerator, "fld2", errorHandlerInstanceGenerator, privateStaticReadonly);
+            //classGenerator.AddField(errorHandlerField);
 
-            CastInstanceGenerator controllerInstanceGenerator = new InstanceGenerator(
-                    typeof(Controller),
-                    typeof(Controller).GetConstructors().FirstOrDefault(),
-                    new LoadFieldGenerator(errorHandlerField)).Cast(typeof(IController));
-            IInstanceGenerator applicationInstanceGenerator = new InstanceGenerator(
-                    typeof(Application),
-                    typeof(Application).GetConstructors().FirstOrDefault(),
-                    controllerInstanceGenerator).Cast(typeof(IApplication));
+            //CastInstanceGenerator controllerInstanceGenerator = new InstanceGenerator(
+            //        typeof(Controller),
+            //        typeof(Controller).GetConstructors().FirstOrDefault(),
+            //        new LoadFieldGenerator(errorHandlerField)).Cast(typeof(IController));
+            //IInstanceGenerator applicationInstanceGenerator = new InstanceGenerator(
+            //        typeof(Application),
+            //        typeof(Application).GetConstructors().FirstOrDefault(),
+            //        controllerInstanceGenerator).Cast(typeof(IApplication));
 
-            FieldGenerator applicationFieldGenerator = new FieldGenerator(classGenerator, "fld3", applicationInstanceGenerator, privateStaticReadonly);
-            classGenerator.AddField(applicationFieldGenerator);
+            //FieldGenerator applicationFieldGenerator = new FieldGenerator(classGenerator, "fld3", applicationInstanceGenerator, privateStaticReadonly);
+            //classGenerator.AddField(applicationFieldGenerator);
 
-            MethodGenerator createInstanceMethod = new MethodGenerator(classGenerator, "CreateInstance", MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig, new LoadFieldGenerator(applicationFieldGenerator));
-            classGenerator.AddMethod(createInstanceMethod);
+            //MethodGenerator createInstanceMethod = new MethodGenerator(classGenerator, "CreateInstance", MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig, new LoadFieldGenerator(applicationFieldGenerator));
+            //classGenerator.AddMethod(createInstanceMethod);
 
-            Type type = classGenerator.Generate();
+            //Type type = classGenerator.Generate();
 
-            DynamicMethod createServiceInstanceDynamicMethod = DynamicMethodHelper.CreateDynamicMethod("CreateServiceInstance", MethodAttributes.Static | MethodAttributes.Public, typeof(object), Type.EmptyTypes, type);
-            ILGenerator dynamicMethodGenerator = createServiceInstanceDynamicMethod.GetILGenerator();
-            EmitHelper.Call(dynamicMethodGenerator, type.GetMethod("CreateInstance"));
-            EmitHelper.BoxIfValueType(dynamicMethodGenerator, typeof(object));
-            EmitHelper.Ret(dynamicMethodGenerator);
+            //DynamicMethod createServiceInstanceDynamicMethod = DynamicMethodHelper.CreateDynamicMethod("CreateServiceInstance", MethodAttributes.Static | MethodAttributes.Public, typeof(object), Type.EmptyTypes, type);
+            //ILGenerator dynamicMethodGenerator = createServiceInstanceDynamicMethod.GetILGenerator();
+            //EmitHelper.Call(dynamicMethodGenerator, type.GetMethod("CreateInstance"));
+            //EmitHelper.BoxIfValueType(dynamicMethodGenerator, typeof(object));
+            //EmitHelper.Ret(dynamicMethodGenerator);
 
-            Func<object> @delegate = (Func<object>)createServiceInstanceDynamicMethod.CreateDelegate(typeof(Func<object>));
-            object instance = @delegate();
-            instance.ToStringInvariant();
+            //Func<object> @delegate = (Func<object>)createServiceInstanceDynamicMethod.CreateDelegate(typeof(Func<object>));
+            //object instance = @delegate();
+            //instance.ToStringInvariant();
 
             LaboIocContainer container = new LaboIocContainer();
 
             container.RegisterInstance<ISettings, Settings>();
             container.RegisterInstance<ILogger, Logger>();
             container.RegisterInstance<IErrorHandler, ErrorHandler>();
-            container.RegisterInstance<IApplication, Application>();
+            container.RegisterSingleInstance<IApplication, Application>();
             container.RegisterInstance<IConfigurationManager, ConfigurationManager>();
             container.RegisterInstance<IController, Controller>();
 

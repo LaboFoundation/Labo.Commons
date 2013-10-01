@@ -243,10 +243,24 @@ namespace Labo.Common.Reflection
         /// <param name="returnType">Type of the return.</param>
         /// <param name="parameterTypes">The parameter types.</param>
         /// <param name="ownerType">Type of the owner.</param>
-        /// <returns>dynamic method</returns>
+        /// <returns>The dynamic method.</returns>
         public static DynamicMethod CreateDynamicMethod(string methodName, MethodAttributes methodAttributes, Type returnType, Type[] parameterTypes, Type ownerType)
         {
             return new DynamicMethod(methodName, methodAttributes, CallingConventions.Standard, returnType, parameterTypes, ownerType, true);
+        }
+
+        /// <summary>
+        /// Creates the dynamic method.
+        /// </summary>
+        /// <param name="methodName">Name of the method.</param>
+        /// <param name="methodAttributes">The method attributes.</param>
+        /// <param name="returnType">Type of the return.</param>
+        /// <param name="parameterTypes">The parameter types.</param>
+        /// <param name="ownerModule">The owner module.</param>
+        /// <returns>The dynamic method.</returns>
+        public static DynamicMethod CreateDynamicMethod(string methodName, MethodAttributes methodAttributes, Type returnType, Type[] parameterTypes, Module ownerModule)
+        {
+            return new DynamicMethod(methodName, methodAttributes, CallingConventions.Standard, returnType, parameterTypes, ownerModule, true);
         }
 
         /// <summary>

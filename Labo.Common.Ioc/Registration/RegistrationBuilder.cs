@@ -32,7 +32,6 @@ namespace Labo.Common.Ioc.Registration
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using System.Linq.Expressions;
     using System.Reflection;
     using System.Reflection.Emit;
     using System.Threading;
@@ -40,316 +39,6 @@ namespace Labo.Common.Ioc.Registration
     using Labo.Common.Ioc.Exceptions;
     using Labo.Common.Ioc.Resources;
     using Labo.Common.Reflection;
-
-    public interface IInstanceGenerator
-    {
-        void Generate(ILGenerator generator);
-
-        Type Type { get; }
-
-        CastInstanceGenerator Cast(Type type);
-    }
-
-    public abstract class BaseInstanceGenerator : IInstanceGenerator
-    {
-        public abstract void Generate(ILGenerator generator);
-
-        private readonly Type m_Type;
-        public Type Type
-        {
-            get
-            {
-                return m_Type;
-            }
-        }
-
-        protected BaseInstanceGenerator(Type type)
-        {
-            m_Type = type;
-        }
-
-        public CastInstanceGenerator Cast(Type type)
-        {
-            return new CastInstanceGenerator(type, this);
-        }
-    }
-
-    public sealed class LoadFieldGenerator : BaseInstanceGenerator
-    {
-        private readonly FieldGenerator m_FieldGenerator;
-
-        public LoadFieldGenerator(FieldGenerator fieldGenerator)
-            : base(fieldGenerator.Type)
-        {
-            m_FieldGenerator = fieldGenerator;
-        }
-
-        public override void Generate(ILGenerator generator)
-        {
-            FieldBuilder fieldBuilder = m_FieldGenerator.FieldBuilder;
-            if (m_FieldGenerator.IsStatic)
-            {
-                EmitHelper.Ldsfld(generator, fieldBuilder);
-            }
-            else
-            {
-                EmitHelper.Ldfld(generator, fieldBuilder);
-            }
-        }
-    }
-
-    public sealed class FieldGenerator : BaseInstanceGenerator
-    {
-        private readonly string m_FieldName;
-
-        private readonly IInstanceGenerator m_InstanceGenerator;
-
-        private readonly FieldAttributes m_FieldAttributes;
-
-        public FieldAttributes FieldAttributes
-        {
-            get
-            {
-                return m_FieldAttributes;
-            }
-        }
-
-        public IInstanceGenerator InstanceGenerator
-        {
-            get
-            {
-                return m_InstanceGenerator;
-            }
-        }
-
-        public ClassGenerator Owner { get; internal set; }
-
-        public bool IsStatic { get{ return (FieldAttributes & FieldAttributes.Static) == FieldAttributes.Static; } }
-
-        private readonly Lazy<FieldBuilder> m_FieldBuilder;
-
-        public FieldBuilder FieldBuilder
-        {
-            get
-            {
-                return m_FieldBuilder.Value;
-            }
-        }
-
-        public FieldGenerator(ClassGenerator owner, string fieldName, IInstanceGenerator instanceBuilder, FieldAttributes fieldAttributes = FieldAttributes.Private)
-            : base(instanceBuilder.Type)
-        {
-            Owner = owner;
-            m_FieldName = fieldName;
-            m_InstanceGenerator = instanceBuilder;
-            m_FieldAttributes = fieldAttributes;
-
-            m_FieldBuilder = new Lazy<FieldBuilder>(() => Owner.TypeBuilder.DefineField(m_FieldName, m_InstanceGenerator.Type, m_FieldAttributes));
-        }
-
-        public override void Generate(ILGenerator generator)
-        {
-            m_InstanceGenerator.Generate(generator);
-
-            FieldBuilder fieldBuilder = m_FieldBuilder.Value;
-            if (IsStatic)
-            {
-                EmitHelper.Stsfld(generator, fieldBuilder);
-            }
-            else
-            {
-                EmitHelper.Stsfld(generator, fieldBuilder);
-            }
-        }
-    }
-
-    public sealed class CastInstanceGenerator : BaseInstanceGenerator
-    {
-        private readonly IInstanceGenerator m_InstanceGenerator;
-
-        public CastInstanceGenerator(Type type, IInstanceGenerator instanceGenerator)
-            : base(type)
-        {
-            m_InstanceGenerator = instanceGenerator;
-        }
-
-        public override void Generate(ILGenerator generator)
-        {
-            m_InstanceGenerator.Generate(generator);
-
-            EmitHelper.Castclass(generator, Type);
-        }
-    }
-
-    public sealed class FuncInstanceGenerator<T> : BaseInstanceGenerator
-    {
-        private readonly Func<T> m_InstanceCreator;
-
-        private readonly ClassGenerator m_Owner;
-
-        public FuncInstanceGenerator(Func<T> instanceCreator, ClassGenerator owner)
-            : base(typeof(T))
-        {
-            m_InstanceCreator = instanceCreator;
-            m_Owner = owner;
-        }
-
-        public override void Generate(ILGenerator generator)
-        {
-            MethodBuilder method = m_Owner.TypeBuilder.DefineMethod("Asd", MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig);
-            
-            Expression expression = Expression.Invoke(Expression.Constant(m_InstanceCreator));
-            Func<T> creator = Expression.Lambda<Func<T>>(expression, new ParameterExpression[0]).Compile();
-            Expression<Func<T>> creatorExpression = () => creator();
-
-            creatorExpression.CompileToMethod(method);
-
-            EmitHelper.Call(generator, method);
-        }
-    }
-
-    public sealed class InstanceGenerator : BaseInstanceGenerator
-    {
-        private readonly ConstructorInfo m_Constructor;
-
-        private readonly List<IInstanceGenerator> m_Parameters;
-
-        public InstanceGenerator(Type type, ConstructorInfo constructor, params IInstanceGenerator[] parameters)
-            : base(type)
-        {
-            m_Constructor = constructor;
-
-            m_Parameters = new List<IInstanceGenerator>(parameters.Length);
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                IInstanceGenerator instanceGenerator = parameters[i];
-                m_Parameters.Add(instanceGenerator);
-            }
-        }
-
-        public override void Generate(ILGenerator generator)
-        {
-            for (int i = 0; i < m_Parameters.Count; i++)
-            {
-                IInstanceGenerator instanceGenerator = m_Parameters[i];
-                instanceGenerator.Generate(generator);
-            }
-
-            EmitHelper.Newobj(generator, m_Constructor);
-        }
-    }
-
-    public sealed class MethodGenerator
-    {
-        private readonly string m_Name;
-
-        private readonly MethodAttributes m_MethodAttributes;
-
-        private readonly IInstanceGenerator m_ReturnValue;
-
-        public bool IsStatic { get { return (m_MethodAttributes & MethodAttributes.Static) == MethodAttributes.Static; } }
-
-        public ClassGenerator Owner { get; internal set; }
-
-        public MethodGenerator(ClassGenerator owner, string name, MethodAttributes methodAttributes, IInstanceGenerator returnValue)
-        {
-            m_Name = name;
-            m_MethodAttributes = methodAttributes;
-            m_ReturnValue = returnValue;
-            Owner = owner;
-        }
-
-        public void Generate()
-        {
-            MethodBuilder methodBuilder = Owner.TypeBuilder.DefineMethod(m_Name, m_MethodAttributes, m_ReturnValue.Type, Type.EmptyTypes);
-            ILGenerator methodGenerator = methodBuilder.GetILGenerator();
-            m_ReturnValue.Generate(methodGenerator);
-
-            EmitHelper.Ret(methodGenerator);
-        }
-    }
-
-    public sealed class ClassGenerator
-    {
-        private readonly TypeAttributes m_TypeAttributes;
-
-        private readonly List<FieldGenerator> m_FieldGenerators;
-
-        private readonly List<MethodGenerator> m_MethodGenerators;
-
-        private readonly TypeBuilder m_TypeBuilder;
-
-        public TypeBuilder TypeBuilder
-        {
-            get
-            {
-                return m_TypeBuilder;
-            }
-        }
-
-        public bool IsStatic { get { return (m_TypeAttributes & (TypeAttributes.Abstract | TypeAttributes.Sealed)) == (TypeAttributes.Abstract | TypeAttributes.Sealed); } }
-
-        public ClassGenerator(ModuleBuilder moduleBuilder, string className, TypeAttributes typeAttributes)
-        {
-            m_TypeAttributes = typeAttributes;
-            m_FieldGenerators = new List<FieldGenerator>();
-            m_MethodGenerators = new List<MethodGenerator>();
-
-            m_TypeBuilder = moduleBuilder.DefineType(className, typeAttributes);
-        }
-
-        public void AddField(FieldGenerator fieldBuilder)
-        {
-            fieldBuilder.Owner = this;
-
-            m_FieldGenerators.Add(fieldBuilder);
-        }
-
-        public void AddMethod(MethodGenerator methodGenerator)
-        {
-            methodGenerator.Owner = this;
-
-            m_MethodGenerators.Add(methodGenerator);
-        }
-
-        public Type Generate()
-        {
-            ConstructorBuilder staticConstructorBuilder = m_TypeBuilder.DefineTypeInitializer();
-            ILGenerator staticConstructorGenerator = staticConstructorBuilder.GetILGenerator();
-
-            if (!IsStatic)
-            {
-                ConstructorBuilder defaultConstructorBuilder = m_TypeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
-                ILGenerator defaultConstructorGenerator = defaultConstructorBuilder.GetILGenerator();
-
-                for (int i = 0; i < m_FieldGenerators.Count; i++)
-                {
-                    FieldGenerator fieldGenerator = m_FieldGenerators[i];
-                    fieldGenerator.Generate(fieldGenerator.IsStatic ? staticConstructorGenerator : defaultConstructorGenerator);
-                }
-
-                EmitHelper.Ret(defaultConstructorGenerator);
-            }
-            else
-            {
-                for (int i = 0; i < m_FieldGenerators.Count; i++)
-                {
-                    FieldGenerator fieldGenerator = m_FieldGenerators[i];
-                    fieldGenerator.Generate(staticConstructorGenerator);
-                }
-            }
-
-            EmitHelper.Ret(staticConstructorGenerator);
-
-            for (int i = 0; i < m_MethodGenerators.Count; i++)
-            {
-                MethodGenerator methodGenerator = m_MethodGenerators[i];
-                methodGenerator.Generate();
-            }
-
-            return TypeBuilder.CreateType();
-        }
-    }
 
     public sealed class RegistrationBuilder
     {
@@ -364,9 +53,22 @@ namespace Labo.Common.Ioc.Registration
         private static long s_TypeCounter;
 
         /// <summary>
-        /// The type field counter
+        /// The static instance creators.
+        /// </summary>
+        private readonly List<Func<object>> m_StaticInstanceCreators;
+
+        /// <summary>
+        /// The type field counter.
         /// </summary>
         private long m_TypeFieldCounter;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RegistrationBuilder"/> class.
+        /// </summary>
+        public RegistrationBuilder()
+        {
+            m_StaticInstanceCreators = new List<Func<object>>();
+        }
 
         /// <summary>
         /// Builds the service invoker method.
@@ -379,8 +81,12 @@ namespace Labo.Common.Ioc.Registration
         public Func<object> BuildServiceInvokerMethod(ILaboIocServiceRegistryProvider serviceRegistryProvider, ModuleBuilder moduleBuilder, Type serviceType, string serviceName = null)
         {
             ClassGenerator classGenerator = new ClassGenerator(moduleBuilder, string.Format(CultureInfo.InvariantCulture, "ServiceFactory{0}", GetTypeId()), TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit);
-            MethodGenerator createInstanceMethodGenerator = new MethodGenerator(classGenerator, "CreateInstance", MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig, this.BuildInstanceGenerator(serviceRegistryProvider, classGenerator, serviceType, serviceName));
+            MethodGenerator createInstanceMethodGenerator = new MethodGenerator(classGenerator, "CreateInstance", MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig, BuildInstanceGenerator(serviceRegistryProvider, classGenerator, serviceType, serviceName));
             classGenerator.AddMethod(createInstanceMethodGenerator);
+
+            MethodGenerator setSingletonInstancesMethodGenerator = new MethodGenerator(classGenerator, "SetSingletonInstances", MethodAttributes.Public | MethodAttributes.Static, null);
+            classGenerator.AddMethod(setSingletonInstancesMethodGenerator);
+
             Type serviceFactoryType = classGenerator.Generate();
 
             DynamicMethod createServiceInstanceDynamicMethod = DynamicMethodHelper.CreateDynamicMethod("CreateServiceInstance", MethodAttributes.Static | MethodAttributes.Public, typeof(object), Type.EmptyTypes, serviceFactoryType);
@@ -446,16 +152,26 @@ namespace Labo.Common.Ioc.Registration
                 childServices[i] = BuildInstanceGenerator(serviceRegistryProvider, classGenerator, parameterInfo.ParameterType);
             }
 
-            InstanceGenerator serviceInstanceGenerator = new InstanceGenerator(serviceImplementationType, constructor, childServices);
-            if (serviceRegistryEntry.Lifetime == LaboIocServiceLifetime.Singleton)
+            if (serviceRegistryEntry.InstanceCreator != null)
             {
-                FieldGenerator fieldGenerator = new FieldGenerator(classGenerator, string.Format(CultureInfo.InvariantCulture, "fld{0}", this.GetTypeFieldId()), serviceInstanceGenerator, FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
+                FieldGenerator fieldGenerator = new FieldGenerator(classGenerator, string.Format(CultureInfo.InvariantCulture, "fld{0}", GetTypeFieldId()), null, FieldAttributes.Private | FieldAttributes.Static);
                 classGenerator.AddField(fieldGenerator);
+                m_StaticInstanceCreators.Add(serviceRegistryEntry.InstanceCreator);
                 return new LoadFieldGenerator(fieldGenerator);
             }
             else
             {
-                return serviceInstanceGenerator;
+                InstanceGenerator serviceInstanceGenerator = new InstanceGenerator(serviceImplementationType, constructor, childServices);
+                if (serviceRegistryEntry.Lifetime == LaboIocServiceLifetime.Singleton)
+                {
+                    FieldGenerator fieldGenerator = new FieldGenerator(classGenerator, string.Format(CultureInfo.InvariantCulture, "fld{0}", GetTypeFieldId()), serviceInstanceGenerator, FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
+                    classGenerator.AddField(fieldGenerator);
+                    return new LoadFieldGenerator(fieldGenerator);
+                }
+                else
+                {
+                    return serviceInstanceGenerator;
+                }
             }
         }
 
