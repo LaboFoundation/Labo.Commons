@@ -81,7 +81,11 @@ namespace Labo.Common.Ioc.Registration
         public Func<object> BuildServiceInvokerMethod(ILaboIocServiceRegistryProvider serviceRegistryProvider, ModuleBuilder moduleBuilder, Type serviceType, string serviceName = null)
         {
             ClassGenerator classGenerator = new ClassGenerator(moduleBuilder, string.Format(CultureInfo.InvariantCulture, "ServiceFactory{0}", GetTypeId()), TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit);
-            MethodGenerator createInstanceMethodGenerator = new MethodGenerator(classGenerator, "CreateInstance", MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig, BuildInstanceGenerator(serviceRegistryProvider, classGenerator, serviceType, serviceName));
+            MethodGenerator createInstanceMethodGenerator = new MethodGenerator(
+                classGenerator, 
+                "CreateInstance", 
+                MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig, 
+                BuildInstanceGenerator(serviceRegistryProvider, classGenerator, serviceType, serviceName));
             classGenerator.AddMethod(createInstanceMethodGenerator);
 
             MethodGenerator setSingletonInstancesMethodGenerator = new MethodGenerator(classGenerator, "SetSingletonInstances", MethodAttributes.Public | MethodAttributes.Static, null);
@@ -137,7 +141,7 @@ namespace Labo.Common.Ioc.Registration
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="serviceName">The name of the service.</param>
         /// <returns>The instance generator.</returns>
-        private IInstanceGenerator BuildInstanceGenerator(ILaboIocServiceRegistryProvider serviceRegistryProvider, ClassGenerator classGenerator, Type serviceType, string serviceName = null)
+        private BaseEmitILGenerator BuildInstanceGenerator(ILaboIocServiceRegistryProvider serviceRegistryProvider, ClassGenerator classGenerator, Type serviceType, string serviceName = null)
         {
             LaboIocServiceRegistration serviceRegistryEntry = serviceRegistryProvider.GetServiceRegistryEntry(serviceType, serviceName);
             Type serviceImplementationType = serviceRegistryEntry.ImplementationType;
@@ -145,7 +149,7 @@ namespace Labo.Common.Ioc.Registration
 
             ParameterInfo[] constructorParameters = constructor.GetParameters();
             int constructorParametersLength = constructorParameters.Length;
-            IInstanceGenerator[] childServices = new IInstanceGenerator[constructorParametersLength];
+            BaseEmitILGenerator[] childServices = new BaseEmitILGenerator[constructorParametersLength];
             for (int i = 0; i < constructorParametersLength; i++)
             {
                 ParameterInfo parameterInfo = constructorParameters[i];
@@ -154,17 +158,17 @@ namespace Labo.Common.Ioc.Registration
 
             if (serviceRegistryEntry.InstanceCreator != null)
             {
-                FieldGenerator fieldGenerator = new FieldGenerator(classGenerator, string.Format(CultureInfo.InvariantCulture, "fld{0}", GetTypeFieldId()), null, FieldAttributes.Private | FieldAttributes.Static);
+                DefineFieldGenerator fieldGenerator = new DefineFieldGenerator(classGenerator.TypeBuilder, serviceRegistryEntry.InstanceCreator.GetType(), string.Format(CultureInfo.InvariantCulture, "fld{0}", GetTypeFieldId()), FieldAttributes.Private | FieldAttributes.Static);
                 classGenerator.AddField(fieldGenerator);
                 m_StaticInstanceCreators.Add(serviceRegistryEntry.InstanceCreator);
                 return new LoadFieldGenerator(fieldGenerator);
             }
             else
             {
-                InstanceGenerator serviceInstanceGenerator = new InstanceGenerator(serviceImplementationType, constructor, childServices);
+                CreateNewInstanceGenerator serviceInstanceGenerator = new CreateNewInstanceGenerator(serviceImplementationType, constructor, childServices);
                 if (serviceRegistryEntry.Lifetime == LaboIocServiceLifetime.Singleton)
                 {
-                    FieldGenerator fieldGenerator = new FieldGenerator(classGenerator, string.Format(CultureInfo.InvariantCulture, "fld{0}", GetTypeFieldId()), serviceInstanceGenerator, FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
+                    DefineFieldGenerator fieldGenerator = new DefineFieldGenerator(classGenerator.TypeBuilder, serviceInstanceGenerator.Type, string.Format(CultureInfo.InvariantCulture, "fld{0}", GetTypeFieldId()), FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
                     classGenerator.AddField(fieldGenerator);
                     return new LoadFieldGenerator(fieldGenerator);
                 }

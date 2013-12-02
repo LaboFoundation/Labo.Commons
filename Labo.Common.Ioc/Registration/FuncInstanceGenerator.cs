@@ -6,7 +6,7 @@
 
     using Labo.Common.Reflection;
 
-    public sealed class FuncInstanceGenerator<T> : BaseInstanceGenerator
+    public sealed class FuncInstanceGenerator<T> : BaseEmitILGenerator
     {
         private readonly Func<T> m_InstanceCreator;
 

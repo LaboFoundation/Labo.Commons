@@ -9,6 +9,6 @@
 
         Type Type { get; }
 
-        CastInstanceGenerator Cast(Type type);
+        CastClassOperationGenerator Cast(Type type);
     }
 }

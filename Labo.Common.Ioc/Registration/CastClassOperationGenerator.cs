@@ -5,11 +5,11 @@
 
     using Labo.Common.Reflection;
 
-    public sealed class CastInstanceGenerator : BaseInstanceGenerator
+    public sealed class CastClassOperationGenerator : BaseEmitILGenerator
     {
         private readonly IInstanceGenerator m_InstanceGenerator;
 
-        public CastInstanceGenerator(Type type, IInstanceGenerator instanceGenerator)
+        public CastClassOperationGenerator(Type type, IInstanceGenerator instanceGenerator)
             : base(type)
         {
             m_InstanceGenerator = instanceGenerator;

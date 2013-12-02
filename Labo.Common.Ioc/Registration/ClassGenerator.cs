@@ -11,11 +11,11 @@
     {
         private readonly TypeAttributes m_TypeAttributes;
 
-        private readonly List<FieldGenerator> m_FieldGenerators;
-
-        private readonly List<MethodGenerator> m_MethodGenerators;
+        private readonly List<DefineFieldGenerator> m_FieldGenerators;
 
         private readonly TypeBuilder m_TypeBuilder;
+
+        private readonly List<MethodGenerator> m_MethodGenerators;
 
         public TypeBuilder TypeBuilder
         {
@@ -30,15 +30,15 @@
         public ClassGenerator(ModuleBuilder moduleBuilder, string className, TypeAttributes typeAttributes)
         {
             m_TypeAttributes = typeAttributes;
-            m_FieldGenerators = new List<FieldGenerator>();
+            m_FieldGenerators = new List<DefineFieldGenerator>();
             m_MethodGenerators = new List<MethodGenerator>();
 
             m_TypeBuilder = moduleBuilder.DefineType(className, typeAttributes);
         }
 
-        public void AddField(FieldGenerator fieldBuilder)
+        public void AddField(DefineFieldGenerator fieldBuilder)
         {
-            fieldBuilder.Owner = this;
+            fieldBuilder.Owner = TypeBuilder;
 
             m_FieldGenerators.Add(fieldBuilder);
         }
@@ -57,12 +57,12 @@
 
             if (!IsStatic)
             {
-                ConstructorBuilder defaultConstructorBuilder = m_TypeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
+                ConstructorBuilder defaultConstructorBuilder = m_TypeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
                 ILGenerator defaultConstructorGenerator = defaultConstructorBuilder.GetILGenerator();
 
                 for (int i = 0; i < m_FieldGenerators.Count; i++)
                 {
-                    FieldGenerator fieldGenerator = m_FieldGenerators[i];
+                    DefineFieldGenerator fieldGenerator = m_FieldGenerators[i];
                     fieldGenerator.Generate(fieldGenerator.IsStatic ? staticConstructorGenerator : defaultConstructorGenerator);
                 }
 
@@ -72,7 +72,7 @@
             {
                 for (int i = 0; i < m_FieldGenerators.Count; i++)
                 {
-                    FieldGenerator fieldGenerator = m_FieldGenerators[i];
+                    DefineFieldGenerator fieldGenerator = m_FieldGenerators[i];
                     fieldGenerator.Generate(staticConstructorGenerator);
                 }
             }

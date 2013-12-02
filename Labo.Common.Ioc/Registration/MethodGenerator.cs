@@ -1,6 +1,5 @@
 ﻿namespace Labo.Common.Ioc.Registration
 {
-    using System;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -13,15 +12,15 @@
 
         private readonly MethodAttributes m_MethodAttributes;
 
-        private readonly IInstanceGenerator m_ReturnValue;
+        private readonly BaseEmitILGenerator m_ReturnValue;
 
-        private readonly IInstanceGenerator[] m_Parameters;
+        private readonly DefineParameterGenerator[] m_Parameters;
 
         public bool IsStatic { get { return (m_MethodAttributes & MethodAttributes.Static) == MethodAttributes.Static; } }
 
         public ClassGenerator Owner { get; internal set; }
 
-        public MethodGenerator(ClassGenerator owner, string name, MethodAttributes methodAttributes, IInstanceGenerator returnValue, params IInstanceGenerator[] parameters)
+        public MethodGenerator(ClassGenerator owner, string name, MethodAttributes methodAttributes, BaseEmitILGenerator returnValue = null, params DefineParameterGenerator[] parameters)
         {
             m_Name = name;
             m_MethodAttributes = methodAttributes;
@@ -37,15 +36,17 @@
             ILGenerator methodGenerator = methodBuilder.GetILGenerator();
             for (int i = 0; i < m_Parameters.Length; i++)
             {
-                IInstanceGenerator parameter = m_Parameters[i];
-                EmitHelper.Ldarg(methodGenerator, i);
+                DefineParameterGenerator parameter = m_Parameters[i];
+                parameter.Position = i;
+                parameter.MethodBuilder = methodBuilder;
+                parameter.MethodGenerator = this;
                 parameter.Generate(methodGenerator);
             }
 
             if (!isVoid)
             {
                 m_ReturnValue.Generate(methodGenerator);
-            }       
+            }
 
             EmitHelper.Ret(methodGenerator);
         }

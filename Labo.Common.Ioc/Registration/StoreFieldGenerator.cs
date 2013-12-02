@@ -1,34 +1,34 @@
 ﻿namespace Labo.Common.Ioc.Registration
 {
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using Labo.Common.Reflection;
 
-    public sealed class StoreFieldGenerator : BaseInstanceGenerator
+    public sealed class StoreFieldGenerator : BaseEmitILGenerator
     {
-        private readonly FieldGenerator m_FieldGenerator;
+        private readonly DefineFieldGenerator m_FieldGenerator;
+        private readonly BaseEmitILGenerator m_Value;
 
-        private readonly IInstanceGenerator m_InstanceGenerator;
-
-        public StoreFieldGenerator(FieldGenerator fieldGenerator, IInstanceGenerator instanceGenerator)
+        public StoreFieldGenerator(DefineFieldGenerator fieldGenerator, BaseEmitILGenerator value)
             : base(fieldGenerator.Type)
         {
             m_FieldGenerator = fieldGenerator;
-            m_InstanceGenerator = instanceGenerator;
+            m_Value = value;
         }
 
         public override void Generate(ILGenerator generator)
         {
-            m_InstanceGenerator.Generate(generator);
-
-            FieldBuilder fieldBuilder = m_FieldGenerator.FieldBuilder;
+            FieldInfo fieldInfo = m_FieldGenerator.FieldInfo;
             if (m_FieldGenerator.IsStatic)
             {
-                EmitHelper.Stsfld(generator, fieldBuilder);
+                EmitHelper.Stsfld(generator, fieldInfo);
             }
             else
             {
-                EmitHelper.Stfld(generator, fieldBuilder);
+                EmitHelper.Ldarg(generator, 0);
+                m_Value.Generate(generator);
+                EmitHelper.Stfld(generator, fieldInfo);
             }
         }
     }

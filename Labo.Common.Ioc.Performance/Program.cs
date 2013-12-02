@@ -114,7 +114,7 @@
 
         private static ILogger Logger()
         {
-            return GetLogger();
+            return s_Logger;
         }
 
         private static void RegisterSingleInstance(Func<object> logger)

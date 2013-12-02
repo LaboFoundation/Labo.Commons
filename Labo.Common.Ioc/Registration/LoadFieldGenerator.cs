@@ -1,14 +1,15 @@
 ﻿namespace Labo.Common.Ioc.Registration
 {
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using Labo.Common.Reflection;
 
-    public sealed class LoadFieldGenerator : BaseInstanceGenerator
+    public sealed class LoadFieldGenerator : BaseEmitILGenerator
     {
-        private readonly FieldGenerator m_FieldGenerator;
+        private readonly DefineFieldGenerator m_FieldGenerator;
 
-        public LoadFieldGenerator(FieldGenerator fieldGenerator)
+        public LoadFieldGenerator(DefineFieldGenerator fieldGenerator)
             : base(fieldGenerator.Type)
         {
             m_FieldGenerator = fieldGenerator;
@@ -16,14 +17,15 @@
 
         public override void Generate(ILGenerator generator)
         {
-            FieldBuilder fieldBuilder = m_FieldGenerator.FieldBuilder;
+            FieldInfo fieldInfo = m_FieldGenerator.FieldInfo;
             if (m_FieldGenerator.IsStatic)
             {
-                EmitHelper.Ldsfld(generator, fieldBuilder);
+                EmitHelper.Ldsfld(generator, fieldInfo);
             }
             else
             {
-                EmitHelper.Ldfld(generator, fieldBuilder);
+                EmitHelper.Ldarg(generator, 0);
+                EmitHelper.Ldfld(generator, fieldInfo);
             }
         }
     }
