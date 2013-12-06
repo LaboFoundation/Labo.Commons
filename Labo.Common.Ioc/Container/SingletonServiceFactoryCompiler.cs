@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TransientServiceFactoryCompiler.cs" company="Labo">
+// <copyright file="SingletonServiceFactoryCompiler.cs" company="Labo">
 //   The MIT License (MIT)
 //   
 //   Copyright (c) 2013 Bora Akgun
@@ -22,7 +22,7 @@
 //   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   Defines the TransientServiceFactoryCompiler type.
+//   The singleton service factory compiler class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -35,9 +35,9 @@ namespace Labo.Common.Ioc.Container
     using Labo.Common.Reflection;
 
     /// <summary>
-    /// The transient service factory compiler class.
+    /// The singleton service factory compiler class.
     /// </summary>
-    internal sealed class TransientServiceFactoryCompiler : IServiceFactoryCompiler
+    internal sealed class SingletonServiceFactoryCompiler : IServiceFactoryCompiler
     {
         /// <summary>
         /// The dynamic assembly builder
@@ -70,13 +70,13 @@ namespace Labo.Common.Ioc.Container
         private MethodBuilder m_CreateInstanceMethodBuilder;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TransientServiceFactoryCompiler"/> class.
+        /// Initializes a new instance of the <see cref="SingletonServiceFactoryCompiler"/> class.
         /// </summary>
         /// <param name="dynamicAssemblyBuilder">The dynamic assembly builder.</param>
         /// <param name="serviceImplementationType">Type of the service.</param>
         /// <param name="serviceConstructor">The service constructor.</param>
         /// <param name="dependentServiceFactoryCompilers">The dependent service factory compilers.</param>
-        public TransientServiceFactoryCompiler(DynamicAssemblyBuilder dynamicAssemblyBuilder, Type serviceImplementationType, ConstructorInfo serviceConstructor, params IServiceFactoryCompiler[] dependentServiceFactoryCompilers)
+        public SingletonServiceFactoryCompiler(DynamicAssemblyBuilder dynamicAssemblyBuilder, Type serviceImplementationType, ConstructorInfo serviceConstructor, params IServiceFactoryCompiler[] dependentServiceFactoryCompilers)
         {
             m_DynamicAssemblyBuilder = dynamicAssemblyBuilder;
             m_ServiceImplementationType = serviceImplementationType;
@@ -90,23 +90,20 @@ namespace Labo.Common.Ioc.Container
         /// <returns>The service factory invoker.</returns>
         public IServiceFactoryInvoker CompileServiceFactoryInvoker()
         {
-            TypeBuilder typeBuilder = m_DynamicAssemblyBuilder.CreateTypeBuilder("TransientService_{0}", TypeAttributes.Public | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
+            TypeBuilder typeBuilder = m_DynamicAssemblyBuilder.CreateTypeBuilder("SingletonService_{0}", TypeAttributes.Public | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
+            FieldBuilder singletonFieldBuilder = typeBuilder.DefineField("s_Singleton", m_ServiceImplementationType, FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
+            
+            EmitStaticConstructor(typeBuilder, singletonFieldBuilder);
+
             m_CreateInstanceMethodBuilder = typeBuilder.DefineMethod("CreateInstance", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Static, m_ServiceImplementationType, Type.EmptyTypes);
             ILGenerator createInstanceMethodIlGenerator = m_CreateInstanceMethodBuilder.GetILGenerator();
 
-            for (int i = 0; i < m_DependentServiceFactoryCompilers.Length; i++)
-            {
-                IServiceFactoryCompiler dependentServiceFactoryCompiler = m_DependentServiceFactoryCompilers[i];
-                dependentServiceFactoryCompiler.CompileServiceFactoryInvoker();
-                dependentServiceFactoryCompiler.EmitServiceFactoryCreatorMethod(createInstanceMethodIlGenerator);
-            }
-
-            EmitHelper.Newobj(createInstanceMethodIlGenerator, m_ServiceConstructor);
+            EmitHelper.Ldsfld(createInstanceMethodIlGenerator, singletonFieldBuilder);
             EmitHelper.Ret(createInstanceMethodIlGenerator);
 
             m_FactoryType = typeBuilder.CreateType();
 
-            return new TransientServiceFactoryInvoker(m_FactoryType, m_ServiceImplementationType);
+            return new SingletonServiceFactoryInvoker(m_FactoryType, m_ServiceImplementationType);
         }
 
         /// <summary>
@@ -116,6 +113,28 @@ namespace Labo.Common.Ioc.Container
         public void EmitServiceFactoryCreatorMethod(ILGenerator generator)
         {
             EmitHelper.Call(generator, m_CreateInstanceMethodBuilder);
+        }
+
+        /// <summary>
+        /// Emits the static constructor of the service factory type.
+        /// </summary>
+        /// <param name="typeBuilder">The type builder.</param>
+        /// <param name="singletonFieldBuilder">The singleton field builder.</param>
+        private void EmitStaticConstructor(TypeBuilder typeBuilder, FieldBuilder singletonFieldBuilder)
+        {
+            ConstructorBuilder staticConstructorBuilder = typeBuilder.DefineTypeInitializer();
+            ILGenerator staticConstructorIlGenerator = staticConstructorBuilder.GetILGenerator();
+
+            for (int i = 0; i < m_DependentServiceFactoryCompilers.Length; i++)
+            {
+                IServiceFactoryCompiler dependentServiceFactoryCompiler = m_DependentServiceFactoryCompilers[i];
+                dependentServiceFactoryCompiler.CompileServiceFactoryInvoker();
+                dependentServiceFactoryCompiler.EmitServiceFactoryCreatorMethod(staticConstructorIlGenerator);
+            }
+
+            EmitHelper.Newobj(staticConstructorIlGenerator, m_ServiceConstructor);
+            EmitHelper.Stsfld(staticConstructorIlGenerator, singletonFieldBuilder);
+            EmitHelper.Ret(staticConstructorIlGenerator);
         }
     }
 }

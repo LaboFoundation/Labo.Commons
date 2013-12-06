@@ -9,7 +9,7 @@
     {
         public override IIocContainer CreateContainer()
         {
-            return new LaboIocContainer();
+            return new Container.IocContainer();
         }
 
         private interface ICircularDependencyClass1

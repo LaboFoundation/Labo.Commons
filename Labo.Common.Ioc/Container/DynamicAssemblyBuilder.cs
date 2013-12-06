@@ -28,13 +28,26 @@
 
 namespace Labo.Common.Ioc.Container
 {
+    using System.Globalization;
+    using System.Reflection;
     using System.Reflection.Emit;
+    using System.Threading;
 
     /// <summary>
     /// Dynamic assembly builder class.
     /// </summary>
     internal sealed class DynamicAssemblyBuilder
     {
+        /// <summary>
+        /// The type unique identifier counter
+        /// </summary>
+        private static long s_TypeIdCounter;
+
+        /// <summary>
+        /// The type unique identifier
+        /// </summary>
+        private readonly long m_TypeId;
+
         /// <summary>
         /// The dynamic assembly manager
         /// </summary>
@@ -74,6 +87,18 @@ namespace Labo.Common.Ioc.Container
             {
                 return m_ModuleBuilder;
             }
+        }
+
+        /// <summary>
+        /// Creates type builder.
+        /// </summary>
+        /// <param name="typeNameFormat">The type name format.</param>
+        /// <param name="typeAttributes">The type attributes.</param>
+        /// <returns>The created type builder.</returns>
+        public TypeBuilder CreateTypeBuilder(string typeNameFormat, TypeAttributes typeAttributes)
+        {
+            long typeId = Interlocked.Increment(ref s_TypeIdCounter);
+            return ModuleBuilder.DefineType(string.Format(CultureInfo.InvariantCulture, typeNameFormat, typeId), typeAttributes);
         }
     }
 }

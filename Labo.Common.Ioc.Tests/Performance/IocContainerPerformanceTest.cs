@@ -41,7 +41,7 @@
                                                                                          { "LightInject", () => new LightInjectIocContainer() },
                                                                                          //{ "Structuremap", () => new StructureMapIocContainer() },
                                                                                          { "SimpleInjector", () => new SimpleInjectorIocContainer()},
-                                                                                         { "Labo", () => new LaboIocContainer() },
+                                                                                         { "Labo", () => new Container.IocContainer() },
                                                                                          { "Havebox", () => new HaveBoxIocContainer() },
                                                                                         
                                                                                      };

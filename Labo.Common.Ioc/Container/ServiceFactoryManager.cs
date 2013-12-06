@@ -71,6 +71,7 @@ namespace Labo.Common.Ioc.Container
                 throw new ArgumentNullException("serviceType");
             }
 
+            // TODO: remove service registration manager, put service registration into servicefactory and store servicefactory in the dictionary
             ServiceRegistration serviceRegistration = m_ServiceRegistrationManager.GetServiceRegistration(serviceType, serviceName);
 
             return GetOrBuildServiceFactory(serviceRegistration);

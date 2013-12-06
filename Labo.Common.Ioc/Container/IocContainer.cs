@@ -266,7 +266,7 @@ namespace Labo.Common.Ioc.Container
         {
             if (IsRegistered(serviceType, name))
             {
-                return GetInstance(serviceType, name, parameters);
+                return GetInstanceByName(serviceType, name, parameters);
             }
 
             return null;

@@ -74,7 +74,7 @@ namespace Labo.Common.Ioc.Container
             {
                 if (serviceRegistration.InstanceCreator == null)
                 {
-                    ConstructorInfo constructor = m_ServiceConstructorChooser.GetConstructor(serviceRegistration.ServiceType);
+                    ConstructorInfo constructor = m_ServiceConstructorChooser.GetConstructor(serviceRegistration.ImplementationType);
                     ParameterInfo[] constructorParameters = constructor.GetParameters();
                     IServiceFactoryCompiler[] dependentServiceFactoryCompilers;
                     int constructorParametersLength = constructorParameters.Length;
@@ -102,7 +102,7 @@ namespace Labo.Common.Ioc.Container
                             serviceFactoryCompiler = new TransientServiceFactoryCompiler(m_DynamicAssemblyBuilder, serviceRegistration.ImplementationType, constructor, dependentServiceFactoryCompilers);
                             break;
                         case ServiceLifetime.Singleton:
-                            serviceFactoryCompiler = null;
+                            serviceFactoryCompiler = new SingletonServiceFactoryCompiler(m_DynamicAssemblyBuilder, serviceRegistration.ImplementationType, constructor, dependentServiceFactoryCompilers);
                             break;
                     }
 
@@ -121,7 +121,7 @@ namespace Labo.Common.Ioc.Container
                             serviceFactoryInvoker = new TransientServiceFactoryInvoker(serviceRegistration.InstanceCreator);
                             break;
                         case ServiceLifetime.Singleton:
-                            serviceFactoryInvoker = null;
+                            serviceFactoryInvoker = new SingletonServiceFactoryInvoker(serviceRegistration.InstanceCreator);
                             break;
                     }
 

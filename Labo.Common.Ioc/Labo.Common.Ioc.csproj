@@ -64,6 +64,8 @@
     <Compile Include="Container\ServiceFactoryBuilder.cs" />
     <Compile Include="Container\ServiceFactoryManager.cs" />
     <Compile Include="Container\ServiceRegistrationManager.cs" />
+    <Compile Include="Container\SingletonServiceFactoryCompiler.cs" />
+    <Compile Include="Container\SingletonServiceFactoryInvoker.cs" />
     <Compile Include="Container\TransientServiceFactoryCompiler.cs" />
     <Compile Include="Container\TransientServiceFactoryInvoker.cs" />
     <Compile Include="Exceptions\IocContainerDependencyResolutionException.cs" />
