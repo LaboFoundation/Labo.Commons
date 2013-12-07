@@ -85,25 +85,36 @@ namespace Labo.Common.Ioc.Container
         }
 
         /// <summary>
-        /// Compiles the service factory invoker.
+        /// Creates the service factory invoker.
         /// </summary>
         /// <returns>The service factory invoker.</returns>
-        public IServiceFactoryInvoker CompileServiceFactoryInvoker()
+        public IServiceFactoryInvoker CreateServiceFactoryInvoker()
         {
-            TypeBuilder typeBuilder = m_DynamicAssemblyBuilder.CreateTypeBuilder("SingletonService_{0}", TypeAttributes.Public | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
-            FieldBuilder singletonFieldBuilder = typeBuilder.DefineField("s_Singleton", m_ServiceImplementationType, FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
-            
-            EmitStaticConstructor(typeBuilder, singletonFieldBuilder);
-
-            m_CreateInstanceMethodBuilder = typeBuilder.DefineMethod("CreateInstance", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Static, m_ServiceImplementationType, Type.EmptyTypes);
-            ILGenerator createInstanceMethodIlGenerator = m_CreateInstanceMethodBuilder.GetILGenerator();
-
-            EmitHelper.Ldsfld(createInstanceMethodIlGenerator, singletonFieldBuilder);
-            EmitHelper.Ret(createInstanceMethodIlGenerator);
-
-            m_FactoryType = typeBuilder.CreateType();
+            CompileServiceFactory();
 
             return new SingletonServiceFactoryInvoker(m_FactoryType, m_ServiceImplementationType);
+        }
+
+        /// <summary>
+        /// Compiles the service factory.
+        /// </summary>
+        public void CompileServiceFactory()
+        {
+            if (m_FactoryType == null)
+            {
+                TypeBuilder typeBuilder = m_DynamicAssemblyBuilder.CreateTypeBuilder("SingletonService_{0}", TypeAttributes.Public | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
+                FieldBuilder singletonFieldBuilder = typeBuilder.DefineField("s_Singleton", m_ServiceImplementationType, FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
+
+                EmitStaticConstructor(typeBuilder, singletonFieldBuilder);
+
+                m_CreateInstanceMethodBuilder = typeBuilder.DefineMethod("CreateInstance", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Static, m_ServiceImplementationType, Type.EmptyTypes);
+                ILGenerator createInstanceMethodIlGenerator = m_CreateInstanceMethodBuilder.GetILGenerator();
+
+                EmitHelper.Ldsfld(createInstanceMethodIlGenerator, singletonFieldBuilder);
+                EmitHelper.Ret(createInstanceMethodIlGenerator);
+
+                m_FactoryType = typeBuilder.CreateType();
+            }
         }
 
         /// <summary>
@@ -128,7 +139,7 @@ namespace Labo.Common.Ioc.Container
             for (int i = 0; i < m_DependentServiceFactoryCompilers.Length; i++)
             {
                 IServiceFactoryCompiler dependentServiceFactoryCompiler = m_DependentServiceFactoryCompilers[i];
-                dependentServiceFactoryCompiler.CompileServiceFactoryInvoker();
+                dependentServiceFactoryCompiler.CompileServiceFactory();
                 dependentServiceFactoryCompiler.EmitServiceFactoryCreatorMethod(staticConstructorIlGenerator);
             }
 

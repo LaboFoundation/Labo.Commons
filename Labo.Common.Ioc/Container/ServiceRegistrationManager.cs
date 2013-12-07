@@ -142,7 +142,19 @@ namespace Labo.Common.Ioc.Container
         {
             if (serviceName == null)
             {
-                return m_ServiceEntriesByServiceType.ContainsKey(serviceType);
+                bool isServiceRegistered = m_ServiceEntriesByServiceType.ContainsKey(serviceType);
+                if (!isServiceRegistered)
+                {
+                    foreach (KeyValuePair<ServiceKey, ServiceRegistration> serviceRegistration in m_ServiceEntries)
+                    {
+                        if (serviceRegistration.Key.ServiceType == serviceType)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return isServiceRegistered;
             }
 
             return m_ServiceEntries.ContainsKey(new ServiceKey(serviceName, serviceType));

@@ -36,15 +36,20 @@ namespace Labo.Common.Ioc.Container
     internal interface IServiceFactoryCompiler
     {
         /// <summary>
-        /// Compiles the service factory invoker.
+        /// Creates the service factory invoker.
         /// </summary>
         /// <returns>The service factory invoker.</returns>
-        IServiceFactoryInvoker CompileServiceFactoryInvoker();
+        IServiceFactoryInvoker CreateServiceFactoryInvoker();
 
         /// <summary>
         /// Emits the service factory creator method.
         /// </summary>
         /// <param name="generator">The utility generator.</param>
         void EmitServiceFactoryCreatorMethod(ILGenerator generator);
+
+        /// <summary>
+        /// Compiles the service factory.
+        /// </summary>
+        void CompileServiceFactory();
     }
 }

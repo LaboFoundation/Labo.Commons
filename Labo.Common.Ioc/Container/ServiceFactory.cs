@@ -63,7 +63,7 @@ namespace Labo.Common.Ioc.Container
         {
             ServiceFactoryCompiler = serviceFactoryCompiler;
 
-            m_ServiceFactoryInvoker = ServiceFactoryCompiler.CompileServiceFactoryInvoker();
+            m_ServiceFactoryInvoker = ServiceFactoryCompiler.CreateServiceFactoryInvoker();
         }
 
         /// <summary>
