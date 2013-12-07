@@ -37,7 +37,7 @@
                                                                                          //{ "LightCore", () => new LightCoreIocContainer() },
                                                                                          { "Dynamo", () => new DynamoIocContainer() },
                                                                                          { "Hiro", () => new HiroIocContainer() },
-                                                                                         //{ "Munq", () => new MunqIocContainer() },
+                                                                                         { "Munq", () => new MunqIocContainer() },
                                                                                          { "LightInject", () => new LightInjectIocContainer() },
                                                                                          //{ "Structuremap", () => new StructureMapIocContainer() },
                                                                                          { "SimpleInjector", () => new SimpleInjectorIocContainer()},
@@ -46,7 +46,7 @@
                                                                                         
                                                                                      };
             
-        [Test]
+        [Test, Ignore]
         public void TestPerformance()
         {
             TestPerformance(

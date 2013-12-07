@@ -20,10 +20,178 @@
         }
     }
 
+    public interface ISingletonService
+    {
+        Guid Guid { get; }
+    }
+
+    public interface ITransientService
+    {
+        Guid Guid { get; }
+    }
+
+    public interface ISingletonTransientService : ISingletonService
+    {
+        ITransientService TransientService { get; }
+    }
+
+    public interface ITransientSingletonService : ITransientService
+    {
+        ISingletonService SingletonService { get; }
+    }
+
+    public sealed class SingletonService : ISingletonService
+    {
+        public Guid Guid { get; set; }
+
+        public SingletonService()
+        {
+            Guid = Guid.NewGuid();
+        }
+    }
+
+    public sealed class SingletonTransientService : ISingletonTransientService
+    {
+        private readonly ITransientService m_TransientService;
+        public ITransientService TransientService
+        {
+            get { return m_TransientService; }
+        }
+
+        public Guid Guid { get; set; }
+
+        public SingletonTransientService(ITransientService transientService)
+        {
+            m_TransientService = transientService;
+
+            Guid = Guid.NewGuid();
+        }
+    }
+
+    public sealed class TransientSingletonService : ITransientSingletonService
+    {
+        private readonly ISingletonService m_SingletonService;
+        public ISingletonService SingletonService
+        {
+            get { return m_SingletonService; }
+        }
+
+        public Guid Guid { get; set; }
+
+        public TransientSingletonService(ISingletonService singletonService)
+        {
+            m_SingletonService = singletonService;
+
+            Guid = Guid.NewGuid();
+        }
+    }
+
+    public sealed class TransientService : ITransientService
+    {
+        public Guid Guid { get; set; }
+
+        public TransientService()
+        {
+            Guid = Guid.NewGuid();
+        }
+    }
+
     [TestFixture]
     public abstract class IocContainerTestFixture
     {
         public abstract IIocContainer CreateContainer();
+
+        [Test]
+        public void RegisterSingletonTransientService()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            iocContainer.RegisterInstance(typeof(ITransientService), typeof(TransientService));
+            iocContainer.RegisterSingleInstance(typeof(ISingletonTransientService), typeof(SingletonTransientService));
+
+            AssertRegisterSingletonTransientService(iocContainer);
+        }
+
+        [Test]
+        public void RegisterSingletonTransientServiceGeneric()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            iocContainer.RegisterInstance<ITransientService, TransientService>();
+            iocContainer.RegisterSingleInstance<ISingletonTransientService, SingletonTransientService>();
+
+            AssertRegisterSingletonTransientService(iocContainer);
+        }
+
+        [Test]
+        public void RegisterSingletonTransientServiceLambda()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            iocContainer.RegisterInstance<ITransientService>(x => new TransientService());
+            iocContainer.RegisterSingleInstance<ISingletonTransientService>(x => new SingletonTransientService(x.GetInstance<ITransientService>()));
+
+            AssertRegisterSingletonTransientService(iocContainer);
+        }
+
+        private static void AssertRegisterSingletonTransientService(IIocContainerResolver iocContainer)
+        {
+            Assert.AreSame(
+                iocContainer.GetInstance<ISingletonTransientService>(),
+                iocContainer.GetInstance<ISingletonTransientService>());
+            Assert.AreEqual(
+                iocContainer.GetInstance<ISingletonTransientService>().Guid,
+                iocContainer.GetInstance<ISingletonTransientService>().Guid);
+            Assert.AreSame(
+                iocContainer.GetInstance<ISingletonTransientService>().TransientService,
+                iocContainer.GetInstance<ISingletonTransientService>().TransientService);
+            Assert.AreEqual(
+                iocContainer.GetInstance<ISingletonTransientService>().TransientService.Guid,
+                iocContainer.GetInstance<ISingletonTransientService>().TransientService.Guid);
+        }
+
+        [Test]
+        public void RegisterTransientSingletonService()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            iocContainer.RegisterSingleInstance(typeof(ISingletonService), typeof(SingletonService));
+            iocContainer.RegisterInstance(typeof(ITransientSingletonService), typeof(TransientSingletonService));
+
+            AssertRegisterTransientSingletonService(iocContainer);
+        }
+
+        [Test]
+        public void RegisterTransientSingletonServiceGeneric()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            iocContainer.RegisterSingleInstance<ISingletonService, SingletonService>();
+            iocContainer.RegisterInstance<ITransientSingletonService, TransientSingletonService>();
+
+            AssertRegisterTransientSingletonService(iocContainer);
+        }
+
+        [Test]
+        public void RegisterTransientSingletonServiceLambda()
+        {
+            IIocContainer iocContainer = CreateContainer();
+            iocContainer.RegisterSingleInstance<ISingletonService>(x => new SingletonService());
+            iocContainer.RegisterInstance<ITransientSingletonService>(x => new TransientSingletonService(x.GetInstance<ISingletonService>()));
+
+            AssertRegisterTransientSingletonService(iocContainer);
+        }
+
+        private static void AssertRegisterTransientSingletonService(IIocContainerResolver iocContainer)
+        {
+            Assert.AreNotSame(
+                iocContainer.GetInstance<ITransientSingletonService>(),
+                iocContainer.GetInstance<ITransientSingletonService>());
+            Assert.AreNotEqual(
+                iocContainer.GetInstance<ITransientSingletonService>().Guid,
+                iocContainer.GetInstance<ITransientSingletonService>().Guid);
+            Assert.AreSame(
+                iocContainer.GetInstance<ITransientSingletonService>().SingletonService,
+                iocContainer.GetInstance<ITransientSingletonService>().SingletonService);
+            Assert.AreEqual(
+                iocContainer.GetInstance<ITransientSingletonService>().SingletonService.Guid,
+                iocContainer.GetInstance<ITransientSingletonService>().SingletonService.Guid);
+        }
 
         [Test]
         public void RegisterSingleInstanceLambda()

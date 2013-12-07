@@ -46,14 +46,10 @@
   <ItemGroup>
     <Compile Include="AutofacContainerTestFixture.cs" />
     <Compile Include="DynamoContainerTestFixture.cs" />
-    <Compile Include="HaveBoxContainerTestFixture.cs" />
-    <Compile Include="HiroContainerTestFixture.cs" />
     <Compile Include="IocContainerTestFixture.cs" />
     <Compile Include="LaboContainerTestFixture.cs" />
-    <Compile Include="LightCoreContainerTestFixture.cs" />
     <Compile Include="LightInjectContainerTestFixture.cs" />
     <Compile Include="LinfuContainerTestFixture.cs" />
-    <Compile Include="MugenContainerTestFixture.cs" />
     <Compile Include="MunqContainerTestFixture.cs" />
     <Compile Include="NInjectContainerTestFixture.cs" />
     <Compile Include="Performance\Domain\Application.cs" />
@@ -71,9 +67,7 @@
     <Compile Include="Performance\IocContainerPerformanceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleInjectorContainerTestFixture.cs" />
-    <Compile Include="SimpleInjectorIocContainerTestFixture.cs" />
     <Compile Include="StructureMapContainerTestFixture.cs" />
-    <Compile Include="TinyIocContainerTestFixture.cs" />
     <Compile Include="UnityContainerTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
