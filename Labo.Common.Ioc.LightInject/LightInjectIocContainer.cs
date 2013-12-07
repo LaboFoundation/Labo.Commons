@@ -38,6 +38,13 @@ namespace Labo.Common.Ioc.LightInject
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
     public sealed class LightInjectIocContainer : BaseIocContainer
     {
+        private sealed class NullAssemblyScanner : IAssemblyScanner
+        {
+            public void Scan(System.Reflection.Assembly assembly, IServiceRegistry serviceRegistry, Func<ILifetime> lifetime, Func<Type, Type, bool> shouldRegister)
+            {
+            }
+        }
+
         /// <summary>
         /// The container
         /// </summary>
@@ -48,7 +55,10 @@ namespace Labo.Common.Ioc.LightInject
         /// </summary>
         public LightInjectIocContainer()
         {
-            m_Container = new ServiceContainer();
+            m_Container = new ServiceContainer
+                              {
+                                  AssemblyScanner = new NullAssemblyScanner()
+                              };
         }
 
         /// <summary>
@@ -266,7 +276,7 @@ namespace Labo.Common.Ioc.LightInject
         /// </returns>
         public override bool IsRegistered(Type type)
         {
-            return m_Container.CanGetInstance(type, null);
+            return m_Container.CanGetInstance(type, string.Empty);
         }
 
         /// <summary>
@@ -279,7 +289,7 @@ namespace Labo.Common.Ioc.LightInject
         /// </returns>
         public override bool IsRegistered(Type type, string name)
         {
-            return m_Container.CanGetInstance(type, name);
+            return m_Container.CanGetInstance(type, name ?? string.Empty);
         }
     }
 }

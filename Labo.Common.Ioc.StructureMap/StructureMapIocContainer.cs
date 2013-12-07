@@ -34,6 +34,7 @@ namespace Labo.Common.Ioc.StructureMap
     using System.Linq;
 
     using global::StructureMap;
+    using global::StructureMap.Query;
 
     /// <summary>
     /// StructureMap inversion of control container class.
@@ -82,7 +83,7 @@ namespace Labo.Common.Ioc.StructureMap
         /// <param name="implementationType">The type of the implementation.</param>
         public override void RegisterSingleInstance(Type serviceType, Type implementationType)
         {
-            m_Container.Configure(x => x.For(implementationType).Singleton().Use(serviceType));
+            m_Container.Configure(x => x.For(serviceType).Singleton().Use(implementationType));
         }
 
         /// <summary>
@@ -99,7 +100,7 @@ namespace Labo.Common.Ioc.StructureMap
         /// </param>
         public override void RegisterSingleInstanceNamed(Type serviceType, Type implementationType, string name)
         {
-            m_Container.Configure(x => x.For(implementationType).Singleton().Use(serviceType).Named(name));
+            m_Container.Configure(x => x.For(serviceType).Singleton().Use(implementationType).Named(name));
         }
 
         /// <summary>
@@ -169,7 +170,7 @@ namespace Labo.Common.Ioc.StructureMap
         /// </param>
         public override void RegisterInstanceNamed(Type serviceType, Type implementationType, string name)
         {
-            m_Container.Configure(x => x.For(implementationType).Use(serviceType).Named(name));
+            m_Container.Configure(x => x.For(serviceType).Use(implementationType).Named(name));
         }
 
         /// <summary>
@@ -269,7 +270,7 @@ namespace Labo.Common.Ioc.StructureMap
         /// </returns>
         public override bool IsRegistered(Type type)
         {
-            return m_Container.TryGetInstance(type) != null;
+            return m_Container.Model.PluginTypes.Any(x => x.PluginType == type);
         }
 
         /// <summary>
@@ -282,7 +283,7 @@ namespace Labo.Common.Ioc.StructureMap
         /// </returns>
         public override bool IsRegistered(Type type, string name)
         {
-            return m_Container.TryGetInstance(type, name) != null;
+            return m_Container.Model.PluginTypes.Any(x => x.Find(name) != null && x.PluginType == type);
         }
     }
 }

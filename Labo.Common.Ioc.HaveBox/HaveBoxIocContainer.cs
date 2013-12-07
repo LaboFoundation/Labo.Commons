@@ -60,7 +60,8 @@ namespace Labo.Common.Ioc.HaveBox
         /// <param name="creator">The creator delegate.</param>
         public override void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            m_Container.Configure(x => x.For<TImplementation>().Use(() => creator(this)).AsSingleton());
+            Lazy<TImplementation> serviceCreator = new Lazy<TImplementation>(() => creator(this), true);
+            m_Container.Configure(x => x.For<TImplementation>().Use(() => serviceCreator.Value));
         }
 
         /// <summary>

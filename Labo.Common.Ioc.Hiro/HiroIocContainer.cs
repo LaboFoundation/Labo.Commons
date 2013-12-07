@@ -93,7 +93,8 @@ namespace Labo.Common.Ioc.Hiro
         /// <param name="creator">The creator delegate.</param>
         public override void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            m_DependencyMap.AddService(x => creator(this));
+            Lazy<TImplementation> serviceCreator = new Lazy<TImplementation>(() => creator(this), true);
+            m_DependencyMap.AddService(x => serviceCreator.Value);
         }
 
         /// <summary>
@@ -104,7 +105,8 @@ namespace Labo.Common.Ioc.Hiro
         /// <param name="name">The instance name.</param>
         public override void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name)
         {
-            m_DependencyMap.AddService(name, x => creator(this));
+            Lazy<TImplementation> serviceCreator = new Lazy<TImplementation>(() => creator(this), true);
+            m_DependencyMap.AddService(name, x => serviceCreator.Value);
         }
 
         /// <summary>

@@ -31,6 +31,7 @@ namespace Labo.Common.Ioc.Munq
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
 
     using global::Munq;
     using global::Munq.LifetimeManagers;
@@ -61,7 +62,7 @@ namespace Labo.Common.Ioc.Munq
         /// <param name="creator">The creator delegate.</param>
         public override void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            m_Container.Register(x => creator(this)).WithLifetimeManager(new ContainerLifetime());
+            m_Container.Register<TImplementation>(x => creator(this)).WithLifetimeManager(new ContainerLifetime());
         }
 
         /// <summary>
@@ -72,7 +73,7 @@ namespace Labo.Common.Ioc.Munq
         /// <param name="name">The instance name.</param>
         public override void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name)
         {
-            m_Container.Register(name, x => creator(this)).WithLifetimeManager(new ContainerLifetime());
+            m_Container.Register<TImplementation>(name, x => creator(this)).WithLifetimeManager(new ContainerLifetime());
         }
 
         /// <summary>
@@ -127,7 +128,7 @@ namespace Labo.Common.Ioc.Munq
         /// </typeparam>
         public override void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            m_Container.Register(x => creator(this)).WithLifetimeManager(new RequestLifetime());
+            m_Container.Register<TImplementation>(x => creator(this)).WithLifetimeManager(new AlwaysNewLifetime());
         }
 
         /// <summary>
@@ -141,7 +142,7 @@ namespace Labo.Common.Ioc.Munq
         /// </param>
         public override void RegisterInstance(Type serviceType, Type implementationType)
         {
-            m_Container.Register(serviceType, implementationType).WithLifetimeManager(new RequestLifetime());
+            m_Container.Register(serviceType, implementationType).WithLifetimeManager(new AlwaysNewLifetime());
         }
 
         /// <summary>
@@ -152,7 +153,7 @@ namespace Labo.Common.Ioc.Munq
         /// <param name="name">The instance name.</param>
         public override void RegisterInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name)
         {
-            m_Container.Register(name, x => creator(this)).WithLifetimeManager(new RequestLifetime());
+            m_Container.Register<TImplementation>(name, x => creator(this)).WithLifetimeManager(new AlwaysNewLifetime());
         }
 
         /// <summary>
@@ -169,7 +170,7 @@ namespace Labo.Common.Ioc.Munq
         /// </param>
         public override void RegisterInstanceNamed(Type serviceType, Type implementationType, string name)
         {
-            m_Container.Register(name, serviceType, implementationType).WithLifetimeManager(new RequestLifetime());
+            m_Container.Register(name, serviceType, implementationType).WithLifetimeManager(new AlwaysNewLifetime());
         }
 
         /// <summary>
@@ -183,7 +184,7 @@ namespace Labo.Common.Ioc.Munq
         /// </param>
         public override void RegisterInstanceNamed(Type serviceType, string name)
         {
-            m_Container.Register(name, serviceType, serviceType).WithLifetimeManager(new RequestLifetime());
+            m_Container.Register(name, serviceType, serviceType).WithLifetimeManager(new AlwaysNewLifetime());
         }
 
         /// <summary>
@@ -201,7 +202,7 @@ namespace Labo.Common.Ioc.Munq
         /// <param name="serviceType">Type of the service.</param>
         public override void RegisterInstance(Type serviceType)
         {
-            m_Container.Register(serviceType, serviceType).WithLifetimeManager(new RequestLifetime());
+            m_Container.Register(serviceType, serviceType).WithLifetimeManager(new AlwaysNewLifetime());
         }
 
         /// <summary>
@@ -235,7 +236,7 @@ namespace Labo.Common.Ioc.Munq
         /// <returns>instance.</returns>
         public override object GetInstanceOptional(Type serviceType, params object[] parameters)
         {
-            if (m_Container.CanResolve(serviceType))
+            if (!m_Container.CanResolve(serviceType))
             {
                 return null;
             }
@@ -252,7 +253,7 @@ namespace Labo.Common.Ioc.Munq
         /// <returns>instance.</returns>
         public override object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters)
         {
-            if (m_Container.CanResolve(name, serviceType))
+            if (!m_Container.CanResolve(name, serviceType))
             {
                 return null;
             }
@@ -279,7 +280,7 @@ namespace Labo.Common.Ioc.Munq
         /// </returns>
         public override bool IsRegistered(Type type)
         {
-            return m_Container.CanResolve(type);
+            return m_Container.GetRegistrations(type).Any();
         }
 
         /// <summary>

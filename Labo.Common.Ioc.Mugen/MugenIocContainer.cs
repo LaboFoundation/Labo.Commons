@@ -60,7 +60,7 @@ namespace Labo.Common.Ioc.Mugen
         /// <param name="creator">The creator delegate.</param>
         public override void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            throw new NotImplementedException();
+            m_Container.Bind<TImplementation>().To(x => creator(this)).InSingletonScope();
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Labo.Common.Ioc.Mugen
         /// <param name="name">The instance name.</param>
         public override void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name)
         {
-            throw new NotImplementedException();
+            m_Container.Bind<TImplementation>().To(x => creator(this)).InSingletonScope().NamedBinding(name);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace Labo.Common.Ioc.Mugen
         /// </typeparam>
         public override void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            throw new NotImplementedException();
+            m_Container.Bind<TImplementation>().To(x => creator(this)).InTransientScope();
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Labo.Common.Ioc.Mugen
         /// <param name="name">The instance name.</param>
         public override void RegisterInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name)
         {
-            throw new NotImplementedException();
+            m_Container.Bind<TImplementation>().To(x => creator(this)).InTransientScope().NamedBinding(name);
         }
 
         /// <summary>

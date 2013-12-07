@@ -100,7 +100,7 @@ namespace Labo.Common.Ioc.Linfu
         /// </param>
         public override void RegisterSingleInstanceNamed(Type serviceType, Type implementationType, string name)
         {
-            m_Container.AddService(name, serviceType, implementationType);
+            m_Container.AddService(name, serviceType, implementationType, LifecycleType.Singleton);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace Labo.Common.Ioc.Linfu
         /// </param>
         public override void RegisterInstanceNamed(Type serviceType, Type implementationType, string name)
         {
-            m_Container.AddService(name, serviceType, implementationType, LifecycleType.OncePerThread);
+            m_Container.AddService(name, serviceType, implementationType, LifecycleType.OncePerRequest);
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace Labo.Common.Ioc.Linfu
         /// </param>
         public override void RegisterInstanceNamed(Type serviceType, string name)
         {
-            m_Container.AddService(name, serviceType, serviceType, LifecycleType.OncePerThread);
+            m_Container.AddService(name, serviceType, serviceType, LifecycleType.OncePerRequest);
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace Labo.Common.Ioc.Linfu
         /// <returns>instance.</returns>
         public override object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters)
         {
-            if (!m_Container.Contains(serviceType))
+            if (!m_Container.Contains(name, serviceType))
             {
                 return null;
             }
@@ -280,7 +280,7 @@ namespace Labo.Common.Ioc.Linfu
         /// </returns>
         public override bool IsRegistered(Type type)
         {
-            return m_Container.Contains(type);
+            return m_Container.AvailableServices.Any(x => x.ServiceType == type);
         }
 
         /// <summary>

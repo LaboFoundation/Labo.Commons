@@ -60,7 +60,7 @@ namespace Labo.Common.Ioc.Dynamo
         /// <param name="creator">The creator delegate.</param>
         public override void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            m_Container.Register(x => creator(this));
+            m_Container.Register(x => creator(this)).WithContainerLifetime();
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Labo.Common.Ioc.Dynamo
         /// <param name="name">The instance name.</param>
         public override void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name)
         {
-            m_Container.Register(x => creator(this)).WithContainerLifetime();
+            m_Container.Register(x => creator(this), name).WithContainerLifetime();
         }
 
         /// <summary>
@@ -287,6 +287,7 @@ namespace Labo.Common.Ioc.Dynamo
         public override bool IsRegistered(Type type, string name)
         {
             object instance;
+
             return m_Container.TryResolve(type, name, out instance);
         }
     }

@@ -60,7 +60,8 @@ namespace Labo.Common.Ioc.TinyIoc
         /// <param name="creator">The creator delegate.</param>
         public override void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            m_Container.Register((x, y) => creator(this)).AsSingleton();
+            Lazy<TImplementation> serviceCreator = new Lazy<TImplementation>(() => creator(this), true);
+            m_Container.Register((x, y) => serviceCreator.Value);
         }
 
         /// <summary>
@@ -71,7 +72,8 @@ namespace Labo.Common.Ioc.TinyIoc
         /// <param name="name">The instance name.</param>
         public override void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name)
         {
-            m_Container.Register((x, y) => creator(this), name).AsSingleton();
+            Lazy<TImplementation> serviceCreator = new Lazy<TImplementation>(() => creator(this), true);
+            m_Container.Register((x, y) => serviceCreator.Value, name).AsSingleton();
         }
 
         /// <summary>
@@ -126,7 +128,7 @@ namespace Labo.Common.Ioc.TinyIoc
         /// </typeparam>
         public override void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            m_Container.Register((x, y) => creator(this)).AsMultiInstance();
+            m_Container.Register((x, y) => creator(this));
         }
 
         /// <summary>

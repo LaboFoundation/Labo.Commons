@@ -31,6 +31,7 @@ namespace Labo.Common.Ioc.Unity
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
 
     using Microsoft.Practices.Unity;
 
@@ -98,7 +99,7 @@ namespace Labo.Common.Ioc.Unity
         /// </param>
         public override void RegisterSingleInstanceNamed(Type serviceType, Type implementationType, string name)
         {
-            m_Container.RegisterType(implementationType, name, new ContainerControlledLifetimeManager());
+            m_Container.RegisterType(serviceType, implementationType, name, new ContainerControlledLifetimeManager(), new InjectionMember[0]);
         }
 
         /// <summary>
@@ -126,7 +127,7 @@ namespace Labo.Common.Ioc.Unity
         /// </typeparam>
         public override void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            m_Container.RegisterType<TImplementation>(new ContainerControlledLifetimeManager(), new InjectionFactory(x => creator(this)));
+            m_Container.RegisterType<TImplementation>(new TransientLifetimeManager(), new InjectionFactory(x => creator(this)));
         }
 
         /// <summary>
@@ -182,7 +183,7 @@ namespace Labo.Common.Ioc.Unity
         /// </param>
         public override void RegisterInstanceNamed(Type serviceType, string name)
         {
-            m_Container.RegisterType(serviceType, serviceType, name);
+            m_Container.RegisterType(serviceType, serviceType, name, new TransientLifetimeManager(), new InjectionMember[0]);
         }
 
         /// <summary>
@@ -234,7 +235,7 @@ namespace Labo.Common.Ioc.Unity
         /// <returns>instance.</returns>
         public override object GetInstanceOptional(Type serviceType, params object[] parameters)
         {
-            if (m_Container.IsRegistered(serviceType))
+            if (!m_Container.IsRegistered(serviceType))
             {
                 return null;
             }
@@ -251,7 +252,7 @@ namespace Labo.Common.Ioc.Unity
         /// <returns>instance.</returns>
         public override object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters)
         {
-            if (m_Container.IsRegistered(serviceType, name))
+            if (!m_Container.IsRegistered(serviceType, name))
             {
                 return null;
             }
@@ -278,7 +279,7 @@ namespace Labo.Common.Ioc.Unity
         /// </returns>
         public override bool IsRegistered(Type type)
         {
-            return m_Container.IsRegistered(type);
+            return m_Container.Registrations.Any(x => x.RegisteredType == type);
         }
 
         /// <summary>
