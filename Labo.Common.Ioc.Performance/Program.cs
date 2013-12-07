@@ -1,13 +1,8 @@
 ﻿namespace Labo.Common.Ioc.Performance
 {
     using System;
-    using System.Linq;
-    using System.Reflection;
-    using System.Reflection.Emit;
 
     using Labo.Common.Ioc.Performance.Domain;
-    using Labo.Common.Ioc.Registration;
-    using Labo.Common.Reflection;
 
     class Program
     {
@@ -75,7 +70,7 @@
             //object instance = @delegate();
             //instance.ToStringInvariant();
 
-            LaboIocContainer container = new LaboIocContainer();
+            Container.IocContainer container = new Container.IocContainer();
 
             container.RegisterInstance<ISettings, Settings>();
             container.RegisterInstance<ILogger, Logger>();
@@ -83,10 +78,6 @@
             container.RegisterSingleInstance<IApplication, Application>();
             container.RegisterInstance<IConfigurationManager, ConfigurationManager>();
             container.RegisterInstance<IController, Controller>();
-
-            RegistrationBuilder registrationBuilder = new RegistrationBuilder();
-            IApplication application = (IApplication)registrationBuilder.BuildServiceInvokerMethod(container, container.ModuleBuilder, typeof(IApplication))();
-            application.ToStringInvariant();
 
             for (int i = 0; i < 10000; i++)
             {
