@@ -42,3 +42,5 @@ using System.Runtime.InteropServices;
 
 [assembly: System.Security.AllowPartiallyTrustedCallers]
 [assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
+
+[assembly: InternalsVisibleTo("Labo.Common.Tests")]

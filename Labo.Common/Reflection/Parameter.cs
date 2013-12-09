@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Delegates.cs" company="Labo">
+// <copyright file="Parameter.cs" company="Labo">
 //   The MIT License (MIT)
 //   
 //   Copyright (c) 2013 Bora Akgun
@@ -22,42 +22,38 @@
 //   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   Defines the ConstructorInvoker type.
+//   The parameter helper class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Labo.Common.Reflection
 {
     /// <summary>
-    /// A delegate to construct an instance of an object.
+    /// The parameter helper class.
     /// </summary>
-    /// <param name="parameters">The constructor parameters.</param>
-    /// <returns>Object instance.</returns>
-    public delegate object ConstructorInvoker(params object[] parameters);
+    public static class Parameter
+    {
+        /// <summary>
+        /// Creates NamedParameter.
+        /// </summary>
+        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <param name="name">The name.</param>
+        /// <returns>The created NamedParameter.</returns>
+        public static NamedParameter NamedParameter<TType>(string name)
+        {
+            return new NamedParameter(typeof(TType), name);
+        }
 
-    /// <summary>
-    /// A delegate to call an objects method.
-    /// </summary>
-    /// <param name="obj">The object instance that is going to used for method invocation.</param>
-    /// <param name="parameters">The method parameters.</param>
-    /// <returns>Method return value.</returns>
-    public delegate object MethodInvoker(object obj, params object[] parameters);
-
-    /// <summary>
-    /// A delegate to get value of a field or property.
-    /// </summary>
-    /// <param name="obj">
-    /// The object instance to get field or property value.
-    /// </param>
-    /// <returns>The field or property value.</returns>
-    public delegate object MemberGetter(object obj);
-
-    /// <summary>
-    /// A delegate to set value of a field or property.
-    /// </summary>
-    /// <param name="obj">
-    /// The object instance to get field or property value.
-    /// </param>
-    /// <param name="value">The value to be set to the field or property.</param>
-    public delegate void MemberSetter(object obj, object value);
+        /// <summary>
+        /// Creates NamedParameterWithValue.
+        /// </summary>
+        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>The created NamedParameterWithValue.</returns>
+        public static NamedParameterWithValue NamedParameterWithValue<TType>(string name, object value)
+        {
+            return new NamedParameterWithValue(typeof(TType), name, value);
+        }
+    }
 }

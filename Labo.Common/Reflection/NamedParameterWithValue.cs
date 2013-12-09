@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Delegates.cs" company="Labo">
+// <copyright file="NamedParameterWithValue.cs" company="Labo">
 //   The MIT License (MIT)
 //   
 //   Copyright (c) 2013 Bora Akgun
@@ -22,42 +22,37 @@
 //   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   Defines the ConstructorInvoker type.
+//   Defines the NamedParameterWithValue type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Labo.Common.Reflection
 {
-    /// <summary>
-    /// A delegate to construct an instance of an object.
-    /// </summary>
-    /// <param name="parameters">The constructor parameters.</param>
-    /// <returns>Object instance.</returns>
-    public delegate object ConstructorInvoker(params object[] parameters);
+    using System;
 
     /// <summary>
-    /// A delegate to call an objects method.
+    /// The name parameter with value class.
     /// </summary>
-    /// <param name="obj">The object instance that is going to used for method invocation.</param>
-    /// <param name="parameters">The method parameters.</param>
-    /// <returns>Method return value.</returns>
-    public delegate object MethodInvoker(object obj, params object[] parameters);
+    public sealed class NamedParameterWithValue : NamedParameter
+    {
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        /// <value>
+        /// The value.
+        /// </value>
+        public object Value { get; private set; }
 
-    /// <summary>
-    /// A delegate to get value of a field or property.
-    /// </summary>
-    /// <param name="obj">
-    /// The object instance to get field or property value.
-    /// </param>
-    /// <returns>The field or property value.</returns>
-    public delegate object MemberGetter(object obj);
-
-    /// <summary>
-    /// A delegate to set value of a field or property.
-    /// </summary>
-    /// <param name="obj">
-    /// The object instance to get field or property value.
-    /// </param>
-    /// <param name="value">The value to be set to the field or property.</param>
-    public delegate void MemberSetter(object obj, object value);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NamedParameterWithValue"/> class.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public NamedParameterWithValue(Type type, string name, object value)
+            : base(type, name)
+        {
+            Value = value;
+        }
+    }
 }
