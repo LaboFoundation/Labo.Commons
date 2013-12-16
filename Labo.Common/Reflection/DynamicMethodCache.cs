@@ -60,19 +60,20 @@ namespace Labo.Common.Reflection
         /// <returns>The method delegate.</returns>
         public TDelegate GetOrAddDelegate<TDelegate>(MemberInfo memberInfo, Func<TDelegate> creatorFunc, DynamicMethodCacheStrategy cacheStrategy)
         {
-            return (TDelegate)m_Entries.AddOrUpdate(
-                    memberInfo,
-                    x => CreateDelegate(creatorFunc, cacheStrategy),
-                    (x, y) =>
-                        {
-                            WeakReference weakReference = y as WeakReference;
-                            if (weakReference != null && weakReference.IsAlive)
-                            {
-                                return weakReference.Target;
-                            }
+            object entry = m_Entries.AddOrUpdate(
+                                                memberInfo,
+                                                x => CreateDelegate(creatorFunc, cacheStrategy),
+                                                (x, y) =>
+                                                    {
+                                                        WeakReference weakReference = y as WeakReference;
+                                                        if (weakReference != null && weakReference.IsAlive)
+                                                        {
+                                                            return weakReference.Target;
+                                                        }
 
-                            return CreateDelegate(creatorFunc, cacheStrategy);
-                        });
+                                                        return CreateDelegate(creatorFunc, cacheStrategy);
+                                                    });
+            return (TDelegate)(entry is WeakReference ? ((WeakReference)entry).Target : entry);
         }
 
         /// <summary>

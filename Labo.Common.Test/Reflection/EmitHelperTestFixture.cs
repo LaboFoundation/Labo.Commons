@@ -240,10 +240,7 @@
         {
             Type[] parameterTypes = { typeof(int), typeof(int) };
             MathHelper mathHelper = new MathHelper();
-            object value = DynamicMethodHelper.EmitMethodInvoker(
-                typeof(MathHelper),
-                typeof(MathHelper).GetMethod("Sum", parameterTypes),
-                parameterTypes)(mathHelper, 10, 5);
+            object value = DynamicMethodHelper.EmitMethodInvoker(typeof(MathHelper), typeof(MathHelper).GetMethod("Sum", parameterTypes))(mathHelper, 10, 5);
 
             Assert.AreEqual(mathHelper.Sum(10, 5), (int)value);
         }
@@ -284,8 +281,7 @@
             MathHelper mathHelper = new MathHelper();
             DynamicMethodHelper.EmitMethodInvoker(
             typeof(MathHelper),
-            typeof(MathHelper).GetMethod("SetPI", new[] { typeof(double) }),
-            new[] { typeof(double) })(mathHelper, Math.PI);
+            typeof(MathHelper).GetMethod("SetPI", new[] { typeof(double) }))(mathHelper, Math.PI);
 
             Assert.AreEqual(Math.PI, mathHelper.PI);
         }

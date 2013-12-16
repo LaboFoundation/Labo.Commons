@@ -30,9 +30,11 @@ namespace Labo.Common.Reflection
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Globalization;
     using System.Reflection;
 
+    using Labo.Common.Reflection.Exceptions;
+    using Labo.Common.Resources;
     using Labo.Common.Utils;
 
     /// <summary>
@@ -53,7 +55,7 @@ namespace Labo.Common.Reflection
         /// <summary>
         /// The property access item class.
         /// </summary>
-        private sealed class PropertyAccessItem
+        internal sealed class PropertyAccessItem
         {
             /// <summary>
             /// Gets or sets the getter delegate.
@@ -174,23 +176,37 @@ namespace Labo.Common.Reflection
 
             Type objectType = @object.GetType();
 
+            // TODO: cache method parameters.
+            ParameterInfo[] methodParameters = methodInfo.GetParameters();
+
+            if (methodParameters.Length != parameters.Length)
+            {
+                throw new ReflectionHelperException(string.Format(CultureInfo.CurrentCulture, Strings.ReflectionHelper_CallMethod_Incorrect_number_of_arguments, methodInfo));
+            }
+
+            for (int i = 0; i < methodParameters.Length; i++)
+            {
+                ParameterInfo methodParameter = methodParameters[i];
+                CheckAreAssignable(methodInfo, TypeUtils.GetType(parameters[i]), methodParameter.ParameterType);
+            }
+
             return s_DynamicMethodCache.GetOrAddDelegate(methodInfo, () => DynamicMethodHelper.EmitMethodInvoker(objectType, methodInfo), DynamicMethodCacheStrategy.Temporary)(@object, parameters);
         }
 
         /// <summary>
-        /// Calls the method.
+        /// Calls the method by named parameters.
         /// </summary>
         /// <param name="object">The object.</param>
         /// <param name="methodName">Name of the method.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>Method return value.</returns>
-        public static object CallMethod(object @object, string methodName, params NamedParameterWithValue[] parameters)
+        public static object CallMethodByNamedParameters(object @object, string methodName, params NamedParameterWithValue[] parameters)
         {
-            return CallMethod(@object, methodName, DEFAULT_METHOD_INFO_BINDING_FLAGS, parameters);
+            return CallMethodByNamedParameters(@object, methodName, DEFAULT_METHOD_INFO_BINDING_FLAGS, parameters);
         }
 
         /// <summary>
-        /// Calls the method.
+        /// Calls the method by named parameters.
         /// </summary>
         /// <param name="object">The object.</param>
         /// <param name="methodName">Name of the method.</param>
@@ -198,7 +214,7 @@ namespace Labo.Common.Reflection
         /// <param name="parameters">The parameters.</param>
         /// <returns>The method return value.</returns>
         /// <exception cref="System.ArgumentNullException">object</exception>
-        public static object CallMethod(object @object, string methodName, BindingFlags bindingFlags, params NamedParameterWithValue[] parameters)
+        public static object CallMethodByNamedParameters(object @object, string methodName, BindingFlags bindingFlags, params NamedParameterWithValue[] parameters)
         {
             if (@object == null)
             {
@@ -272,7 +288,21 @@ namespace Labo.Common.Reflection
             }
 
             Type type = @object.GetType();
+
+            if (!propertyInfo.CanWrite)
+            {
+                throw new ReflectionHelperException(string.Format(CultureInfo.CurrentCulture, Strings.ReflectionHelper_SetPropertyValue_the_property_has_no_set_method, propertyInfo.Name, type.AssemblyQualifiedName));
+            }
+
             PropertyAccessItem propertyAccessItem = GetPropertyAccessItem(type, propertyInfo);
+            Type valueType = TypeUtils.GetType(value);
+            //if (!TypeUtils.IsImplicitlyConvertible(valueType, propertyInfo.PropertyType))
+            //{
+            //    throw new ReflectionHelperException(string.Format(CultureInfo.CurrentCulture, Strings.ReflectionHelper_SetPropertyValue_type_is_not_implicitly_convertable, valueType, propertyInfo.PropertyType));
+            //}
+
+            CheckAreAssignable(propertyInfo, valueType, propertyInfo.PropertyType);
+
             propertyAccessItem.Setter(@object, value);
         }
 
@@ -301,11 +331,7 @@ namespace Labo.Common.Reflection
             }
 
             Type type = @object.GetType();
-            PropertyInfo propertyInfo = type.GetProperty(propertyName, bindingFlags);
-            if (propertyInfo == null)
-            {
-                // TODO: throw exception.
-            }
+            PropertyInfo propertyInfo = GetPropertyInfo(propertyName, bindingFlags, type);
 
             return GetPropertyValue(@object, propertyInfo);
         }
@@ -334,6 +360,12 @@ namespace Labo.Common.Reflection
             }
 
             Type type = @object.GetType();
+
+            if (!propertyInfo.CanRead)
+            {
+                throw new ReflectionHelperException(string.Format(CultureInfo.CurrentCulture, Strings.ReflectionHelper_GetPropertyValue_property_has_no_get_method, propertyInfo.Name, type.AssemblyQualifiedName));
+            }
+
             PropertyAccessItem propertyAccessItem = GetPropertyAccessItem(type, propertyInfo);
             return propertyAccessItem.Getter(@object);
         }
@@ -346,7 +378,7 @@ namespace Labo.Common.Reflection
         /// <param name="methodName">Name of the method.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The method info.</returns>
-        public static MethodInfo GetMethodByName(Type type, BindingFlags bindingFlags, string methodName, IDictionary<string, Type> parameters)
+        public static MethodInfo GetMethodByName(Type type, BindingFlags bindingFlags, string methodName, IDictionary<string, Type> parameters = null)
         {
             if (type == null)
             {
@@ -420,13 +452,17 @@ namespace Labo.Common.Reflection
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="bindingFlags">The binding flags.</param>
         /// <param name="type">The type.</param>
+        /// <param name="throwExceptionWhenNotFound">Throw exception when property not found.</param>
         /// <returns>The property info.</returns>
-        private static PropertyInfo GetPropertyInfo(string propertyName, BindingFlags bindingFlags, Type type)
+        private static PropertyInfo GetPropertyInfo(string propertyName, BindingFlags bindingFlags, Type type, bool throwExceptionWhenNotFound = true)
         {
             PropertyInfo propertyInfo = type.GetProperty(propertyName, bindingFlags);
-            if (propertyInfo == null)
+            if (propertyInfo == null && throwExceptionWhenNotFound)
             {
-                // TODO: throw exception.
+                throw new ReflectionHelperException(string.Format(CultureInfo.CurrentCulture, Strings.ReflectionHelper_GetPropertyInfo_property_couldnot_be_found, propertyName, type.AssemblyQualifiedName))
+                          {
+                              Data = { { "BindingFlags", bindingFlags.ToString() } }
+                          };
             }
 
             return propertyInfo;
@@ -449,19 +485,32 @@ namespace Labo.Common.Reflection
         /// <param name="objectType">Type of the object.</param>
         /// <param name="propertyInfo">The property information.</param>
         /// <returns>The property access item.</returns>
-        private static PropertyAccessItem CreatePropertyAccessItem(Type objectType, PropertyInfo propertyInfo)
+        internal static PropertyAccessItem CreatePropertyAccessItem(Type objectType, PropertyInfo propertyInfo)
         {
+            if (objectType == null)
+            {
+                throw new ArgumentNullException("objectType");
+            }
+
+            if (propertyInfo == null)
+            {
+                throw new ArgumentNullException("propertyInfo");
+            }
+
+            bool canRead = propertyInfo.CanRead;
+            bool canWrite = propertyInfo.CanWrite;
+
             PropertyAccessItem propertyAccessItem = new PropertyAccessItem
                                                         {
-                                                            CanRead = propertyInfo.CanRead,
-                                                            CanWrite = propertyInfo.CanWrite
+                                                            CanRead = canRead,
+                                                            CanWrite = canWrite
                                                         };
-            if (propertyInfo.CanRead)
+            if (canRead)
             {
                 propertyAccessItem.Getter = DynamicMethodHelper.EmitPropertyGetter(objectType, propertyInfo);
             }
 
-            if (propertyInfo.CanWrite)
+            if (canWrite)
             {
                 propertyAccessItem.Setter = DynamicMethodHelper.EmitPropertySetter(objectType, propertyInfo);
             }
@@ -486,6 +535,21 @@ namespace Labo.Common.Reflection
 
             Type[] parameterTypes = GetParameterTypes(parameters);
             return objectType.GetMethod(methodName, bindingFlags, null, parameterTypes, null);
+        }
+
+        /// <summary>
+        /// Checks the two types are assignable.
+        /// </summary>
+        /// <param name="memberInfo">The member info.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="destination">The destination.</param>
+        /// <exception cref="ReflectionHelperException">thrown when types are not assignable.</exception>
+        private static void CheckAreAssignable(MemberInfo memberInfo, Type source, Type destination)
+        {
+            if (!TypeUtils.AreAssignable(source, destination))
+            {
+                throw new ReflectionHelperException(string.Format(CultureInfo.CurrentCulture, Strings.ReflectionHelper_Parameter_type_cannot_be_used_for_method, source, destination, memberInfo));
+            }
         }
 
         /// <summary>

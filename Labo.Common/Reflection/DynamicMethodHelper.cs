@@ -68,13 +68,13 @@ namespace Labo.Common.Reflection
             EmitHelper.Ldarg(generator, 1);
             EmitHelper.CastIfNotObject(generator, setMethodInfo.GetParameters()[0].ParameterType);
             
-            if (setMethodInfo.IsVirtual)
+            if (setMethodInfo.IsStatic)
             {
-                EmitHelper.CallVirt(generator, setMethodInfo);
+                EmitHelper.Call(generator, setMethodInfo);                
             }
             else
             {
-                EmitHelper.Call(generator, setMethodInfo);                
+                EmitHelper.CallVirt(generator, setMethodInfo);
             }
 
             EmitHelper.Ret(generator);
@@ -131,14 +131,13 @@ namespace Labo.Common.Reflection
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="methodInfo">The method information.</param>
-        /// <param name="parameterTypes">The parameter types.</param>
         /// <returns>Method invoker delegate.</returns>
         /// <exception cref="System.ArgumentNullException">
         /// type
         /// or
         /// methodInfo
         /// </exception>
-        public static MethodInvoker EmitMethodInvoker(Type type, MethodInfo methodInfo, Type[] parameterTypes = null)
+        public static MethodInvoker EmitMethodInvoker(Type type, MethodInfo methodInfo)
         {
             if (type == null)
             {
@@ -150,9 +149,12 @@ namespace Labo.Common.Reflection
                 throw new ArgumentNullException("methodInfo");
             }
 
-            if (parameterTypes == null)
+            ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+            Type[] parameterTypes = new Type[parameterInfos.Length];
+            for (int i = 0; i < parameterInfos.Length; i++)
             {
-                parameterTypes = Type.EmptyTypes;
+                ParameterInfo parameterType = parameterInfos[i];
+                parameterTypes[i] = parameterType.ParameterType;
             }
 
             Type returnType = methodInfo.ReturnType;
@@ -165,13 +167,13 @@ namespace Labo.Common.Reflection
 
             PushParametersToStack(generator, parameterTypes, 1);
 
-            if (methodInfo.IsVirtual)
+            if (methodInfo.IsStatic)
             {
-                EmitHelper.CallVirt(generator, methodInfo);
+                EmitHelper.Call(generator, methodInfo);
             }
             else
             {
-                EmitHelper.Call(generator, methodInfo);
+                EmitHelper.CallVirt(generator, methodInfo);
             }
 
             if (hasReturnType)
