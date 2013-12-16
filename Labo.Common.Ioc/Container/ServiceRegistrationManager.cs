@@ -30,6 +30,7 @@ namespace Labo.Common.Ioc.Container
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// Service registration manager class.
@@ -51,8 +52,8 @@ namespace Labo.Common.Ioc.Container
         /// </summary>
         public ServiceRegistrationManager()
         {
-            m_ServiceEntries = new Dictionary<ServiceKey, ServiceRegistration>();
-            m_ServiceEntriesByServiceType = new Dictionary<Type, ServiceRegistration>();
+            m_ServiceEntries = new Dictionary<ServiceKey, ServiceRegistration>(32);
+            m_ServiceEntriesByServiceType = new Dictionary<Type, ServiceRegistration>(32);
         }
 
         /// <summary>
@@ -112,24 +113,26 @@ namespace Labo.Common.Ioc.Container
         /// Gets the service registration.
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
-        /// <param name="serviceName">Name of the service.</param>
         /// <returns>Service registration class.</returns>
-        public ServiceRegistration GetServiceRegistration(Type serviceType, string serviceName = null)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ServiceRegistration GetServiceRegistration(Type serviceType)
         {
             ServiceRegistration serviceRegistration;
+            m_ServiceEntriesByServiceType.TryGetValue(serviceType, out serviceRegistration);
+            return serviceRegistration;
+        }
 
-            if (serviceName == null)
-            {
-                m_ServiceEntriesByServiceType.TryGetValue(serviceType, out serviceRegistration);
-
-                return serviceRegistration;
-            }
-            else
-            {
-                m_ServiceEntries.TryGetValue(new ServiceKey(serviceName, serviceType), out serviceRegistration);
-
-                return serviceRegistration;
-            }
+        /// <summary>
+        /// Gets the service registration.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="serviceName">Name of the service.</param>
+        /// <returns>Service registration class.</returns>
+        public ServiceRegistration GetServiceRegistration(Type serviceType, string serviceName)
+        {
+            ServiceRegistration serviceRegistration;
+            m_ServiceEntries.TryGetValue(new ServiceKey(serviceName, serviceType), out serviceRegistration);
+            return serviceRegistration;
         }
 
         /// <summary>
@@ -138,26 +141,33 @@ namespace Labo.Common.Ioc.Container
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="serviceName">Name of the service.</param>
         /// <returns>true if the service is registered otherwise false.</returns>
-        public bool IsServiceRegistered(Type serviceType, string serviceName = null)
+        public bool IsServiceRegistered(Type serviceType, string serviceName)
         {
-            if (serviceName == null)
+            return m_ServiceEntries.ContainsKey(new ServiceKey(serviceName, serviceType));
+        }
+
+        /// <summary>
+        /// Determines whether [is service registered] [the specified service type].
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>true if the service is registered otherwise false.</returns>
+        public bool IsServiceRegistered(Type serviceType)
+        {
+            bool isServiceRegistered = m_ServiceEntriesByServiceType.ContainsKey(serviceType);
+            if (!isServiceRegistered)
             {
-                bool isServiceRegistered = m_ServiceEntriesByServiceType.ContainsKey(serviceType);
-                if (!isServiceRegistered)
+                Dictionary<ServiceKey, ServiceRegistration>.Enumerator serviceEntriesEnumerator = m_ServiceEntries.GetEnumerator();
+                while (serviceEntriesEnumerator.MoveNext())
                 {
-                    foreach (KeyValuePair<ServiceKey, ServiceRegistration> serviceRegistration in m_ServiceEntries)
+                    KeyValuePair<ServiceKey, ServiceRegistration> serviceRegistration = serviceEntriesEnumerator.Current;
+                    if (serviceRegistration.Key.ServiceType == serviceType)
                     {
-                        if (serviceRegistration.Key.ServiceType == serviceType)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
-
-                return isServiceRegistered;
             }
 
-            return m_ServiceEntries.ContainsKey(new ServiceKey(serviceName, serviceType));
+            return isServiceRegistered;
         }
 
         /// <summary>
@@ -168,16 +178,20 @@ namespace Labo.Common.Ioc.Container
         public IList<ServiceRegistration> GetAllServiceRegistrations(Type serviceType)
         {
             List<ServiceRegistration> instances = new List<ServiceRegistration>();
-            foreach (KeyValuePair<ServiceKey, ServiceRegistration> entry in m_ServiceEntries)
+            Dictionary<ServiceKey, ServiceRegistration>.Enumerator serviceEntriesEnumerator = m_ServiceEntries.GetEnumerator();
+            while (serviceEntriesEnumerator.MoveNext())
             {
+                KeyValuePair<ServiceKey, ServiceRegistration> entry = serviceEntriesEnumerator.Current;
                 if (entry.Key.ServiceType == serviceType)
                 {
                     instances.Add(entry.Value);
                 }
             }
 
-            foreach (KeyValuePair<Type, ServiceRegistration> entry in m_ServiceEntriesByServiceType)
+            Dictionary<Type, ServiceRegistration>.Enumerator serviceEntriesByKeyEnumerator = m_ServiceEntriesByServiceType.GetEnumerator();
+            while (serviceEntriesByKeyEnumerator.MoveNext())
             {
+                KeyValuePair<Type, ServiceRegistration> entry = serviceEntriesByKeyEnumerator.Current;
                 if (entry.Key == serviceType)
                 {
                     instances.Add(entry.Value);

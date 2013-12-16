@@ -242,9 +242,19 @@ namespace Labo.Common.Ioc.LightCore
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstance(Type serviceType, params object[] parameters)
+        public override object GetInstance(Type serviceType, object[] parameters)
         {
             return Container.Resolve(serviceType, parameters);
+        }
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstance(Type serviceType)
+        {
+            return Container.Resolve(serviceType);
         }
 
         /// <summary>
@@ -254,7 +264,18 @@ namespace Labo.Common.Ioc.LightCore
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceByName(Type serviceType, string name, object[] parameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets the instance by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceByName(Type serviceType, string name)
         {
             throw new NotImplementedException();
         }
@@ -265,7 +286,22 @@ namespace Labo.Common.Ioc.LightCore
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptional(Type serviceType, params object[] parameters)
+        public override object GetInstanceOptional(Type serviceType, object[] parameters)
+        {
+            if (!Container.HasRegistration(serviceType))
+            {
+                return null;
+            }
+
+            return Container.Resolve(serviceType);
+        }
+
+        /// <summary>
+        /// Gets the instance optional.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptional(Type serviceType)
         {
             if (!Container.HasRegistration(serviceType))
             {
@@ -282,7 +318,18 @@ namespace Labo.Common.Ioc.LightCore
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceOptionalByName(Type serviceType, string name, object[] parameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets the instance optional by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptionalByName(Type serviceType, string name)
         {
             throw new NotImplementedException();
         }

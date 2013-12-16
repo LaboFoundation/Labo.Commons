@@ -217,7 +217,17 @@ namespace Labo.Common.Ioc.LightInject
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstance(Type serviceType, params object[] parameters)
+        public override object GetInstance(Type serviceType, object[] parameters)
+        {
+            return m_Container.GetInstance(serviceType);
+        }
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstance(Type serviceType)
         {
             return m_Container.GetInstance(serviceType);
         }
@@ -229,7 +239,18 @@ namespace Labo.Common.Ioc.LightInject
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceByName(Type serviceType, string name, object[] parameters)
+        {
+            return m_Container.GetInstance(serviceType, name);
+        }
+
+        /// <summary>
+        /// Gets the instance by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceByName(Type serviceType, string name)
         {
             return m_Container.GetInstance(serviceType, name);
         }
@@ -240,7 +261,17 @@ namespace Labo.Common.Ioc.LightInject
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptional(Type serviceType, params object[] parameters)
+        public override object GetInstanceOptional(Type serviceType, object[] parameters)
+        {
+            return m_Container.TryGetInstance(serviceType);
+        }
+
+        /// <summary>
+        /// Gets the instance optional.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptional(Type serviceType)
         {
             return m_Container.TryGetInstance(serviceType);
         }
@@ -252,7 +283,18 @@ namespace Labo.Common.Ioc.LightInject
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceOptionalByName(Type serviceType, string name, object[] parameters)
+        {
+            return m_Container.TryGetInstance(serviceType, name);
+        }
+
+        /// <summary>
+        /// Gets the instance optional by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptionalByName(Type serviceType, string name)
         {
             return m_Container.TryGetInstance(serviceType, name);
         }

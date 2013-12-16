@@ -41,9 +41,15 @@ namespace Labo.Common.Ioc.Container
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="serviceName">Name of the service.</param>
-        /// <param name="parameters">The parameters.</param>
         /// <returns>ServiceFactory class.</returns>
-        ServiceFactory GetServiceFactory(Type serviceType, string serviceName = null, params object[] parameters);
+        ServiceFactory GetServiceFactory(Type serviceType, string serviceName);
+
+        /// <summary>
+        /// Gets the service factory.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>ServiceFactory class.</returns>
+        ServiceFactory GetServiceFactory(Type serviceType);
 
         /// <summary>
         /// Gets all service factories.

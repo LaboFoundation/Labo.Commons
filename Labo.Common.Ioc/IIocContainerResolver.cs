@@ -96,7 +96,14 @@ namespace Labo.Common.Ioc
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        TService GetInstance<TService>(params object[] parameters) where TService : class;
+        TService GetInstance<TService>(object[] parameters) where TService : class;
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <returns>instance.</returns>
+        TService GetInstance<TService>() where TService : class;
 
         /// <summary>
         /// Gets the instance by instance name.
@@ -107,29 +114,51 @@ namespace Labo.Common.Ioc
         TService GetInstance<TService>(string name);
 
         /// <summary>
-        /// Gets the instance.
+        /// Gets the instance with parameters.
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        object GetInstance(Type serviceType, params object[] parameters);
+        object GetInstance(Type serviceType, object[] parameters);
 
         /// <summary>
         /// Gets the instance.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        object GetInstance(Type serviceType);
+
+        /// <summary>
+        /// Gets the instance by name with parameters.
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        object GetInstanceByName(Type serviceType, string name, params object[] parameters);
+        object GetInstanceByName(Type serviceType, string name, object[] parameters);
+
+        /// <summary>
+        /// Gets the instance by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        object GetInstanceByName(Type serviceType, string name);
+
+        /// <summary>
+        /// Gets the instance optional with parameters.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>instance.</returns>
+        object GetInstanceOptional(Type serviceType, object[] parameters);
 
         /// <summary>
         /// Gets the instance optional.
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
-        /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        object GetInstanceOptional(Type serviceType, params object[] parameters);
+        object GetInstanceOptional(Type serviceType);
 
         /// <summary>
         /// Gets the instance optional with parameters.
@@ -137,24 +166,47 @@ namespace Labo.Common.Ioc
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        TService GetInstanceOptional<TService>(params object[] parameters);
+        TService GetInstanceOptional<TService>(object[] parameters);
+
+        /// <summary>
+        /// Gets the instance optional.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <returns>instance.</returns>
+        TService GetInstanceOptional<TService>();
+
+        /// <summary>
+        /// Gets the instance optional by instance name with parameters.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="name">The instance name.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>instance.</returns>
+        TService GetInstanceOptionalByName<TService>(string name, object[] parameters);
 
         /// <summary>
         /// Gets the instance optional by instance name.
         /// </summary>
         /// <typeparam name="TService">The type of the service.</typeparam>
         /// <param name="name">The instance name.</param>
+        /// <returns>instance.</returns>
+        TService GetInstanceOptionalByName<TService>(string name);
+
+        /// <summary>
+        /// Gets the instance optional by name with parameters.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        TService GetInstanceOptionalByName<TService>(string name, params object[] parameters);
+        object GetInstanceOptionalByName(Type serviceType, string name, object[] parameters);
 
         /// <summary>
         /// Gets the instance optional by name.
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="name">The name.</param>
-        /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters);
+        object GetInstanceOptionalByName(Type serviceType, string name);
     }
 }

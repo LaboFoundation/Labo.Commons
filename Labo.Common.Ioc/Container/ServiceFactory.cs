@@ -71,9 +71,18 @@ namespace Labo.Common.Ioc.Container
         /// </summary>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The service instance.</returns>
-        public object GetServiceInstance(params object[] parameters)
+        public object GetServiceInstance(object[] parameters)
         {
             return m_ServiceFactoryInvoker.InvokeServiceFactory(parameters);
+        }
+
+        /// <summary>
+        /// Gets the service instance.
+        /// </summary>
+        /// <returns>The service instance.</returns>
+        public object GetServiceInstance()
+        {
+            return m_ServiceFactoryInvoker.InvokeServiceFactory();
         }
     }
 }

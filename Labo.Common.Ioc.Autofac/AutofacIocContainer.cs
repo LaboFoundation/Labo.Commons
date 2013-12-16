@@ -258,9 +258,19 @@ namespace Labo.Common.Ioc.Autofac
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstance(Type serviceType, params object[] parameters)
+        public override object GetInstance(Type serviceType, object[] parameters)
         {
             return m_Container.Resolve(serviceType, GetAutofacParameters(parameters));
+        }
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstance(Type serviceType)
+        {
+            return m_Container.Resolve(serviceType, GetAutofacParameters());
         }
 
         /// <summary>
@@ -270,9 +280,20 @@ namespace Labo.Common.Ioc.Autofac
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceByName(Type serviceType, string name, object[] parameters)
         {
             return m_Container.ResolveNamed(name, serviceType, GetAutofacParameters(parameters));
+        }
+
+        /// <summary>
+        /// Gets the instance by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceByName(Type serviceType, string name)
+        {
+            return m_Container.ResolveNamed(name, serviceType, GetAutofacParameters());
         }
 
         /// <summary>
@@ -281,9 +302,19 @@ namespace Labo.Common.Ioc.Autofac
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptional(Type serviceType, params object[] parameters)
+        public override object GetInstanceOptional(Type serviceType, object[] parameters)
         {
             return m_Container.ResolveOptional(serviceType, GetAutofacParameters(parameters));
+        }
+
+        /// <summary>
+        /// Gets the instance optional.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptional(Type serviceType)
+        {
+            return m_Container.ResolveOptional(serviceType, GetAutofacParameters());
         }
 
         /// <summary>
@@ -293,9 +324,20 @@ namespace Labo.Common.Ioc.Autofac
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceOptionalByName(Type serviceType, string name, object[] parameters)
         {
             return m_Container.ResolveOptionalService(new KeyedService(name, serviceType), GetAutofacParameters(parameters));
+        }
+
+        /// <summary>
+        /// Gets the instance optional by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptionalByName(Type serviceType, string name)
+        {
+            return m_Container.ResolveOptionalService(new KeyedService(name, serviceType), GetAutofacParameters());
         }
 
         /// <summary>

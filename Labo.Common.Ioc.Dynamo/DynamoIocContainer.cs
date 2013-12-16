@@ -209,7 +209,17 @@ namespace Labo.Common.Ioc.Dynamo
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstance(Type serviceType, params object[] parameters)
+        public override object GetInstance(Type serviceType, object[] parameters)
+        {
+            return m_Container.Resolve(serviceType);
+        }
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstance(Type serviceType)
         {
             return m_Container.Resolve(serviceType);
         }
@@ -221,7 +231,18 @@ namespace Labo.Common.Ioc.Dynamo
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceByName(Type serviceType, string name, object[] parameters)
+        {
+            return m_Container.Resolve(serviceType, name);
+        }
+
+        /// <summary>
+        /// Gets the instance by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceByName(Type serviceType, string name)
         {
             return m_Container.Resolve(serviceType, name);
         }
@@ -232,7 +253,19 @@ namespace Labo.Common.Ioc.Dynamo
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptional(Type serviceType, params object[] parameters)
+        public override object GetInstanceOptional(Type serviceType, object[] parameters)
+        {
+            object instance;
+            m_Container.TryResolve(serviceType, out instance);
+            return instance;
+        }
+
+        /// <summary>
+        /// Gets the instance optional.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptional(Type serviceType)
         {
             object instance;
             m_Container.TryResolve(serviceType, out instance);
@@ -246,7 +279,20 @@ namespace Labo.Common.Ioc.Dynamo
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceOptionalByName(Type serviceType, string name, object[] parameters)
+        {
+            object instance;
+            m_Container.TryResolve(serviceType, name, out instance);
+            return instance;
+        }
+
+        /// <summary>
+        /// Gets the instance optional by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptionalByName(Type serviceType, string name)
         {
             object instance;
             m_Container.TryResolve(serviceType, name, out instance);

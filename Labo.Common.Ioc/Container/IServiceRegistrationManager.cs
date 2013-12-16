@@ -60,7 +60,14 @@ namespace Labo.Common.Ioc.Container
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="serviceName">Name of the service.</param>
         /// <returns>Service registration class.</returns>
-        ServiceRegistration GetServiceRegistration(Type serviceType, string serviceName = null);
+        ServiceRegistration GetServiceRegistration(Type serviceType, string serviceName);
+
+        /// <summary>
+        /// Gets the service registration.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>Service registration class.</returns>
+        ServiceRegistration GetServiceRegistration(Type serviceType);
 
         /// <summary>
         /// Gets all service registrations.
@@ -75,6 +82,14 @@ namespace Labo.Common.Ioc.Container
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="serviceName">Name of the service.</param>
         /// <returns>true if the service is registered otherwise false.</returns>
-        bool IsServiceRegistered(Type serviceType, string serviceName = null);
+        bool IsServiceRegistered(Type serviceType, string serviceName);
+
+
+        /// <summary>
+        /// Determines whether [is service registered] [the specified service type].
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>true if the service is registered otherwise false.</returns>
+        bool IsServiceRegistered(Type serviceType);
     }
 }

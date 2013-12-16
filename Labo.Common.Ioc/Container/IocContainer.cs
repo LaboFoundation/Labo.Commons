@@ -222,9 +222,19 @@ namespace Labo.Common.Ioc.Container
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstance(Type serviceType, params object[] parameters)
+        public override object GetInstance(Type serviceType, object[] parameters)
         {
             return m_ServiceFactoryManager.GetServiceFactory(serviceType).GetServiceInstance(parameters);
+        }
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstance(Type serviceType)
+        {
+            return m_ServiceFactoryManager.GetServiceFactory(serviceType).GetServiceInstance();
         }
 
         /// <summary>
@@ -234,9 +244,20 @@ namespace Labo.Common.Ioc.Container
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceByName(Type serviceType, string name, object[] parameters)
         {
             return m_ServiceFactoryManager.GetServiceFactory(serviceType, name).GetServiceInstance(parameters);
+        }
+
+        /// <summary>
+        /// Gets the instance by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceByName(Type serviceType, string name)
+        {
+            return m_ServiceFactoryManager.GetServiceFactory(serviceType, name).GetServiceInstance();
         }
 
         /// <summary>
@@ -245,11 +266,26 @@ namespace Labo.Common.Ioc.Container
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptional(Type serviceType, params object[] parameters)
+        public override object GetInstanceOptional(Type serviceType, object[] parameters)
         {
             if (IsRegistered(serviceType))
             {
                 return GetInstance(serviceType, parameters);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the instance optional.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptional(Type serviceType)
+        {
+            if (IsRegistered(serviceType))
+            {
+                return GetInstance(serviceType);
             }
 
             return null;
@@ -262,11 +298,27 @@ namespace Labo.Common.Ioc.Container
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceOptionalByName(Type serviceType, string name, object[] parameters)
         {
             if (IsRegistered(serviceType, name))
             {
                 return GetInstanceByName(serviceType, name, parameters);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the instance optional by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptionalByName(Type serviceType, string name)
+        {
+            if (IsRegistered(serviceType, name))
+            {
+                return GetInstanceByName(serviceType, name);
             }
 
             return null;

@@ -38,6 +38,12 @@ namespace Labo.Common.Ioc.Container
         /// </summary>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The service instance.</returns>
-        object InvokeServiceFactory(params object[] parameters);
+        object InvokeServiceFactory(object[] parameters);
+
+        /// <summary>
+        /// Invokes the service factory.
+        /// </summary>
+        /// <returns>The service instance.</returns>
+        object InvokeServiceFactory();
     }
 }

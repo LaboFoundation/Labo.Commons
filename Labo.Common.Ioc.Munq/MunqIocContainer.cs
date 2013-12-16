@@ -211,7 +211,17 @@ namespace Labo.Common.Ioc.Munq
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstance(Type serviceType, params object[] parameters)
+        public override object GetInstance(Type serviceType, object[] parameters)
+        {
+            return m_Container.Resolve(serviceType);
+        }
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstance(Type serviceType)
         {
             return m_Container.Resolve(serviceType);
         }
@@ -223,7 +233,18 @@ namespace Labo.Common.Ioc.Munq
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceByName(Type serviceType, string name, object[] parameters)
+        {
+            return m_Container.Resolve(name, serviceType);
+        }
+
+        /// <summary>
+        /// Gets the instance by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceByName(Type serviceType, string name)
         {
             return m_Container.Resolve(name, serviceType);
         }
@@ -234,7 +255,22 @@ namespace Labo.Common.Ioc.Munq
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptional(Type serviceType, params object[] parameters)
+        public override object GetInstanceOptional(Type serviceType, object[] parameters)
+        {
+            if (!m_Container.CanResolve(serviceType))
+            {
+                return null;
+            }
+
+            return m_Container.Resolve(serviceType);
+        }
+
+        /// <summary>
+        /// Gets the instance optional.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptional(Type serviceType)
         {
             if (!m_Container.CanResolve(serviceType))
             {
@@ -251,7 +287,23 @@ namespace Labo.Common.Ioc.Munq
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceOptionalByName(Type serviceType, string name, object[] parameters)
+        {
+            if (!m_Container.CanResolve(name, serviceType))
+            {
+                return null;
+            }
+
+            return m_Container.Resolve(name, serviceType);
+        }
+
+        /// <summary>
+        /// Gets the instance optional by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptionalByName(Type serviceType, string name)
         {
             if (!m_Container.CanResolve(name, serviceType))
             {

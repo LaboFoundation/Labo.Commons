@@ -94,11 +94,11 @@ namespace Labo.Common.Ioc.Container
         /// </summary>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The service instance.</returns>
-        public object InvokeServiceFactory(params object[] parameters)
+        public object InvokeServiceFactory(object[] parameters)
         {
-            if (parameters.Length == 0)
+            if (parameters == null)
             {
-                return m_ServiceInvokerFunc();
+                throw new ArgumentNullException("parameters");
             }
 
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
@@ -111,6 +111,15 @@ namespace Labo.Common.Ioc.Container
 
             ConstructorInfo constructor = m_ServiceImplementationType.GetConstructor(bindingFlags, null, parameterTypes, null);
             return s_ConstructorInvokerCache.GetOrAdd(constructor, c => new Lazy<object>(() => DynamicMethodHelper.EmitConstructorInvoker(m_ServiceImplementationType, c, parameterTypes)(parameters), true)).Value;
+        }
+
+        /// <summary>
+        /// Invokes the service factory.
+        /// </summary>
+        /// <returns>The service instance.</returns>
+        public object InvokeServiceFactory()
+        {
+            return m_ServiceInvokerFunc();
         }
     }
 }

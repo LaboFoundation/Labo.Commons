@@ -38,6 +38,12 @@ namespace Labo.Common.Ioc.Container
         /// </summary>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The service instance.</returns>
-        object GetServiceInstance(params object[] parameters);
+        object GetServiceInstance(object[] parameters);
+
+        /// <summary>
+        /// Gets the service instance.
+        /// </summary>
+        /// <returns>The service instance.</returns>
+        object GetServiceInstance();
     }
 }

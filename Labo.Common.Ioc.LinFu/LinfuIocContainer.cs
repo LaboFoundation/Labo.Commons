@@ -211,9 +211,19 @@ namespace Labo.Common.Ioc.Linfu
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstance(Type serviceType, params object[] parameters)
+        public override object GetInstance(Type serviceType, object[] parameters)
         {
             return m_Container.GetService(serviceType, parameters);
+        }
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstance(Type serviceType)
+        {
+            return m_Container.GetService(serviceType);
         }
 
         /// <summary>
@@ -223,9 +233,20 @@ namespace Labo.Common.Ioc.Linfu
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceByName(Type serviceType, string name, object[] parameters)
         {
             return m_Container.GetService(name, serviceType, parameters);
+        }
+
+        /// <summary>
+        /// Gets the instance by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceByName(Type serviceType, string name)
+        {
+            return m_Container.GetService(name, serviceType);
         }
 
         /// <summary>
@@ -234,7 +255,7 @@ namespace Labo.Common.Ioc.Linfu
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptional(Type serviceType, params object[] parameters)
+        public override object GetInstanceOptional(Type serviceType, object[] parameters)
         {
             if (!m_Container.Contains(serviceType))
             {
@@ -245,13 +266,28 @@ namespace Labo.Common.Ioc.Linfu
         }
 
         /// <summary>
+        /// Gets the instance optional.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptional(Type serviceType)
+        {
+            if (!m_Container.Contains(serviceType))
+            {
+                return null;
+            }
+
+            return m_Container.GetService(serviceType);
+        }
+
+        /// <summary>
         /// Gets the instance optional by name.
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>instance.</returns>
-        public override object GetInstanceOptionalByName(Type serviceType, string name, params object[] parameters)
+        public override object GetInstanceOptionalByName(Type serviceType, string name, object[] parameters)
         {
             if (!m_Container.Contains(name, serviceType))
             {
@@ -259,6 +295,22 @@ namespace Labo.Common.Ioc.Linfu
             }
 
             return m_Container.GetService(name, serviceType, parameters);
+        }
+
+        /// <summary>
+        /// Gets the instance optional by name.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>instance.</returns>
+        public override object GetInstanceOptionalByName(Type serviceType, string name)
+        {
+            if (!m_Container.Contains(name, serviceType))
+            {
+                return null;
+            }
+
+            return m_Container.GetService(name, serviceType);
         }
 
         /// <summary>

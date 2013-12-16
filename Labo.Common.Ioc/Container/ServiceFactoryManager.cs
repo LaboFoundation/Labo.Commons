@@ -30,6 +30,7 @@ namespace Labo.Common.Ioc.Container
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// The service factory manager class.
@@ -62,9 +63,9 @@ namespace Labo.Common.Ioc.Container
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="serviceName">Name of the service.</param>
-        /// <param name="parameters">The parameters.</param>
         /// <returns>ServiceFactory class.</returns>
-        public ServiceFactory GetServiceFactory(Type serviceType, string serviceName = null, params object[] parameters)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ServiceFactory GetServiceFactory(Type serviceType, string serviceName)
         {
             if (serviceType == null)
             {
@@ -73,6 +74,25 @@ namespace Labo.Common.Ioc.Container
 
             // TODO: remove service registration manager, put service registration into servicefactory and store servicefactory in the dictionary
             ServiceRegistration serviceRegistration = m_ServiceRegistrationManager.GetServiceRegistration(serviceType, serviceName);
+
+            return GetOrBuildServiceFactory(serviceRegistration);
+        }
+
+        /// <summary>
+        /// Gets the service factory.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>ServiceFactory class.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ServiceFactory GetServiceFactory(Type serviceType)
+        {
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException("serviceType");
+            }
+
+            // TODO: remove service registration manager, put service registration into servicefactory and store servicefactory in the dictionary
+            ServiceRegistration serviceRegistration = m_ServiceRegistrationManager.GetServiceRegistration(serviceType);
 
             return GetOrBuildServiceFactory(serviceRegistration);
         }

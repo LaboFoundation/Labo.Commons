@@ -46,7 +46,7 @@
                                                                                         
                                                                                      };
             
-        [Test, Ignore]
+        [Test]
         public void TestPerformance()
         {
             TestPerformance(
