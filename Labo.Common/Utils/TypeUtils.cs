@@ -180,7 +180,10 @@ namespace Labo.Common.Utils
         /// <returns>default value.</returns>
         public static object GetDefaultValueOfType(Type type)
         {
-            if (type == null) throw new ArgumentNullException("type");
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
 
             if (type.IsValueType)
             {
@@ -200,9 +203,44 @@ namespace Labo.Common.Utils
         [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         public static bool IsNullable(Type type)
         {
-            if (type == null) throw new ArgumentNullException("type");
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
 
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        /// <summary>
+        /// Makes the type nullable.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>Nullable type.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static Type MakeNullableType(Type type)
+        {
+            if (type.IsValueType && !IsNullable(type))
+            {
+                return typeof(Nullable<>).MakeGenericType(new[] { type });
+            }
+
+            return type;
+        }
+
+        /// <summary>
+        /// Make the type non nullable.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>Generic argument if the type is nullable otherwise returns the type itself.</returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static Type MakeNonNullableType(Type type)
+        {
+            if (IsNullable(type))
+            {
+                return type.GetGenericArguments()[0];
+            }
+
+            return type;
         }
 
         /// <summary>
@@ -221,6 +259,250 @@ namespace Labo.Common.Utils
             }
 
             return type.IsClass || type.IsInterface || type.IsAbstract;
+        }
+
+        /// <summary>
+        /// Determines whether two types are assignable.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="destination">The destination.</param>
+        /// <returns><c>true</c> if the two types are assignable; otherwise, <c>false</c>.</returns>
+        public static bool AreAssignable(Type source, Type destination)
+        {
+            return AreEquivalent(destination, source) || (!destination.IsValueType && !source.IsValueType && destination.IsAssignableFrom(source));
+        }
+
+        /// <summary>
+        /// Determines whether two types are equivalent.
+        /// </summary>
+        /// <param name="type1">The type1.</param>
+        /// <param name="type2">The type2.</param>
+        /// <returns><c>true</c> if the two types are equivalent; otherwise, <c>false</c>.</returns>
+        public static bool AreEquivalent(Type type1, Type type2)
+        {
+            return type1 == type2 || type1.IsEquivalentTo(type2);
+        }
+
+        /// <summary>
+        /// Determines whether [is implicitly convertible] [the specified source].
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="destination">The destination.</param>
+        /// <returns>
+        ///   <c>true</c> if [is implicitly convertible] [the specified source]; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsImplicitlyConvertible(Type source, Type destination)
+        {
+            return AreEquivalent(source, destination) || IsImplicitNumericConvertible(source, destination) || IsImplicitReferenceConvertible(source, destination) || IsImplicitBoxingConvertible(source, destination) || IsImplicitNullableConvertible(source, destination);
+        }
+
+        /// <summary>
+        /// Determines whether [is implicit boxing convertible] [the specified source].
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="destination">The destination.</param>
+        /// <returns>
+        ///   <c>true</c> if [is implicit boxing convertible] [the specified source]; otherwise, <c>false</c>.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// source
+        /// or
+        /// destination
+        /// </exception>
+        public static bool IsImplicitBoxingConvertible(Type source, Type destination)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+
+            if (destination == null)
+            {
+                throw new ArgumentNullException("destination");
+            }
+
+            return (source.IsValueType && (destination == typeof(object) || destination == typeof(ValueType))) || (source.IsEnum && destination == typeof(Enum));
+        }
+
+        /// <summary>
+        /// Determines whether [is implicit reference convertible] [the specified source].
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="destination">The destination.</param>
+        /// <returns>
+        ///   <c>true</c> if [is implicit reference convertible] [the specified source]; otherwise, <c>false</c>.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// source
+        /// or
+        /// destination
+        /// </exception>
+        public static bool IsImplicitReferenceConvertible(Type source, Type destination)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+
+            if (destination == null)
+            {
+                throw new ArgumentNullException("destination");
+            }
+
+            return destination.IsAssignableFrom(source);
+        }
+
+        /// <summary>
+        /// Determines whether [is implicit numeric convertible] [the specified source].
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="destination">The destination.</param>
+        /// <returns>
+        ///   <c>true</c> if [is implicit numeric convertible] [the specified source]; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsImplicitNumericConvertible(Type source, Type destination)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+
+            if (destination == null)
+            {
+                throw new ArgumentNullException("destination");
+            }
+
+            TypeCode typeCodeSource = Type.GetTypeCode(source);
+            TypeCode typeCodeDestination = Type.GetTypeCode(destination);
+            switch (typeCodeSource)
+            {
+                case TypeCode.Char:
+                    switch (typeCodeDestination)
+                    {
+                        case TypeCode.UInt16:
+                        case TypeCode.Int32:
+                        case TypeCode.UInt32:
+                        case TypeCode.Int64:
+                        case TypeCode.UInt64:
+                        case TypeCode.Single:
+                        case TypeCode.Double:
+                        case TypeCode.Decimal:
+                            return true;
+                        default:
+                            return false;
+                    }
+
+                case TypeCode.SByte:
+                    switch (typeCodeDestination)
+                    {
+                        case TypeCode.Int16:
+                        case TypeCode.Int32:
+                        case TypeCode.Int64:
+                        case TypeCode.Single:
+                        case TypeCode.Double:
+                        case TypeCode.Decimal:
+                            return true;
+                    }
+
+                    return false;
+                case TypeCode.Byte:
+                    switch (typeCodeDestination)
+                    {
+                        case TypeCode.Int16:
+                        case TypeCode.UInt16:
+                        case TypeCode.Int32:
+                        case TypeCode.UInt32:
+                        case TypeCode.Int64:
+                        case TypeCode.UInt64:
+                        case TypeCode.Single:
+                        case TypeCode.Double:
+                        case TypeCode.Decimal:
+                            return true;
+                        default:
+                            return false;
+                    }
+
+                case TypeCode.Int16:
+                    switch (typeCodeDestination)
+                    {
+                        case TypeCode.Int32:
+                        case TypeCode.Int64:
+                        case TypeCode.Single:
+                        case TypeCode.Double:
+                        case TypeCode.Decimal:
+                            return true;
+                    }
+
+                    return false;
+                case TypeCode.UInt16:
+                    switch (typeCodeDestination)
+                    {
+                        case TypeCode.Int32:
+                        case TypeCode.UInt32:
+                        case TypeCode.Int64:
+                        case TypeCode.UInt64:
+                        case TypeCode.Single:
+                        case TypeCode.Double:
+                        case TypeCode.Decimal:
+                            return true;
+                        default:
+                            return false;
+                    }
+
+                case TypeCode.Int32:
+                    switch (typeCodeDestination)
+                    {
+                        case TypeCode.Int64:
+                        case TypeCode.Single:
+                        case TypeCode.Double:
+                        case TypeCode.Decimal:
+                            return true;
+                    }
+
+                    return false;
+                case TypeCode.UInt32:
+                    switch (typeCodeDestination)
+                    {
+                        case TypeCode.UInt32:
+                        case TypeCode.UInt64:
+                        case TypeCode.Single:
+                        case TypeCode.Double:
+                        case TypeCode.Decimal:
+                            return true;
+                    }
+
+                    return false;
+                case TypeCode.Int64:
+                case TypeCode.UInt64:
+                    switch (typeCodeDestination)
+                    {
+                        case TypeCode.Single:
+                        case TypeCode.Double:
+                        case TypeCode.Decimal:
+                            return true;
+                        default:
+                            return false;
+                    }
+
+                case TypeCode.Single:
+                    return typeCodeDestination == TypeCode.Double;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether [is implicit nullable convertible] [the specified source].
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="destination">The destination.</param>
+        /// <returns>
+        ///  <c>true</c> if [is implicit nullable convertible] [the specified source]; otherwise, <c>false</c>.
+        /// </returns>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        private static bool IsImplicitNullableConvertible(Type source, Type destination)
+        {
+            return IsNullable(destination) && IsImplicitlyConvertible(MakeNonNullableType(source), MakeNonNullableType(source));
         }
     }
 }
