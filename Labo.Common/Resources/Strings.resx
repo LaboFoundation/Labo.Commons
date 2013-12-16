@@ -153,4 +153,22 @@
   <data name="XmlUtils_AppendAttribute_element_Attributes_is_null">
     <value xml:space="preserve">element.Attributes is null</value>
   </data>
+  <data name="ReflectionHelper_GetPropertyInfo_property_couldnot_be_found" xml:space="preserve">
+    <value>'{0}' property of '{1}' type couldn't be found</value>
+  </data>
+  <data name="ReflectionHelper_SetPropertyValue_the_property_has_no_set_method" xml:space="preserve">
+    <value>Cannot set '{0}' property value of type '{1}' because the property has no set method.</value>
+  </data>
+  <data name="ReflectionHelper_GetPropertyValue_property_has_no_get_method" xml:space="preserve">
+    <value>Cannot get '{0}' property value of type '{1}' because the property has no get method.</value>
+  </data>
+  <data name="ReflectionHelper_SetPropertyValue_type_is_not_implicitly_convertable" xml:space="preserve">
+    <value>'{0}' type is not implicitly convertable to '{1}' type.</value>
+  </data>
+  <data name="ReflectionHelper_CallMethod_Incorrect_number_of_arguments" xml:space="preserve">
+    <value>Incorrect number of arguments supplied for call to method '{0}'</value>
+  </data>
+  <data name="ReflectionHelper_Parameter_type_cannot_be_used_for_method" xml:space="preserve">
+    <value>Parameter of type '{0}' cannot be used for parameter of type '{1}' of method '{2}'</value>
+  </data>
 </root>
