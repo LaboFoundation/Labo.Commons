@@ -85,7 +85,7 @@ namespace Labo.Common.Ioc
 
             lock (this)
             {
-                if (this.m_Threads.Contains(Thread.CurrentThread))
+                if (m_Threads.Contains(Thread.CurrentThread))
                 {
                     throw new IocContainerDependencyResolutionException(string.Format(CultureInfo.CurrentCulture, "Circular dependency detected for the type '{0}'", m_TypeToValidate.FullName));
                 }

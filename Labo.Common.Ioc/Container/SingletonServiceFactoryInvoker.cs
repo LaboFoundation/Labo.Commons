@@ -32,6 +32,7 @@ namespace Labo.Common.Ioc.Container
     using System.Collections.Concurrent;
     using System.Reflection;
     using System.Reflection.Emit;
+    using System.Runtime.CompilerServices;
 
     using Labo.Common.Reflection;
     using Labo.Common.Utils;
@@ -94,6 +95,7 @@ namespace Labo.Common.Ioc.Container
         /// </summary>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The service instance.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object InvokeServiceFactory(object[] parameters)
         {
             if (parameters == null)
@@ -117,6 +119,7 @@ namespace Labo.Common.Ioc.Container
         /// Invokes the service factory.
         /// </summary>
         /// <returns>The service instance.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object InvokeServiceFactory()
         {
             return m_ServiceInvokerFunc();

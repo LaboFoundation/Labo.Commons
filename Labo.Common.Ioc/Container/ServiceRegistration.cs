@@ -76,14 +76,6 @@ namespace Labo.Common.Ioc.Container
         public Func<object> InstanceCreator { get; private set; }
 
         /// <summary>
-        /// Gets the service factory.
-        /// </summary>
-        /// <value>
-        /// The service factory.
-        /// </value>
-        public ServiceFactory ServiceFactory { get; private set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ServiceRegistration"/> class.
         /// </summary>
         /// <param name="serviceType">The service type.</param>
@@ -111,15 +103,6 @@ namespace Labo.Common.Ioc.Container
             ImplementationType = implementationType;
             ServiceLifetime = serviceLifetime;
             ServiceName = serviceName;
-        }
-
-        /// <summary>
-        /// Sets the service factory.
-        /// </summary>
-        /// <param name="serviceFactory">The service factory.</param>
-        internal void SetServiceFactory(ServiceFactory serviceFactory)
-        {
-            ServiceFactory = serviceFactory;
         }
     }
 }

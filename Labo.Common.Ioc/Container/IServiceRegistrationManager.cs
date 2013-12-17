@@ -39,20 +39,42 @@ namespace Labo.Common.Ioc.Container
         /// <summary>
         /// Registers the service.
         /// </summary>
-        /// <param name="serviceType">Type of the service.</param>
-        /// <param name="implementationType">Type of the implementation.</param>
-        /// <param name="serviceLifetime">The service lifetime.</param>
-        /// <param name="serviceName">Name of the service.</param>
-        void RegisterService(Type serviceType, Type implementationType, ServiceLifetime serviceLifetime, string serviceName = null);
+        /// <param name="serviceType">
+        /// Type of the service.
+        /// </param>
+        /// <param name="implementationType">
+        /// Type of the implementation.
+        /// </param>
+        /// <param name="serviceLifetime">
+        /// The service lifetime.
+        /// </param>
+        /// <param name="serviceName">
+        /// Name of the service.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ServiceRegistration"/>.
+        /// </returns>
+        ServiceRegistration RegisterService(Type serviceType, Type implementationType, ServiceLifetime serviceLifetime, string serviceName = null);
 
         /// <summary>
         /// Registers the service.
         /// </summary>
-        /// <param name="serviceType">The service type.</param>
-        /// <param name="instanceCreator">The instance creator.</param>
-        /// <param name="serviceLifetime">The service lifetime.</param>
-        /// <param name="serviceName">Name of the service.</param>
-        void RegisterService(Type serviceType, Func<object> instanceCreator, ServiceLifetime serviceLifetime, string serviceName = null);
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="instanceCreator">
+        /// The instance creator.
+        /// </param>
+        /// <param name="serviceLifetime">
+        /// The service lifetime.
+        /// </param>
+        /// <param name="serviceName">
+        /// Name of the service.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ServiceRegistration"/>.
+        /// </returns>
+        ServiceRegistration RegisterService(Type serviceType, Func<object> instanceCreator, ServiceLifetime serviceLifetime, string serviceName = null);
 
         /// <summary>
         /// Gets the service registration.
@@ -83,7 +105,6 @@ namespace Labo.Common.Ioc.Container
         /// <param name="serviceName">Name of the service.</param>
         /// <returns>true if the service is registered otherwise false.</returns>
         bool IsServiceRegistered(Type serviceType, string serviceName);
-
 
         /// <summary>
         /// Determines whether [is service registered] [the specified service type].

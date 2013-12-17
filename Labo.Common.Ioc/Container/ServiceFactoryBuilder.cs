@@ -70,70 +70,59 @@ namespace Labo.Common.Ioc.Container
         /// <returns>Service factory class.</returns>
         public ServiceFactory BuildServiceFactory(ServiceRegistration serviceRegistration)
         {
-            if (serviceRegistration.ServiceFactory == null)
+            // TODO: check circular dependency
+
+            if (serviceRegistration.InstanceCreator == null)
             {
-                if (serviceRegistration.InstanceCreator == null)
+                ConstructorInfo constructor = m_ServiceConstructorChooser.GetConstructor(serviceRegistration.ImplementationType);
+                ParameterInfo[] constructorParameters = constructor.GetParameters();
+                IServiceFactoryCompiler[] dependentServiceFactoryCompilers;
+                int constructorParametersLength = constructorParameters.Length;
+                if (constructorParametersLength == 0)
                 {
-                    ConstructorInfo constructor = m_ServiceConstructorChooser.GetConstructor(serviceRegistration.ImplementationType);
-                    ParameterInfo[] constructorParameters = constructor.GetParameters();
-                    IServiceFactoryCompiler[] dependentServiceFactoryCompilers;
-                    int constructorParametersLength = constructorParameters.Length;
-                    if (constructorParametersLength == 0)
-                    {
-                        dependentServiceFactoryCompilers = new IServiceFactoryCompiler[0];
-                    }
-                    else
-                    {
-                        dependentServiceFactoryCompilers = new IServiceFactoryCompiler[constructorParametersLength];
-                        for (int i = 0; i < constructorParametersLength; i++)
-                        {
-                            ParameterInfo constructorParameter = constructorParameters[i];
-                            ServiceFactory dependentServiceFactory = BuildServiceFactory(m_ServiceRegistrationManager.GetServiceRegistration(constructorParameter.ParameterType));
-                            dependentServiceFactoryCompilers[i] = dependentServiceFactory.ServiceFactoryCompiler;
-                        }
-                    }
-
-                    IServiceFactoryCompiler serviceFactoryCompiler = null;
-
-                    // TODO: Service Factory Compiler Factory
-                    switch (serviceRegistration.ServiceLifetime)
-                    {
-                        case ServiceLifetime.Transient:
-                            serviceFactoryCompiler = new TransientServiceFactoryCompiler(m_DynamicAssemblyBuilder, serviceRegistration.ImplementationType, constructor, dependentServiceFactoryCompilers);
-                            break;
-                        case ServiceLifetime.Singleton:
-                            serviceFactoryCompiler = new SingletonServiceFactoryCompiler(m_DynamicAssemblyBuilder, serviceRegistration.ImplementationType, constructor, dependentServiceFactoryCompilers);
-                            break;
-                    }
-
-                    ServiceFactory serviceFactory = new ServiceFactory(serviceFactoryCompiler);
-                    serviceRegistration.SetServiceFactory(serviceFactory);
-                    return serviceFactory;
+                    dependentServiceFactoryCompilers = new IServiceFactoryCompiler[0];
                 }
                 else
                 {
-                    IServiceFactoryInvoker serviceFactoryInvoker = null;
-
-                    // TODO: Service Factory Invoker Factory
-                    switch (serviceRegistration.ServiceLifetime)
+                    dependentServiceFactoryCompilers = new IServiceFactoryCompiler[constructorParametersLength];
+                    for (int i = 0; i < constructorParametersLength; i++)
                     {
-                        case ServiceLifetime.Transient:
-                            serviceFactoryInvoker = new TransientServiceFactoryInvoker(serviceRegistration.InstanceCreator);
-                            break;
-                        case ServiceLifetime.Singleton:
-                            serviceFactoryInvoker = new SingletonServiceFactoryInvoker(serviceRegistration.InstanceCreator);
-                            break;
+                        ParameterInfo constructorParameter = constructorParameters[i];
+                        ServiceFactory dependentServiceFactory = BuildServiceFactory(m_ServiceRegistrationManager.GetServiceRegistration(constructorParameter.ParameterType));
+                        dependentServiceFactoryCompilers[i] = dependentServiceFactory.ServiceFactoryCompiler;
                     }
-
-                    ServiceFactory serviceFactory = new ServiceFactory(serviceFactoryInvoker);
-                    serviceRegistration.SetServiceFactory(serviceFactory);
-                    return serviceFactory;
                 }
+
+                IServiceFactoryCompiler serviceFactoryCompiler = null;
+
+                // TODO: Service Factory Compiler Factory
+                switch (serviceRegistration.ServiceLifetime)
+                {
+                    case ServiceLifetime.Transient:
+                        serviceFactoryCompiler = new TransientServiceFactoryCompiler(m_DynamicAssemblyBuilder, serviceRegistration.ImplementationType, constructor, dependentServiceFactoryCompilers);
+                        break;
+                    case ServiceLifetime.Singleton:
+                        serviceFactoryCompiler = new SingletonServiceFactoryCompiler(m_DynamicAssemblyBuilder, serviceRegistration.ImplementationType, constructor, dependentServiceFactoryCompilers);
+                        break;
+                }
+
+                return new ServiceFactory(serviceFactoryCompiler);
             }
-            else
+
+            IServiceFactoryInvoker serviceFactoryInvoker = null;
+
+            // TODO: Service Factory Invoker Factory
+            switch (serviceRegistration.ServiceLifetime)
             {
-                return serviceRegistration.ServiceFactory;
+                case ServiceLifetime.Transient:
+                    serviceFactoryInvoker = new TransientServiceFactoryInvoker(serviceRegistration.InstanceCreator);
+                    break;
+                case ServiceLifetime.Singleton:
+                    serviceFactoryInvoker = new SingletonServiceFactoryInvoker(serviceRegistration.InstanceCreator);
+                    break;
             }
+
+            return new ServiceFactory(serviceFactoryInvoker);
         }
     }
 }

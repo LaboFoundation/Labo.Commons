@@ -25,7 +25,7 @@
     [TestFixture]
     public class IocContainerPerformanceTest
     {
-        private static readonly List<long> s_BatchIterations = new List<long> { 1000, 5000, 20000, 100000, 250000, 1000000 };
+        private static readonly List<long> s_BatchIterations = new List<long> { 1000, 5000, 20000, 100000, 250000, 1000000, 2500000 };
         private static readonly Dictionary<string, Func<IIocContainer>> s_Containers = new Dictionary<string, Func<IIocContainer>>
                                                                                      {
                                                                                          //{ "NInject", () => new NInjectIocContainer() },

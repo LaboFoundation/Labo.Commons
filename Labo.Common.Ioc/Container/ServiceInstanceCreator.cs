@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ServiceFactory.cs" company="Labo">
+// <copyright file="ServiceInstanceCreator.cs" company="Labo">
 //   The MIT License (MIT)
 //   
 //   Copyright (c) 2013 Bora Akgun
@@ -22,7 +22,7 @@
 //   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   Defines the ServiceFactory type.
+//   The service instance creator class.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -31,41 +31,34 @@ namespace Labo.Common.Ioc.Container
     using System.Runtime.CompilerServices;
 
     /// <summary>
-    /// The service factory class.
+    /// The service instance creator class.
     /// </summary>
-    internal sealed class ServiceFactory : IServiceFactory
+    internal sealed class ServiceInstanceCreator
     {
         /// <summary>
-        /// The service factory invoker
+        /// The service factory builder
         /// </summary>
-        private readonly IServiceFactoryInvoker m_ServiceFactoryInvoker;
+        private readonly IServiceFactoryBuilder m_ServiceFactoryBuilder;
+        
+        /// <summary>
+        /// The service registration
+        /// </summary>
+        private readonly ServiceRegistration m_ServiceRegistration;
+        
+        /// <summary>
+        /// The service factory
+        /// </summary>
+        private ServiceFactory m_ServiceFactory;
 
         /// <summary>
-        /// Gets the service factory compiler.
+        /// Initializes a new instance of the <see cref="ServiceInstanceCreator"/> class.
         /// </summary>
-        /// <value>
-        /// The service factory compiler.
-        /// </value>
-        internal IServiceFactoryCompiler ServiceFactoryCompiler { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceFactory"/> class.
-        /// </summary>
-        /// <param name="serviceFactoryInvoker">The service factory invoker.</param>
-        public ServiceFactory(IServiceFactoryInvoker serviceFactoryInvoker)
+        /// <param name="serviceFactoryBuilder">The service factory builder.</param>
+        /// <param name="serviceRegistration">The service registration.</param>
+        public ServiceInstanceCreator(IServiceFactoryBuilder serviceFactoryBuilder, ServiceRegistration serviceRegistration)
         {
-            m_ServiceFactoryInvoker = serviceFactoryInvoker;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceFactory"/> class.
-        /// </summary>
-        /// <param name="serviceFactoryCompiler">The service factory compiler.</param>
-        public ServiceFactory(IServiceFactoryCompiler serviceFactoryCompiler)
-        {
-            ServiceFactoryCompiler = serviceFactoryCompiler;
-
-            m_ServiceFactoryInvoker = ServiceFactoryCompiler.CreateServiceFactoryInvoker();
+            m_ServiceFactoryBuilder = serviceFactoryBuilder;
+            m_ServiceRegistration = serviceRegistration;
         }
 
         /// <summary>
@@ -76,7 +69,7 @@ namespace Labo.Common.Ioc.Container
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetServiceInstance(object[] parameters)
         {
-            return m_ServiceFactoryInvoker.InvokeServiceFactory(parameters);
+            return GetServiceFactory().GetServiceInstance(parameters);
         }
 
         /// <summary>
@@ -86,7 +79,17 @@ namespace Labo.Common.Ioc.Container
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetServiceInstance()
         {
-            return m_ServiceFactoryInvoker.InvokeServiceFactory();
+            return GetServiceFactory().GetServiceInstance();
+        }
+
+        /// <summary>
+        /// Gets the service factory.
+        /// </summary>
+        /// <returns>The service factory.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ServiceFactory GetServiceFactory()
+        {
+            return m_ServiceFactory ?? (m_ServiceFactory = m_ServiceFactoryBuilder.BuildServiceFactory(m_ServiceRegistration));
         }
     }
 }

@@ -42,9 +42,9 @@ namespace Labo.Common.Ioc.Container
         private IServiceRegistrationManager m_ServiceRegistrationManager;
 
         /// <summary>
-        /// The service factory manager
+        /// The service creator manager
         /// </summary>
-        private IServiceFactoryManager m_ServiceFactoryManager;
+        private IServiceCreatorManager m_ServiceCreatorManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IocContainer"/> class.
@@ -53,7 +53,7 @@ namespace Labo.Common.Ioc.Container
         {
             ServiceRegistrationManager serviceRegistrationManager = new ServiceRegistrationManager();
 
-            Init(serviceRegistrationManager, new ServiceFactoryManager(serviceRegistrationManager, new ServiceFactoryBuilder(new DynamicAssemblyBuilder(new DynamicAssemblyManager()), new ServiceConstructorChooser(), serviceRegistrationManager)));
+            Init(serviceRegistrationManager, new ServiceCreatorManager(serviceRegistrationManager, new ServiceFactoryBuilder(new DynamicAssemblyBuilder(new DynamicAssemblyManager()), new ServiceConstructorChooser(), serviceRegistrationManager)));
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Labo.Common.Ioc.Container
         /// </summary>
         /// <param name="serviceRegistrationManager">The service registration manager.</param>
         /// <param name="serviceFactoryManager">The service factory manager.</param>
-        internal IocContainer(IServiceRegistrationManager serviceRegistrationManager, IServiceFactoryManager serviceFactoryManager)
+        internal IocContainer(IServiceRegistrationManager serviceRegistrationManager, IServiceCreatorManager serviceFactoryManager)
         {
             Init(serviceRegistrationManager, serviceFactoryManager);
         }
@@ -73,7 +73,7 @@ namespace Labo.Common.Ioc.Container
         /// <param name="creator">The creator delegate.</param>
         public override void RegisterSingleInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            m_ServiceRegistrationManager.RegisterService(typeof(TImplementation), () => creator(this), ServiceLifetime.Singleton);
+            m_ServiceCreatorManager.RegisterService(typeof(TImplementation), () => creator(this), ServiceLifetime.Singleton);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Labo.Common.Ioc.Container
         /// <param name="name">The instance name.</param>
         public override void RegisterSingleInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name)
         {
-            m_ServiceRegistrationManager.RegisterService(typeof(TImplementation), () => creator(this), ServiceLifetime.Singleton, name);
+            m_ServiceCreatorManager.RegisterService(typeof(TImplementation), () => creator(this), ServiceLifetime.Singleton, name);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace Labo.Common.Ioc.Container
         /// <param name="serviceType">Type of the service.</param>
         public override void RegisterSingleInstance(Type serviceType)
         {
-            m_ServiceRegistrationManager.RegisterService(serviceType, serviceType, ServiceLifetime.Singleton);
+            m_ServiceCreatorManager.RegisterService(serviceType, serviceType, ServiceLifetime.Singleton);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Labo.Common.Ioc.Container
         /// <param name="serviceType">Type of the service.</param>
         public override void RegisterInstance(Type serviceType)
         {
-            m_ServiceRegistrationManager.RegisterService(serviceType, serviceType, ServiceLifetime.Transient);
+            m_ServiceCreatorManager.RegisterService(serviceType, serviceType, ServiceLifetime.Transient);
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Labo.Common.Ioc.Container
         /// <param name="implementationType">The type of the implementation.</param>
         public override void RegisterSingleInstance(Type serviceType, Type implementationType)
         {
-            m_ServiceRegistrationManager.RegisterService(serviceType, implementationType, ServiceLifetime.Singleton);
+            m_ServiceCreatorManager.RegisterService(serviceType, implementationType, ServiceLifetime.Singleton);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Labo.Common.Ioc.Container
         /// </param>
         public override void RegisterSingleInstanceNamed(Type serviceType, Type implementationType, string name)
         {
-            m_ServiceRegistrationManager.RegisterService(serviceType, implementationType, ServiceLifetime.Singleton, name);
+            m_ServiceCreatorManager.RegisterService(serviceType, implementationType, ServiceLifetime.Singleton, name);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace Labo.Common.Ioc.Container
         /// </param>
         public override void RegisterSingleInstanceNamed(Type serviceType, string name)
         {
-            m_ServiceRegistrationManager.RegisterService(serviceType, serviceType, ServiceLifetime.Singleton, name);
+            m_ServiceCreatorManager.RegisterService(serviceType, serviceType, ServiceLifetime.Singleton, name);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Labo.Common.Ioc.Container
         /// </typeparam>
         public override void RegisterInstance<TImplementation>(Func<IIocContainerResolver, TImplementation> creator)
         {
-            m_ServiceRegistrationManager.RegisterService(typeof(TImplementation), () => creator(this), ServiceLifetime.Transient);
+            m_ServiceCreatorManager.RegisterService(typeof(TImplementation), () => creator(this), ServiceLifetime.Transient);
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace Labo.Common.Ioc.Container
         /// </param>
         public override void RegisterInstance(Type serviceType, Type implementationType)
         {
-            m_ServiceRegistrationManager.RegisterService(serviceType, implementationType, ServiceLifetime.Transient);
+            m_ServiceCreatorManager.RegisterService(serviceType, implementationType, ServiceLifetime.Transient);
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace Labo.Common.Ioc.Container
         /// <param name="name">The instance name.</param>
         public override void RegisterInstanceNamed<TImplementation>(Func<IIocContainerResolver, TImplementation> creator, string name)
         {
-            m_ServiceRegistrationManager.RegisterService(typeof(TImplementation), () => creator(this), ServiceLifetime.Transient, name);
+            m_ServiceCreatorManager.RegisterService(typeof(TImplementation), () => creator(this), ServiceLifetime.Transient, name);
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace Labo.Common.Ioc.Container
         /// </param>
         public override void RegisterInstanceNamed(Type serviceType, Type implementationType, string name)
         {
-            m_ServiceRegistrationManager.RegisterService(serviceType, implementationType, ServiceLifetime.Transient, name);
+            m_ServiceCreatorManager.RegisterService(serviceType, implementationType, ServiceLifetime.Transient, name);
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace Labo.Common.Ioc.Container
         /// </param>
         public override void RegisterInstanceNamed(Type serviceType, string name)
         {
-            m_ServiceRegistrationManager.RegisterService(serviceType, serviceType, ServiceLifetime.Transient, name);
+            m_ServiceCreatorManager.RegisterService(serviceType, serviceType, ServiceLifetime.Transient, name);
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace Labo.Common.Ioc.Container
         /// <returns>instance.</returns>
         public override object GetInstance(Type serviceType, object[] parameters)
         {
-            return m_ServiceFactoryManager.GetServiceFactory(serviceType).GetServiceInstance(parameters);
+            return m_ServiceCreatorManager.GetServiceFactory(serviceType).GetServiceInstance(parameters);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace Labo.Common.Ioc.Container
         /// <returns>instance.</returns>
         public override object GetInstance(Type serviceType)
         {
-            return m_ServiceFactoryManager.GetServiceFactory(serviceType).GetServiceInstance();
+            return m_ServiceCreatorManager.GetServiceFactory(serviceType).GetServiceInstance();
         }
 
         /// <summary>
@@ -246,7 +246,7 @@ namespace Labo.Common.Ioc.Container
         /// <returns>instance.</returns>
         public override object GetInstanceByName(Type serviceType, string name, object[] parameters)
         {
-            return m_ServiceFactoryManager.GetServiceFactory(serviceType, name).GetServiceInstance(parameters);
+            return m_ServiceCreatorManager.GetServiceFactory(serviceType, name).GetServiceInstance(parameters);
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace Labo.Common.Ioc.Container
         /// <returns>instance.</returns>
         public override object GetInstanceByName(Type serviceType, string name)
         {
-            return m_ServiceFactoryManager.GetServiceFactory(serviceType, name).GetServiceInstance();
+            return m_ServiceCreatorManager.GetServiceFactory(serviceType, name).GetServiceInstance();
         }
 
         /// <summary>
@@ -331,12 +331,12 @@ namespace Labo.Common.Ioc.Container
         /// <returns>all instances.</returns>
         public override IEnumerable<object> GetAllInstances(Type serviceType)
         {
-            IList<ServiceFactory> serviceFactories = m_ServiceFactoryManager.GetAllServiceFactories(serviceType);
+            IList<ServiceInstanceCreator> serviceFactories = m_ServiceCreatorManager.GetAllServiceFactories(serviceType);
             List<object> instances = new List<object>(serviceFactories.Count);
 
             for (int i = 0; i < serviceFactories.Count; i++)
             {
-                ServiceFactory serviceFactory = serviceFactories[i];
+                ServiceInstanceCreator serviceFactory = serviceFactories[i];
                 instances.Add(serviceFactory.GetServiceInstance());
             }
 
@@ -372,11 +372,11 @@ namespace Labo.Common.Ioc.Container
         /// Initializes the specified service registration manager.
         /// </summary>
         /// <param name="serviceRegistrationManager">The service registration manager.</param>
-        /// <param name="serviceFactoryManager">The service factory manager.</param>
-        private void Init(IServiceRegistrationManager serviceRegistrationManager, IServiceFactoryManager serviceFactoryManager)
+        /// <param name="serviceCreatorManager">The service creator manager.</param>
+        private void Init(IServiceRegistrationManager serviceRegistrationManager, IServiceCreatorManager serviceCreatorManager)
         {
             m_ServiceRegistrationManager = serviceRegistrationManager;
-            m_ServiceFactoryManager = serviceFactoryManager;
+            m_ServiceCreatorManager = serviceCreatorManager;
         }
     }
 }

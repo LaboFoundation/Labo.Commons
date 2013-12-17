@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IServiceFactoryManager.cs" company="Labo">
+// <copyright file="IServiceCreatorManager.cs" company="Labo">
 //   The MIT License (MIT)
 //   
 //   Copyright (c) 2013 Bora Akgun
@@ -22,7 +22,7 @@
 //   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   Defines the IServiceFactoryManager type.
+//   Defines the IServiceCreatorManager type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -32,9 +32,9 @@ namespace Labo.Common.Ioc.Container
     using System.Collections.Generic;
 
     /// <summary>
-    /// Service factory manager interface.
+    /// Service creator manager interface.
     /// </summary>
-    internal interface IServiceFactoryManager
+    internal interface IServiceCreatorManager
     {
         /// <summary>
         /// Gets the service factory.
@@ -42,20 +42,54 @@ namespace Labo.Common.Ioc.Container
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="serviceName">Name of the service.</param>
         /// <returns>ServiceFactory class.</returns>
-        ServiceFactory GetServiceFactory(Type serviceType, string serviceName);
+        ServiceInstanceCreator GetServiceFactory(Type serviceType, string serviceName);
 
         /// <summary>
         /// Gets the service factory.
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <returns>ServiceFactory class.</returns>
-        ServiceFactory GetServiceFactory(Type serviceType);
+        ServiceInstanceCreator GetServiceFactory(Type serviceType);
 
         /// <summary>
         /// Gets all service factories.
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <returns>The list of service factories.</returns>
-        IList<ServiceFactory> GetAllServiceFactories(Type serviceType);
+        IList<ServiceInstanceCreator> GetAllServiceFactories(Type serviceType);
+
+        /// <summary>
+        /// Registers the service.
+        /// </summary>
+        /// <param name="serviceType">
+        /// Type of the service.
+        /// </param>
+        /// <param name="implementationType">
+        /// Type of the implementation.
+        /// </param>
+        /// <param name="serviceLifetime">
+        /// The service lifetime.
+        /// </param>
+        /// <param name="serviceName">
+        /// Name of the service.
+        /// </param>
+        void RegisterService(Type serviceType, Type implementationType, ServiceLifetime serviceLifetime, string serviceName = null);
+
+        /// <summary>
+        /// Registers the service.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="instanceCreator">
+        /// The instance creator.
+        /// </param>
+        /// <param name="serviceLifetime">
+        /// The service lifetime.
+        /// </param>
+        /// <param name="serviceName">
+        /// Name of the service.
+        /// </param>
+        void RegisterService(Type serviceType, Func<object> instanceCreator, ServiceLifetime serviceLifetime, string serviceName = null);
     }
 }

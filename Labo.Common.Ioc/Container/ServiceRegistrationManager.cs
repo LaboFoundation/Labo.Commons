@@ -59,11 +59,22 @@ namespace Labo.Common.Ioc.Container
         /// <summary>
         /// Registers the service.
         /// </summary>
-        /// <param name="serviceType">Type of the service.</param>
-        /// <param name="implementationType">Type of the implementation.</param>
-        /// <param name="serviceLifetime">The service lifetime.</param>
-        /// <param name="serviceName">Name of the service.</param>
-        public void RegisterService(Type serviceType, Type implementationType, ServiceLifetime serviceLifetime, string serviceName = null)
+        /// <param name="serviceType">
+        /// Type of the service.
+        /// </param>
+        /// <param name="implementationType">
+        /// Type of the implementation.
+        /// </param>
+        /// <param name="serviceLifetime">
+        /// The service lifetime.
+        /// </param>
+        /// <param name="serviceName">
+        /// Name of the service.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ServiceRegistration"/>.
+        /// </returns>
+        public ServiceRegistration RegisterService(Type serviceType, Type implementationType, ServiceLifetime serviceLifetime, string serviceName = null)
         {
             if (serviceType == null)
             {
@@ -75,38 +86,57 @@ namespace Labo.Common.Ioc.Container
                 throw new ArgumentNullException("implementationType");
             }
 
+            ServiceRegistration serviceRegistration;
+
             if (serviceName == null)
             {
-                m_ServiceEntriesByServiceType[serviceType] = new ServiceRegistration(serviceType, implementationType, serviceLifetime);
+                serviceRegistration = m_ServiceEntriesByServiceType[serviceType] = new ServiceRegistration(serviceType, implementationType, serviceLifetime);
             }
             else
             {
-                m_ServiceEntries[new ServiceKey(serviceName, serviceType)] = new ServiceRegistration(serviceType, implementationType, serviceLifetime, serviceName);
+                serviceRegistration = m_ServiceEntries[new ServiceKey(serviceName, serviceType)] = new ServiceRegistration(serviceType, implementationType, serviceLifetime, serviceName);
             }
+
+            return serviceRegistration;
         }
 
         /// <summary>
         /// Registers the service.
         /// </summary>
-        /// <param name="serviceType">The service type.</param>
-        /// <param name="instanceCreator">The instance creator.</param>
-        /// <param name="serviceLifetime">The service lifetime.</param>
-        /// <param name="serviceName">Name of the service.</param>
-        public void RegisterService(Type serviceType, Func<object> instanceCreator, ServiceLifetime serviceLifetime, string serviceName = null)
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="instanceCreator">
+        /// The instance creator.
+        /// </param>
+        /// <param name="serviceLifetime">
+        /// The service lifetime.
+        /// </param>
+        /// <param name="serviceName">
+        /// Name of the service.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ServiceRegistration"/>.
+        /// </returns>
+        public ServiceRegistration RegisterService(Type serviceType, Func<object> instanceCreator, ServiceLifetime serviceLifetime, string serviceName = null)
         {
             if (instanceCreator == null)
             {
                 throw new ArgumentNullException("instanceCreator");
             }
 
+            ServiceRegistration serviceRegistration;
+
             if (serviceName == null)
             {
-                m_ServiceEntriesByServiceType[serviceType] = new ServiceRegistration(serviceType, instanceCreator, serviceLifetime);
+                serviceRegistration = m_ServiceEntriesByServiceType[serviceType] = new ServiceRegistration(serviceType, instanceCreator, serviceLifetime);
             }
             else
             {
-                m_ServiceEntries[new ServiceKey(serviceName, serviceType)] = new ServiceRegistration(serviceType, instanceCreator, serviceLifetime, serviceName);
+                serviceRegistration = m_ServiceEntries[new ServiceKey(serviceName, serviceType)] = new ServiceRegistration(serviceType, instanceCreator, serviceLifetime, serviceName);
             }
+
+            return serviceRegistration;
         }
 
         /// <summary>
