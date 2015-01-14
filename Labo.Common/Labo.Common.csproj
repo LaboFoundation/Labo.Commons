@@ -23,6 +23,7 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\CodeAnalysisRules\Common.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Debug\Labo.Common.XML</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Labo.Common.XML</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -46,7 +48,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\Sort.cs" />
     <Compile Include="Comparer\ComparerReverser.cs" />
+    <Compile Include="Diagnostics\DiagnosticsStopwatch.cs" />
+    <Compile Include="Diagnostics\ExecutionWatch.cs" />
+    <Compile Include="Diagnostics\IStopwatch.cs" />
+    <Compile Include="Diagnostics\IStopwatchFactory.cs" />
+    <Compile Include="Diagnostics\StopwatchContext.cs" />
+    <Compile Include="Diagnostics\StopwatchContextOnDispose.cs" />
+    <Compile Include="Diagnostics\Timing.cs" />
+    <Compile Include="Expression\ExpressionHelper.cs" />
+    <Compile Include="Hashing\Murmur3.cs" />
     <Compile Include="Patterns\DateTimeProvider.cs" />
     <Compile Include="Patterns\DateTimeProviderContext.cs" />
     <Compile Include="Patterns\Disposable.cs" />

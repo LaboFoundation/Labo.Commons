@@ -7,6 +7,9 @@ using NUnit.Framework;
 
 namespace Labo.Common.Tests.Utils
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+
     [TestFixture]
     public class StringUtilsFixture
     {
@@ -459,6 +462,20 @@ namespace Labo.Common.Tests.Utils
             [Values( "xxx", null, "", "", "name", "name", "a>b", "")]string expectedResult)
         {
             Assert.AreEqual(expectedResult, StringUtils.StripHtmlTags(text));
+        }
+
+        [Test]
+        public void TopNWords()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            for (int i = 0; i < 50000; i++)
+            {
+                IDictionary<string, int> topNWords = StringUtils.TopNWords("this is a jungle man, how are you now. lorem ipsum dolor sit amet", 10);
+                topNWords.ToStringInvariant();
+            }
+            stopwatch.Stop();
+            stopwatch.ElapsedMilliseconds.ToStringInvariant();
         }
     }
 }

@@ -52,10 +52,12 @@ namespace Labo.Common.Utils
         /// </summary>
         static ConvertUtils()
         {
+#if !MEDIUM_TRUST
             RegisterTypeConverter<FileInfo, FileInfoConverter>();
             RegisterTypeConverter<Regex, RegexConverter>();
             RegisterTypeConverter<Uri, UriConverter>();
             RegisterTypeConverter<string[], StringArrayConverter>();
+#endif  
         }
 
         /// <summary>

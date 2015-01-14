@@ -171,4 +171,7 @@
   <data name="ReflectionHelper_Parameter_type_cannot_be_used_for_method" xml:space="preserve">
     <value>Parameter of type '{0}' cannot be used for parameter of type '{1}' of method '{2}'</value>
   </data>
+  <data name="ExecutionWatch_Measure_Execution_count_must_be_bigger_than_zero" xml:space="preserve">
+    <value>Execution count must be bigger than 0.</value>
+  </data>
 </root>

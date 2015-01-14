@@ -32,6 +32,7 @@ namespace Labo.Common.Utils
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
+    using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
 
@@ -44,6 +45,26 @@ namespace Labo.Common.Utils
         /// The BR STRING
         /// </summary>
         public const string BR_STRING = "<br />";
+
+        /// <summary>
+        /// The space character
+        /// </summary>
+        private const char SPACE_CHAR = ' ';
+
+        /// <summary>
+        /// The comma separator character
+        /// </summary>
+        private const char COMMA_SEPARATOR_CHAR = ',';
+
+        /// <summary>
+        /// The dot character
+        /// </summary>
+        private const char DOT_CHAR = '.';
+
+        /// <summary>
+        /// The space string
+        /// </summary>
+        private const string SPACE_STRING = " ";
 
         /// <summary>
         /// The new line strings
@@ -403,9 +424,12 @@ namespace Labo.Common.Utils
         /// <returns>title cased string.</returns>
         public static string ToTitleCase(string text, CultureInfo culture = null)
         {
-            if (text == null) throw new ArgumentNullException("text");
+            if (text == null)
+            {
+                throw new ArgumentNullException("text");
+            }
 
-            return ToTitleCase(text.Split(' '), culture);
+            return ToTitleCase(text.Split(SPACE_CHAR), culture);
         }
 
         /// <summary>
@@ -417,7 +441,10 @@ namespace Labo.Common.Utils
         /// <exception cref="System.ArgumentNullException">words</exception>
         public static string ToTitleCase(string[] words, CultureInfo culture = null)
         {
-            if (words == null) throw new ArgumentNullException("words");
+            if (words == null)
+            {
+                throw new ArgumentNullException("words");
+            }
 
             culture = CultureUtils.GetCurrentCultureIfNull(culture);
 
@@ -435,7 +462,7 @@ namespace Labo.Common.Utils
                 }
             }
 
-            return string.Join(" ", titleCasedWords);
+            return string.Join(SPACE_STRING, titleCasedWords);
         }
 
         /// <summary>
@@ -527,7 +554,7 @@ namespace Labo.Common.Utils
                 }
                 else
                 {
-                    if (c < ' ')
+                    if (c < SPACE_CHAR)
                     {
                         string tmp = new string(c, 1);
                         string t = "000" + int.Parse(tmp, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
@@ -660,12 +687,86 @@ namespace Labo.Common.Utils
                 return text;
             }
 
-            foreach (KeyValuePair<string, string> keyValuePair in s_TurkishCharacterMap)
+            IEnumerator<KeyValuePair<string, string>> enumerator = s_TurkishCharacterMap.GetEnumerator();
+            while (enumerator.MoveNext())
             {
+                KeyValuePair<string, string> keyValuePair = enumerator.Current;
+
                 text = text.Replace(keyValuePair.Key, keyValuePair.Value);
             }
 
             return text;
+        }
+
+        /// <summary>
+        /// The word separators
+        /// </summary>
+        private static readonly char[] s_WordSeparators = { SPACE_CHAR, '\r', '\n', '-', DOT_CHAR, COMMA_SEPARATOR_CHAR, '\t', '!', '?', '\'', ';', '/' };
+
+        /// <summary>
+        /// The stop words
+        /// </summary>
+        private static readonly IDictionary<CultureInfo, HashSet<string>> s_StopWords =
+            new Dictionary<CultureInfo, HashSet<string>>
+                {
+                    {
+                        CultureInfo.GetCultureInfo("en-US"),
+                        new HashSet<string>(
+                                            "a,able,about,across,after,all,almost,also,am,among,an,and,any,are,as,at,be,because,been,but,by,can,cannot,could,dear,did,do,does,either,else,ever,every,for,from,get,got,had,has,have,he,her,hers,him,his,how,however,i,if,in,into,is,it,its,just,least,let,like,likely,may,me,might,most,must,my,neither,no,nor,not,of,off,often,on,only,or,other,our,own,rather,said,say,says,she,should,since,so,some,than,that,the,their,them,then,there,these,they,this,tis,to,too,twas,us,wants,was,we,were,what,when,where,which,while,who,whom,why,will,with,would,yet,you,your"
+                                            .Split(COMMA_SEPARATOR_CHAR),
+                        StringComparer.Create(CultureInfo.GetCultureInfo("en-US"), true))
+                    }
+                };
+
+        public static IDictionary<string, int> TopNWords(string document, int n, bool stopwordEnabled = false, CultureInfo culture = null)
+        {
+            if (document == null)
+            {
+                throw new ArgumentNullException("document");
+            }
+
+            culture = CultureUtils.GetCurrentCultureIfNull(culture);
+
+            HashSet<string> stopwords = null;
+            if (stopwordEnabled)
+            {
+                s_StopWords.TryGetValue(culture, out stopwords);
+            }
+
+            return TopNWords(document, n, stopwords, culture);
+        }
+
+        public static IDictionary<string, int> TopNWords(string document, int n, HashSet<string> stopwords, CultureInfo culture = null)
+        {
+            if (document == null)
+            {
+                throw new ArgumentNullException("document");
+            }
+
+            culture = CultureUtils.GetCurrentCultureIfNull(culture);
+
+            bool dontUseStopwords = stopwords == null;
+
+            IDictionary<string, int> result = new Dictionary<string, int>(dontUseStopwords ? StringComparer.Create(culture, true) : stopwords.Comparer);
+            string[] words = document.Split(s_WordSeparators, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < words.Length; i++)
+            {
+                string word = words[i];
+                if (dontUseStopwords || !stopwords.Contains(word))
+                {
+                    int count;
+                    if (result.TryGetValue(word, out count))
+                    {
+                        result[word] = count + 1;
+                    }
+                    else
+                    {
+                        result[word] = 1;
+                    }
+                }
+            }
+
+            return result.OrderBy(x => x.Value).Take(n).ToDictionary(x => x.Key, x => x.Value);
         }
 
         /// <summary>

@@ -57,7 +57,6 @@ namespace Labo.Common.Utils
             return @object;
         }
 
-
         /// <summary>
         /// Casts the specified object.
         /// </summary>

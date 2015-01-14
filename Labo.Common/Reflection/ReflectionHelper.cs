@@ -93,14 +93,79 @@ namespace Labo.Common.Reflection
         /// <summary>
         /// The dynamic method cache
         /// </summary>
-        private static readonly DynamicMethodCache s_DynamicMethodCache;
+        private static readonly DynamicMethodCache s_DynamicMethodCache = new DynamicMethodCache();
 
         /// <summary>
-        /// Initializes static members of the <see cref="ReflectionHelper"/> class.
+        /// Creates the instance.
         /// </summary>
-        static ReflectionHelper()
+        /// <typeparam name="T">The instance type.</typeparam>
+        /// <param name="constructorInfo">The constructor information.</param>
+        /// <param name="parameterTypes">The parameter types.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The created instance.</returns>
+        public static T CreateInstance<T>(ConstructorInfo constructorInfo = null, Type[] parameterTypes = null, params object[] parameters)
         {
-            s_DynamicMethodCache = new DynamicMethodCache();
+            return (T)CreateInstance(typeof(T), constructorInfo, parameterTypes, parameters);
+        }
+
+        /// <summary>
+        /// Creates the instance.
+        /// </summary>
+        /// <typeparam name="T">The instance type.</typeparam>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The created instance.</returns>
+        public static T CreateInstance<T>(params object[] parameters)
+        {
+            return (T)CreateInstance(typeof(T), null, null, parameters);
+        }
+
+        /// <summary>
+        /// Creates the instance.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The created instance.</returns>
+        public static object CreateInstance(Type type, params object[] parameters)
+        {
+            return CreateInstance(type, null, null, parameters);
+        }
+
+        /// <summary>
+        /// Creates the instance.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="constructorInfo">The constructor information.</param>
+        /// <param name="parameterTypes">The parameter types.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The created instance.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// type
+        /// or
+        /// constructorInfo
+        /// </exception>
+        public static object CreateInstance(Type type, ConstructorInfo constructorInfo = null, Type[] parameterTypes = null, params object[] parameters)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (parameterTypes == null)
+            {
+                parameterTypes = Type.EmptyTypes;
+            }
+
+            if (constructorInfo == null && parameterTypes.Length == 0)
+            {
+                constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
+            }
+
+            if (constructorInfo == null)
+            {
+                throw new ArgumentNullException("constructorInfo");
+            }
+
+            return s_DynamicMethodCache.GetOrAddDelegate(constructorInfo, () => DynamicMethodHelper.EmitConstructorInvoker(type, constructorInfo, parameterTypes), DynamicMethodCacheStrategy.Temporary)(parameters);
         }
 
         /// <summary>
@@ -454,7 +519,7 @@ namespace Labo.Common.Reflection
         /// <param name="type">The type.</param>
         /// <param name="throwExceptionWhenNotFound">Throw exception when property not found.</param>
         /// <returns>The property info.</returns>
-        private static PropertyInfo GetPropertyInfo(string propertyName, BindingFlags bindingFlags, Type type, bool throwExceptionWhenNotFound = true)
+        internal static PropertyInfo GetPropertyInfo(string propertyName, BindingFlags bindingFlags, Type type, bool throwExceptionWhenNotFound = true)
         {
             PropertyInfo propertyInfo = type.GetProperty(propertyName, bindingFlags);
             if (propertyInfo == null && throwExceptionWhenNotFound)
@@ -544,7 +609,7 @@ namespace Labo.Common.Reflection
         /// <param name="source">The source.</param>
         /// <param name="destination">The destination.</param>
         /// <exception cref="ReflectionHelperException">thrown when types are not assignable.</exception>
-        private static void CheckAreAssignable(MemberInfo memberInfo, Type source, Type destination)
+        internal static void CheckAreAssignable(MemberInfo memberInfo, Type source, Type destination)
         {
             if (!TypeUtils.AreAssignable(source, destination))
             {

@@ -107,6 +107,15 @@ namespace Labo.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Execution count must be bigger than 0..
+        /// </summary>
+        internal static string ExecutionWatch_Measure_Execution_count_must_be_bigger_than_zero {
+            get {
+                return ResourceManager.GetString("ExecutionWatch_Measure_Execution_count_must_be_bigger_than_zero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Incorrect number of arguments supplied for call to method &apos;{0}&apos;.
         /// </summary>
         internal static string ReflectionHelper_CallMethod_Incorrect_number_of_arguments {

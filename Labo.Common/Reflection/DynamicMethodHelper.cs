@@ -221,6 +221,11 @@ namespace Labo.Common.Reflection
             }
             else
             {
+                if (constructorInfo == null && parameterTypes.Length == 0)
+                {
+                    constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
+                }
+
                 if (constructorInfo == null)
                 {
                     throw new ArgumentNullException("constructorInfo");
