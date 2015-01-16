@@ -252,7 +252,8 @@ namespace Labo.Common.Reflection
             for (int i = 0; i < methodParameters.Length; i++)
             {
                 ParameterInfo methodParameter = methodParameters[i];
-                CheckAreAssignable(methodInfo, TypeUtils.GetType(parameters[i]), methodParameter.ParameterType);
+                object parameterValue = parameters[i];
+                CheckAreAssignable(methodInfo, parameterValue, methodParameter.ParameterType);
             }
 
             return s_DynamicMethodCache.GetOrAddDelegate(methodInfo, () => DynamicMethodHelper.EmitMethodInvoker(objectType, methodInfo), DynamicMethodCacheStrategy.Temporary)(@object, parameters);
@@ -360,13 +361,13 @@ namespace Labo.Common.Reflection
             }
 
             PropertyAccessItem propertyAccessItem = GetPropertyAccessItem(type, propertyInfo);
-            Type valueType = TypeUtils.GetType(value);
+
             //if (!TypeUtils.IsImplicitlyConvertible(valueType, propertyInfo.PropertyType))
             //{
             //    throw new ReflectionHelperException(string.Format(CultureInfo.CurrentCulture, Strings.ReflectionHelper_SetPropertyValue_type_is_not_implicitly_convertable, valueType, propertyInfo.PropertyType));
             //}
 
-            CheckAreAssignable(propertyInfo, valueType, propertyInfo.PropertyType);
+            CheckAreAssignable(propertyInfo, value, propertyInfo.PropertyType);
 
             propertyAccessItem.Setter(@object, value);
         }
@@ -606,11 +607,18 @@ namespace Labo.Common.Reflection
         /// Checks the two types are assignable.
         /// </summary>
         /// <param name="memberInfo">The member info.</param>
-        /// <param name="source">The source.</param>
+        /// <param name="sourceValue">The source value.</param>
         /// <param name="destination">The destination.</param>
         /// <exception cref="ReflectionHelperException">thrown when types are not assignable.</exception>
-        internal static void CheckAreAssignable(MemberInfo memberInfo, Type source, Type destination)
+        internal static void CheckAreAssignable(MemberInfo memberInfo, object sourceValue, Type destination)
         {
+            Type source = TypeUtils.GetType(sourceValue);
+
+            if (!destination.IsValueType && sourceValue == null)
+            {
+                return;
+            }
+
             if (!TypeUtils.AreAssignable(source, destination))
             {
                 throw new ReflectionHelperException(string.Format(CultureInfo.CurrentCulture, Strings.ReflectionHelper_Parameter_type_cannot_be_used_for_method, source, destination, memberInfo));

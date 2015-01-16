@@ -29,6 +29,7 @@
 namespace Labo.Common.Utils
 {
     using System;
+    using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
@@ -269,7 +270,8 @@ namespace Labo.Common.Utils
         /// <returns><c>true</c> if the two types are assignable; otherwise, <c>false</c>.</returns>
         public static bool AreAssignable(Type source, Type destination)
         {
-            return AreEquivalent(destination, source) || (!destination.IsValueType && !source.IsValueType && destination.IsAssignableFrom(source));
+            return AreEquivalent(destination, source) 
+                || (!destination.IsValueType && !source.IsValueType && destination.IsAssignableFrom(source));
         }
 
         /// <summary>

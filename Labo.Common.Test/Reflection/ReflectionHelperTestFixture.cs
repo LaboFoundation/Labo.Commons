@@ -2,13 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Dynamic;
-    using System.Linq.Expressions;
     using System.Reflection;
 
     using Labo.Common.Reflection;
     using Labo.Common.Reflection.Exceptions;
-    using Labo.Common.Utils;
 
     using NUnit.Framework;
 
@@ -73,6 +70,8 @@
                     return 1;
                 }
             }
+
+            public string StringProperty { get; set; }
 
             public int ReadWriteProperty
             {
@@ -264,6 +263,17 @@
             propertyAccessItem.Setter(propertyTestClass, 2);
 
             Assert.AreEqual(2, propertyTestClass.ReadWriteProperty);
+        }
+
+        [Test]
+        public void SetStringPropertyValueToNull()
+        {
+            PropertyTestClass propertyTestClass = new PropertyTestClass();
+            propertyTestClass.StringProperty = "Test";
+
+            ReflectionHelper.SetPropertyValue(propertyTestClass, "StringProperty", null);
+
+            Assert.AreEqual(null, propertyTestClass.StringProperty);
         }
 
         [Test]

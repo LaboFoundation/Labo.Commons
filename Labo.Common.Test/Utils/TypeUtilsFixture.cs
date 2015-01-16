@@ -6,6 +6,10 @@ using NUnit.Framework;
 
 namespace Labo.Common.Tests.Utils
 {
+    using System.CodeDom;
+
+    using Labo.Common.Reflection;
+
     [TestFixture]
     public class TypeUtilsFixture
     {
@@ -89,8 +93,8 @@ namespace Labo.Common.Tests.Utils
 
         [Test, Sequential]
         public void GetDefaultValueOfType(
-            [Values(typeof(byte), typeof(short), typeof(int), typeof(long), typeof(float), typeof(double), typeof(decimal), typeof(bool))]Type type,
-            [Values(0, 0, 0, 0, 0, 0, 0, false)]object expected)
+            [Values(typeof(byte), typeof(short), typeof(int), typeof(long), typeof(float), typeof(double), typeof(decimal), typeof(bool), typeof(string))]Type type,
+            [Values(0, 0, 0, 0, 0, 0, 0, false, null)]object expected)
         { 
             Assert.AreEqual(expected, TypeUtils.GetDefaultValueOfType(type));
         }
