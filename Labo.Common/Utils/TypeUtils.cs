@@ -29,7 +29,6 @@
 namespace Labo.Common.Utils
 {
     using System;
-    using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
@@ -465,7 +464,7 @@ namespace Labo.Common.Utils
                 case TypeCode.UInt32:
                     switch (typeCodeDestination)
                     {
-                        case TypeCode.UInt32:
+                        case TypeCode.Int64:
                         case TypeCode.UInt64:
                         case TypeCode.Single:
                         case TypeCode.Double:
