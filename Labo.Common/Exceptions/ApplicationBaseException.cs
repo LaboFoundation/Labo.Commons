@@ -36,7 +36,7 @@ namespace Labo.Common.Exceptions
     /// Base application exception.
     /// </summary>
     [Serializable]
-    public abstract class ApplicationBaseException : Exception
+    public abstract class ApplicationBaseException : Exception, IApplicationException
     {
         /// <summary>
         /// The exception GUID.

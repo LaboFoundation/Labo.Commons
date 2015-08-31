@@ -36,7 +36,7 @@ namespace Labo.Common.Exceptions
     /// Critical user level exception.
     /// </summary>
     [Serializable]
-    public class CriticalUserLevelException : BaseUserLevelException
+    public class CriticalUserLevelException : BaseUserLevelException, ICriticalUserLevelException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CriticalUserLevelException"/> class.

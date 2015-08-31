@@ -36,7 +36,7 @@ namespace Labo.Common.Exceptions
     /// Base user level exception.
     /// </summary>
     [Serializable]
-    public class BaseUserLevelException : ApplicationBaseException
+    public class BaseUserLevelException : ApplicationBaseException, IBaseUserLevelException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseUserLevelException"/> class.

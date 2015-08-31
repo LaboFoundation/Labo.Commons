@@ -36,7 +36,7 @@ namespace Labo.Common.Exceptions
     /// Core level exception.
     /// </summary>
     [Serializable]
-    public class CoreLevelException : ApplicationBaseException
+    public class CoreLevelException : ApplicationBaseException, ICoreLevelException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CoreLevelException"/> class.
