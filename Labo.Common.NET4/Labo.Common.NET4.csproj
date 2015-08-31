@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{095D831B-A8D4-4682-A507-D47AB556D925}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Labo.Common.NET4</RootNamespace>
+    <AssemblyName>Labo.Common.NET4</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Labo.Common\Comparer\ComparerReverser.cs">
+      <Link>Comparer\ComparerReverser.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Culture\EncodingHelper.cs">
+      <Link>Culture\EncodingHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Diagnostics\DiagnosticsStopwatch.cs">
+      <Link>Diagnostics\DiagnosticsStopwatch.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Diagnostics\ExecutionWatch.cs">
+      <Link>Diagnostics\ExecutionWatch.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Diagnostics\IStopwatch.cs">
+      <Link>Diagnostics\IStopwatch.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Diagnostics\IStopwatchFactory.cs">
+      <Link>Diagnostics\IStopwatchFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Diagnostics\StopwatchContext.cs">
+      <Link>Diagnostics\StopwatchContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Diagnostics\StopwatchContextOnDispose.cs">
+      <Link>Diagnostics\StopwatchContextOnDispose.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Diagnostics\Timing.cs">
+      <Link>Diagnostics\Timing.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Dynamic\DynamicDictionary.cs">
+      <Link>Dynamic\DynamicDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Exceptions\ApplicationBaseException.cs">
+      <Link>Exceptions\ApplicationBaseException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Exceptions\BaseUserLevelException.cs">
+      <Link>Exceptions\BaseUserLevelException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Exceptions\CoreLevelException.cs">
+      <Link>Exceptions\CoreLevelException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Exceptions\CriticalUserLevelException.cs">
+      <Link>Exceptions\CriticalUserLevelException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Exceptions\IApplicationException.cs">
+      <Link>Exceptions\IApplicationException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Exceptions\IBaseUserLevelException.cs">
+      <Link>Exceptions\IBaseUserLevelException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Exceptions\ICoreLevelException.cs">
+      <Link>Exceptions\ICoreLevelException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Exceptions\ICriticalUserLevelException.cs">
+      <Link>Exceptions\ICriticalUserLevelException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Exceptions\IUserLevelException.cs">
+      <Link>Exceptions\IUserLevelException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Exceptions\UserLevelException.cs">
+      <Link>Exceptions\UserLevelException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Expression\ExpressionHelper.cs">
+      <Link>Expression\ExpressionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Extensions\CollectionExtensions.cs">
+      <Link>Extensions\CollectionExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Extensions\SystemExtensions.cs">
+      <Link>Extensions\SystemExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Hashing\Murmur3.cs">
+      <Link>Hashing\Murmur3.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\DateTimeProvider.cs">
+      <Link>Patterns\DateTimeProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\DateTimeProviderContext.cs">
+      <Link>Patterns\DateTimeProviderContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\DefaultDateTimeProvider.cs">
+      <Link>Patterns\DefaultDateTimeProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\Disposable.cs">
+      <Link>Patterns\Disposable.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\Exception\FactoryCreateInstanceException.cs">
+      <Link>Patterns\Exceptions\FactoryCreateInstanceException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\Factory.cs">
+      <Link>Patterns\Factory.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\FuncDateTimeProvider.cs">
+      <Link>Patterns\FuncDateTimeProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\IDateTimeProvider.cs">
+      <Link>Patterns\IDateTimeProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\IFactoryInstanceCreator.cs">
+      <Link>Patterns\IFactoryInstanceCreator.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\IFluentInterface.cs">
+      <Link>Patterns\IFluentInterface.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\LazyFactoryInstanceCreator.cs">
+      <Link>Patterns\LazyFactoryInstanceCreator.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\Singleton.cs">
+      <Link>Patterns\Singleton.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Patterns\TransientFactoryInstanceCreator.cs">
+      <Link>Patterns\TransientFactoryInstanceCreator.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Reflection\Delegates.cs">
+      <Link>Reflection\Delegates.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Reflection\DynamicMethodCache.cs">
+      <Link>Reflection\DynamicMethodCache.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Reflection\DynamicMethodCacheStrategy.cs">
+      <Link>Reflection\DynamicMethodCacheStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Reflection\DynamicMethodHelper.cs">
+      <Link>Reflection\DynamicMethodHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Reflection\DynamicMethodInfo.cs">
+      <Link>Reflection\DynamicMethodInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Reflection\EmitHelper.cs">
+      <Link>Reflection\EmitHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Reflection\Exceptions\ReflectionHelperException.cs">
+      <Link>Reflection\Exceptions\ReflectionHelperException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Reflection\NamedParameter.cs">
+      <Link>Reflection\NamedParameter.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Reflection\NamedParameterWithValue.cs">
+      <Link>Reflection\NamedParameterWithValue.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Reflection\Parameter.cs">
+      <Link>Reflection\Parameter.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Reflection\ReflectionHelper.cs">
+      <Link>Reflection\ReflectionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Resources\Strings.Designer.cs">
+      <Link>Resources\Strings.Designer.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\AssemblyUtils.cs">
+      <Link>Utils\AssemblyUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\CodeUtils.cs">
+      <Link>Utils\CodeUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\CollectionUtils.cs">
+      <Link>Utils\CollectionUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\Converters\FileInfoConverter.cs">
+      <Link>Utils\Converters\FileInfoConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\Converters\RegexConverter.cs">
+      <Link>Utils\Converters\RegexConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\Converters\StringArrayConverter.cs">
+      <Link>Utils\Converters\StringArrayConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\Converters\UriConverter.cs">
+      <Link>Utils\Converters\UriConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\ConvertUtils.cs">
+      <Link>Utils\ConvertUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\CryptoUtils.cs">
+      <Link>Utils\CryptoUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\CultureUtils.cs">
+      <Link>Utils\CultureUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\DateTimeUtils.cs">
+      <Link>Utils\DateTimeUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\DayName.cs">
+      <Link>Utils\DayName.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\DictionaryUtils.cs">
+      <Link>Utils\DictionaryUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\EnumUtils.cs">
+      <Link>Utils\EnumUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\Exceptions\AssemblyUtilsException.cs">
+      <Link>Utils\Exceptions\AssemblyUtilsException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\Exceptions\ConversionException.cs">
+      <Link>Utils\Exceptions\ConversionException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\Exceptions\StringUtilsException.cs">
+      <Link>Utils\Exceptions\StringUtilsException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\Exceptions\XmlUtilsException.cs">
+      <Link>Utils\Exceptions\XmlUtilsException.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\ExceptionUtils.cs">
+      <Link>Utils\ExceptionUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\IOUtils.cs">
+      <Link>Utils\IOUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\LinqUtils.cs">
+      <Link>Utils\LinqUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\MiscUtils.cs">
+      <Link>Utils\MiscUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\MonthName.cs">
+      <Link>Utils\MonthName.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\ObjectUtils.cs">
+      <Link>Utils\ObjectUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\ReflectionUtils.cs">
+      <Link>Utils\ReflectionUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\SerializationUtils.cs">
+      <Link>Utils\SerializationUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\StringUtils.cs">
+      <Link>Utils\StringUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\TypeUtils.cs">
+      <Link>Utils\TypeUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\WebRequestUtils.cs">
+      <Link>Utils\WebRequestUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Utils\XmlUtils.cs">
+      <Link>Utils\XmlUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\Labo.Common\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="..\Labo.Common\Resources\Strings.resx">
+      <Link>Resources\Strings.resx</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
