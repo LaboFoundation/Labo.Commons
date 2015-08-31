@@ -165,12 +165,10 @@ namespace Labo.Common.Dynamic
         {
             get
             {
-                if (m_Dictionary.ContainsKey(key))
-                {
-                    return m_Dictionary[key];
-                }
-
-                return null;
+                object value;
+                m_Dictionary.TryGetValue(key, out value);
+                
+                return value;
             }
 
             set
@@ -320,13 +318,14 @@ namespace Labo.Common.Dynamic
         /// </returns>
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            if (binder == null) throw new ArgumentNullException("binder");
+            if (binder == null)
+            {
+                throw new ArgumentNullException("binder");
+            }
 
             string name = binder.Name;
 
-            m_Dictionary.TryGetValue(name, out result);
-            
-            return true;
+            return m_Dictionary.TryGetValue(name, out result);
         }
 
         /// <summary>
@@ -339,7 +338,10 @@ namespace Labo.Common.Dynamic
         /// </returns>
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            if (binder == null) throw new ArgumentNullException("binder");
+            if (binder == null)
+            {
+                throw new ArgumentNullException("binder");
+            }
 
             m_Dictionary[binder.Name] = value;
 
