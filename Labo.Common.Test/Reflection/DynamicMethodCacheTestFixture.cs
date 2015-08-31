@@ -15,7 +15,8 @@
             MethodInvoker methodInvoker = (o, parameters) => null;
             Func<MethodInvoker> creatorFunc = () => methodInvoker;
             MethodInvoker cachedMethodInvoker = dynamicMethodCache.GetOrAddDelegate(
-                new DynamicMethod("Test", typeof(void), Type.EmptyTypes, true),
+                // null,
+                new DynamicMethodInfo(), 
                 creatorFunc,
                 DynamicMethodCacheStrategy.Temporary);
 

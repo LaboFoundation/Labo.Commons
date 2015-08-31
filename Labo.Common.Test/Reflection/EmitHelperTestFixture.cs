@@ -1,10 +1,8 @@
 ﻿namespace Labo.Common.Tests.Reflection
 {
     using System;
-    using System.Diagnostics;
     using System.Drawing;
     using System.Reflection;
-    using System.Text;
 
     using Labo.Common.Reflection;
 
@@ -202,9 +200,21 @@
             Assert.AreEqual(default(TestEnum), enumValue);
         }
 
-        private class MathHelper
+        public class MathHelper
         {
             public double PI { get; private set; }
+
+            public const double E = Math.E;
+
+            public static double Pow(double x, double y)
+            {
+                return Math.Pow(x, y);
+            }
+
+            public static decimal Product(decimal x, decimal y)
+            {
+                return x * y;
+            }
 
             public int Sum(int a, int b)
             {
@@ -279,11 +289,22 @@
         public void EmitMethodInvokerInvokeMethodWithoutReturnType()
         {
             MathHelper mathHelper = new MathHelper();
-            DynamicMethodHelper.EmitMethodInvoker(
-            typeof(MathHelper),
-            typeof(MathHelper).GetMethod("SetPI", new[] { typeof(double) }))(mathHelper, Math.PI);
+            MethodInvoker methodInvoker = DynamicMethodHelper.EmitMethodInvoker(
+                typeof(MathHelper),
+                typeof(MathHelper).GetMethod("SetPI", new[] { typeof(double) }));
+            methodInvoker(mathHelper, Math.PI);
 
             Assert.AreEqual(Math.PI, mathHelper.PI);
+        }
+
+        [Test]
+        public void EmitMethodInvokerInvokeStaticMethod()
+        {
+            MethodInfo methodInfo = typeof(MathHelper).GetMethod("Pow", new[] { typeof(double), typeof(double) });
+            MethodInvoker methodInvoker = DynamicMethodHelper.EmitMethodInvoker(typeof(MathHelper), methodInfo);
+            object result = methodInvoker(null, Convert.ChangeType(10, TypeCode.Double), Convert.ChangeType(2, TypeCode.Double));
+
+            Assert.AreEqual(MathHelper.Pow(10, 2), result);
         }
     }
 }

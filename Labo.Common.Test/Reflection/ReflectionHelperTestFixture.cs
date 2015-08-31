@@ -18,6 +18,11 @@
             {
                 return new Random().Next();
             }
+
+            public static double Pow(double x, double y)
+            {
+                return Math.Pow(x, y);
+            }
         }
 
         private class Parent
@@ -324,6 +329,18 @@
             Assert.AreEqual(testClass.PublicMethodWithNoParameters(), ReflectionHelper.CallMethod(testClass, "PublicMethodWithNoParameters"));
             Assert.AreEqual(testClass.PublicMethodWithParameters(5), ReflectionHelper.CallMethod(testClass, "PublicMethodWithParameters", 5));
             Assert.AreEqual(testClass.PublicMethodWithParameters(5, 20L), ReflectionHelper.CallMethod(testClass, "PublicMethodWithParameters", 5, 20L));
+        }
+
+        [Test]
+        public void CallStaticMethod()
+        {
+            Assert.AreEqual(
+                StaticClass.Pow(10, 2),
+                ReflectionHelper.CallStaticMethod(
+                    typeof(StaticClass),
+                    typeof(StaticClass).GetMethod("Pow", new[] { typeof(double), typeof(double) }),
+                    10,
+                    2));
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Labo.Common.Reflection
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Reflection;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Dynamic method cache class.
@@ -40,14 +40,14 @@ namespace Labo.Common.Reflection
         /// <summary>
         /// The the delegate entries dictionary.
         /// </summary>
-        private readonly ConcurrentDictionary<MemberInfo, object> m_Entries;
+        private readonly IDictionary<DynamicMethodInfo, object> m_Entries;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicMethodCache"/> class.
         /// </summary>
         public DynamicMethodCache()
         {
-            m_Entries = new ConcurrentDictionary<MemberInfo, object>();
+            m_Entries = new Dictionary<DynamicMethodInfo, object>();
         }
 
         /// <summary>
@@ -58,21 +58,32 @@ namespace Labo.Common.Reflection
         /// <param name="creatorFunc">The creator function.</param>
         /// <param name="cacheStrategy">The cache strategy.</param>
         /// <returns>The method delegate.</returns>
-        public TDelegate GetOrAddDelegate<TDelegate>(MemberInfo memberInfo, Func<TDelegate> creatorFunc, DynamicMethodCacheStrategy cacheStrategy)
+        public TDelegate GetOrAddDelegate<TDelegate>(DynamicMethodInfo memberInfo, Func<TDelegate> creatorFunc, DynamicMethodCacheStrategy cacheStrategy)
         {
-            object entry = m_Entries.AddOrUpdate(
-                                                memberInfo,
-                                                x => CreateDelegate(creatorFunc, cacheStrategy),
-                                                (x, y) =>
-                                                    {
-                                                        WeakReference weakReference = y as WeakReference;
-                                                        if (weakReference != null && weakReference.IsAlive)
-                                                        {
-                                                            return weakReference.Target;
-                                                        }
+            object entry;
 
-                                                        return CreateDelegate(creatorFunc, cacheStrategy);
-                                                    });
+            if (m_Entries.TryGetValue(memberInfo, out entry))
+            {
+                WeakReference weakReference = entry as WeakReference;
+                if (weakReference != null)
+                {
+                    if (weakReference.IsAlive)
+                    {
+                        return (TDelegate)weakReference.Target;
+                    }
+                    
+                    m_Entries[memberInfo] = entry = CreateDelegate(creatorFunc, cacheStrategy);
+                }
+                else
+                {
+                    return (TDelegate)entry;
+                }
+            }
+            else
+            {
+                m_Entries[memberInfo] = entry = CreateDelegate(creatorFunc, cacheStrategy);
+            }
+
             return (TDelegate)(entry is WeakReference ? ((WeakReference)entry).Target : entry);
         }
 

@@ -165,7 +165,7 @@ namespace Labo.Common.Reflection
                 throw new ArgumentNullException("constructorInfo");
             }
 
-            return s_DynamicMethodCache.GetOrAddDelegate(constructorInfo, () => DynamicMethodHelper.EmitConstructorInvoker(type, constructorInfo, parameterTypes), DynamicMethodCacheStrategy.Temporary)(parameters);
+            return s_DynamicMethodCache.GetOrAddDelegate(new DynamicMethodInfo(type, MemberTypes.Constructor, constructorInfo.Name, parameterTypes), () => DynamicMethodHelper.EmitConstructorInvoker(type, constructorInfo, parameterTypes), DynamicMethodCacheStrategy.Temporary)(parameters);
         }
 
         /// <summary>
@@ -241,22 +241,89 @@ namespace Labo.Common.Reflection
 
             Type objectType = @object.GetType();
 
-            // TODO: cache method parameters.
-            ParameterInfo[] methodParameters = methodInfo.GetParameters();
+            Type[] parameterTypes;
 
-            if (methodParameters.Length != parameters.Length)
+            CheckParameters(methodInfo, parameters, out parameterTypes);
+
+            return s_DynamicMethodCache.GetOrAddDelegate(new DynamicMethodInfo(objectType, MemberTypes.Method, methodInfo.Name, parameterTypes), () => DynamicMethodHelper.EmitMethodInvoker(objectType, methodInfo), DynamicMethodCacheStrategy.Temporary)(@object, parameters);
+        }
+
+        /// <summary>
+        /// Calls the static method.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="methodName">Name of the method.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The static method return value.</returns>
+        public static object CallStaticMethod(Type type, string methodName, params object[] parameters)
+        {
+            return CallStaticMethod(type, methodName, DEFAULT_METHOD_INFO_BINDING_FLAGS, parameters);
+        }
+
+        /// <summary>
+        /// Calls the static method.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="methodName">Name of the method.</param>
+        /// <param name="bindingFlags">The binding flags.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The static method return value.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// type
+        /// or
+        /// methodName
+        /// </exception>
+        public static object CallStaticMethod(Type type, string methodName, BindingFlags bindingFlags, params object[] parameters)
+        {
+            if (type == null)
             {
-                throw new ReflectionHelperException(string.Format(CultureInfo.CurrentCulture, Strings.ReflectionHelper_CallMethod_Incorrect_number_of_arguments, methodInfo));
+                throw new ArgumentNullException("type");
             }
 
-            for (int i = 0; i < methodParameters.Length; i++)
+            if (methodName.IsNullOrWhiteSpace())
             {
-                ParameterInfo methodParameter = methodParameters[i];
-                object parameterValue = parameters[i];
-                CheckAreAssignable(methodInfo, parameterValue, methodParameter.ParameterType);
+                throw new ArgumentNullException("methodName");
             }
 
-            return s_DynamicMethodCache.GetOrAddDelegate(methodInfo, () => DynamicMethodHelper.EmitMethodInvoker(objectType, methodInfo), DynamicMethodCacheStrategy.Temporary)(@object, parameters);
+            MethodInfo methodInfo = GetMethodInfo(type, methodName, bindingFlags, parameters);
+            return CallStaticMethod(type, methodInfo, parameters);
+        }
+
+        /// <summary>
+        /// Calls the static method.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="methodInfo">The method information.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The static method return value.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// type
+        /// or
+        /// methodInfo
+        /// </exception>
+        /// <exception cref="ReflectionHelperException"></exception>
+        public static object CallStaticMethod(Type type, MethodInfo methodInfo, params object[] parameters)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (methodInfo == null)
+            {
+                throw new ArgumentNullException("methodInfo");
+            }
+
+            if (parameters == null)
+            {
+                parameters = new object[] { null };
+            }
+
+            Type[] parameterTypes;
+
+            CheckParameters(methodInfo, parameters, out parameterTypes);
+
+            return s_DynamicMethodCache.GetOrAddDelegate(new DynamicMethodInfo(type, MemberTypes.Method, methodInfo.Name, parameterTypes), () => DynamicMethodHelper.EmitMethodInvoker(type, methodInfo), DynamicMethodCacheStrategy.Temporary)(null, parameters);
         }
 
         /// <summary>
@@ -534,6 +601,39 @@ namespace Labo.Common.Reflection
             return propertyInfo;
         }
 
+        private static void CheckParameters(MethodInfo methodInfo, object[] parameters, out Type[] parameterTypes)
+        {
+            // TODO: cache method parameters.
+            ParameterInfo[] methodParameters = methodInfo.GetParameters();
+            parameterTypes = new Type[methodParameters.Length];
+
+            if (methodParameters.Length != parameters.Length)
+            {
+                throw new ReflectionHelperException(string.Format(CultureInfo.CurrentCulture, Strings.ReflectionHelper_CallMethod_Incorrect_number_of_arguments, methodInfo));
+            }
+
+            for (int i = 0; i < methodParameters.Length; i++)
+            {
+                ParameterInfo methodParameter = methodParameters[i];
+                Type parameterType = methodParameter.ParameterType;
+
+                parameterTypes[i] = parameterType;
+                object parameterValue = parameters[i];
+
+                if (parameterValue != null)
+                {
+                    Type parameterValueType = parameterValue.GetType();
+                    if (parameterValueType != parameterType
+                        && TypeUtils.IsImplicitlyConvertible(parameterValueType, parameterType))
+                    {
+                        parameterValue = parameters[i] = ConvertUtils.ChangeType(parameterValue, parameterType);
+                    }
+                }
+
+                CheckAreAssignable(methodInfo, parameterValue, parameterType);
+            }
+        }
+
         /// <summary>
         /// Gets the property access item.
         /// </summary>
@@ -542,7 +642,7 @@ namespace Labo.Common.Reflection
         /// <returns>The property access item.</returns>
         private static PropertyAccessItem GetPropertyAccessItem(Type objectType, PropertyInfo propertyInfo)
         {
-            return s_DynamicMethodCache.GetOrAddDelegate(propertyInfo, () => CreatePropertyAccessItem(objectType, propertyInfo), DynamicMethodCacheStrategy.Temporary);
+            return s_DynamicMethodCache.GetOrAddDelegate(new DynamicMethodInfo(objectType, MemberTypes.Property, propertyInfo.Name, new[] { propertyInfo.PropertyType }), () => CreatePropertyAccessItem(objectType, propertyInfo), DynamicMethodCacheStrategy.Temporary);
         }
 
         /// <summary>

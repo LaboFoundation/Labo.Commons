@@ -281,8 +281,12 @@ namespace Labo.Common.Reflection
             for (int i = 0; i < parameterTypes.Length; i++)
             {
                 Type parameterType = parameterTypes[i];
+                // TypeCode typeCode = Type.GetTypeCode(parameterType);
+
                 EmitHelper.Ldarg(generator, arrayParameterIndex);
+
                 EmitHelper.LdcI4(generator, i);
+
                 EmitHelper.LdelemRef(generator);
                 EmitHelper.CastIfNotObject(generator, parameterType);
             }

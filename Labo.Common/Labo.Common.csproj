@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Labo.Common.XML</DocumentationFile>
@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithms\Sort.cs" />
     <Compile Include="Comparer\ComparerReverser.cs" />
     <Compile Include="Diagnostics\DiagnosticsStopwatch.cs" />
     <Compile Include="Diagnostics\ExecutionWatch.cs" />
@@ -57,6 +56,11 @@
     <Compile Include="Diagnostics\StopwatchContext.cs" />
     <Compile Include="Diagnostics\StopwatchContextOnDispose.cs" />
     <Compile Include="Diagnostics\Timing.cs" />
+    <Compile Include="Exceptions\IApplicationException.cs" />
+    <Compile Include="Exceptions\IBaseUserLevelException.cs" />
+    <Compile Include="Exceptions\ICoreLevelException.cs" />
+    <Compile Include="Exceptions\ICriticalUserLevelException.cs" />
+    <Compile Include="Exceptions\IUserLevelException.cs" />
     <Compile Include="Expression\ExpressionHelper.cs" />
     <Compile Include="Hashing\Murmur3.cs" />
     <Compile Include="Patterns\DateTimeProvider.cs" />
@@ -73,6 +77,7 @@
     <Compile Include="Reflection\DynamicMethodCache.cs" />
     <Compile Include="Reflection\DynamicMethodCacheStrategy.cs" />
     <Compile Include="Reflection\DynamicMethodHelper.cs" />
+    <Compile Include="Reflection\DynamicMethodInfo.cs" />
     <Compile Include="Reflection\EmitHelper.cs" />
     <Compile Include="Reflection\Exceptions\ReflectionHelperException.cs" />
     <Compile Include="Reflection\NamedParameter.cs" />
@@ -135,7 +140,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -484,6 +484,22 @@ namespace Labo.Common.Reflection
         }
 
         /// <summary>
+        /// Pushes a supplied value of type int8 onto the evaluation stack as an int32, short form.
+        /// </summary>
+        /// <param name="generator">The il generator.</param>
+        /// <param name="num">The num.</param>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static void LdcI4S(ILGenerator generator, int num)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Ldc_I4_S, num);
+        }
+
+        /// <summary>
         /// Pushes a supplied value of type int32 onto the evaluation stack as an int32.
         /// </summary>
         /// <param name="generator">The il generator.</param>
@@ -497,6 +513,122 @@ namespace Labo.Common.Reflection
             }
 
             generator.Emit(OpCodes.Ldc_I4, num);
+        }
+
+        /// <summary>
+        /// Pushes a supplied value of type int64 onto the evaluation stack as an int64.
+        /// </summary>
+        /// <param name="generator">The il generator.</param>
+        /// <param name="num">The num.</param>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static void LdcI8(ILGenerator generator, int num)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Ldc_I8, num);
+        }
+
+        /// <summary>
+        /// Pushes a supplied value of type float32 onto the evaluation stack as an float32.
+        /// </summary>
+        /// <param name="generator">The il generator.</param>
+        /// <param name="num">The num.</param>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static void LdcR4(ILGenerator generator, int num)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Ldc_R4, num);
+        }
+
+        /// <summary>
+        /// Pushes a supplied value of type float64 onto the evaluation stack as an float64.
+        /// </summary>
+        /// <param name="generator">The il generator.</param>
+        /// <param name="num">The num.</param>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static void LdcR8(ILGenerator generator, int num)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Ldc_R8, num);
+        }
+
+        /// <summary>
+        /// Converts the value on top of the evaluation stack to int32.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="num">The number.</param>
+        /// <exception cref="System.ArgumentNullException">generator</exception>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static void ConvI4(ILGenerator generator, int num)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Conv_I4, num);
+        }
+
+        /// <summary>
+        /// Converts the value on top of the evaluation stack to int64.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="num">The number.</param>
+        /// <exception cref="System.ArgumentNullException">generator</exception>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static void ConvI8(ILGenerator generator, int num)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Conv_I8, num);
+        }
+
+        /// <summary>
+        /// Converts the value on top of the evaluation stack to float32.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="num">The number.</param>
+        /// <exception cref="System.ArgumentNullException">generator</exception>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static void ConvR4(ILGenerator generator, int num)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Conv_R4, num);
+        }
+
+        /// <summary>
+        /// Converts the value on top of the evaluation stack to float64.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="num">The number.</param>
+        /// <exception cref="System.ArgumentNullException">generator</exception>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        public static void ConvR8(ILGenerator generator, int num)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            generator.Emit(OpCodes.Conv_R8, num);
         }
 
         /// <summary>
@@ -672,6 +804,61 @@ namespace Labo.Common.Reflection
             }
 
             generator.Emit(OpCodes.Ldloc, index);
+        }
+
+        public static void ImplicitConv(ILGenerator generator, Type fromType, Type toType)
+        {
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            if (fromType == toType)
+            {
+                return;
+            }
+
+            if (fromType.IsValueType && !toType.IsValueType)
+            {
+                generator.Emit(OpCodes.Box, fromType);
+            }
+            else if (toType.IsPrimitive)
+            {
+                if (toType == typeof(long) || toType == typeof(ulong))
+                {
+                    if (IsUnsigned(fromType))
+                    {
+                        generator.Emit(OpCodes.Conv_U8);
+                    }
+                    else
+                    {
+                        generator.Emit(OpCodes.Conv_I8);
+                    }
+                }
+                else if (toType == typeof(float))
+                {
+                    if (IsUnsigned(fromType))
+                    {
+                        generator.Emit(OpCodes.Conv_R_Un);
+                    }
+
+                    generator.Emit(OpCodes.Conv_R4);
+                }
+                else if (toType == typeof(double))
+                {
+                    if (IsUnsigned(fromType))
+                    {
+                        generator.Emit(OpCodes.Conv_R_Un);
+                    }
+
+                    generator.Emit(OpCodes.Conv_R8);
+                }
+            }
+        }
+
+        private static bool IsUnsigned(Type t)
+        {
+            return t == typeof(byte) || t == typeof(ushort) || t == typeof(uint) || t == typeof(ulong);
         }
     }
 }
